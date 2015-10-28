@@ -4,6 +4,10 @@
 *.o
 *.obj
 
+# Project files
+*.sdf
+*.opensdf
+
 # Precompiled Headers
 *.gch
 *.pch
