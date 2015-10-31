@@ -13,11 +13,14 @@ namespace inspire {
    public:
       static threadMgr* instance();
 
-      threadEntity* get();
-      int startNewEntity(int64& id);
-      int release(threadEntity* entity);
+      threadEntity* fetchIdle();
+      int create(int64& id);
+      int release(const int64& id);
       int destroy(const int64&& id);
       int dispatch(thdTask* task);
+
+      threadEntity* create();
+      int release(threadEntity* entity);
 
    private:
       threadMgr();

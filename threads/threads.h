@@ -10,6 +10,8 @@
 #endif
 
 typedef long long int64;
+typedef unsigned int uint;
+typedef unsigned long long uint64;
 typedef int64 TID;
 typedef DWORD PID;
 

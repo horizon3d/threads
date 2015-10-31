@@ -1,0 +1,36 @@
+#include "thdMgr.h"
+
+namespace inspire {
+
+
+   threadMgr* threadMgr::instance()
+   {
+      static threadMgr mgr;
+      return &mgr;
+   }
+
+   threadEntity* threadMgr::fetchIdle()
+   {
+      if (!_idleQueue.size())
+      {
+         return NULL;
+      }
+
+      std::map<int64, threadEntity*>::iterator it = _idleQueue.begin();
+      // INSPIRE_ASSERT(_idleQueue.end() != it)
+      return it->second;
+   }
+
+   int threadMgr::create(int64& id)
+   {
+      threadEntity* entity = new threadEntity();
+      if (entity)
+      {
+         // insert into idle ?
+         id = _id;
+         ++_id;
+      }
+      return ;
+   }
+
+}

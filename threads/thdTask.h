@@ -11,10 +11,12 @@ namespace inspire {
    {
       friend class threadEntity;
    public:
-      explicit thdTask();
+      thdTask();
+      explicit thdTask(threadEntity* thd);
       virtual ~thdTask();
 
       virtual int run() = 0;
+
    protected:
       void setOwner(threadEntity* thd);
 

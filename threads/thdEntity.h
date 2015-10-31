@@ -15,30 +15,39 @@ namespace inspire {
       STOPPED  = 5,
    };
 
-   typedef unsigned(__stdcall *ENTRY_FUNC)(void*);
+   enum thdType
+   {
+      THREAD_SYSTEM,
+      THREAD_SERVICE,
+      THREAD_WORK,     // can be pooled
+   };
 
+   //class thdTask;
    class threadEntity
    {
       static unsigned __stdcall ENTRY_POINT(void* arg);
    public:
-      threadEntity();
+      threadEntity(thdType t);
       virtual ~threadEntity();
 
+      int initialize();
       int active();
       int deactive();
+      int destroy();
 
-      const int64 id() const { return _tid; }
+      const int64 tid() const { return _tid; }
+
+      bool isPooled() const { THREAD_WORK == _type; }
 
    private:
-      int _create();
-      int _destroy();
       int _run();
 
    private:
+      uint     _type;
       int      _state = INVALID;
       int64    _tid = -1;
       HANDLE   _hThread = INVALID_HANDLE_VALUE;
-      thdTask* _task;
+      //thdTask* _task;
 
    private:
       threadEntity(const threadEntity& rhs) = delete;

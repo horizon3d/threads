@@ -41,5 +41,8 @@
     <ClCompile Include="..\threads\thdEntity.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\threads\thdMgr.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -2,18 +2,25 @@
 #include <process.h>
 namespace inspire {
 
-   threadEntity::threadEntity()
+   threadEntity::threadEntity(thdType t) : _type(t)
    {
-      _create();
    }
 
    threadEntity::~threadEntity()
    {
       if (_hThread && _state != STOPPED)
       {
+         deactive();
          _state = STOPPED;
-         _destroy();
+         destroy();
       }
+   }
+
+   int threadEntity::initialize()
+   {
+      unsigned threadId = 0;
+      _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      _tid = threadId;
    }
 
    int threadEntity::active()
@@ -28,19 +35,12 @@ namespace inspire {
          _state = STOPPED;
          if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
          {
-            _destroy();
+            destroy();
          }
       }
    }
 
-   int threadEntity::_create()
-   {
-      unsigned threadId = 0;
-      _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
-      _tid = threadId;
-   }
-
-   int threadEntity::_destroy()
+   int threadEntity::destroy()
    {
       ::_endthreadex(-11);
    }
