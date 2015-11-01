@@ -11,16 +11,25 @@ namespace inspire {
       if (_hThread && _state != STOPPED)
       {
          deactive();
-         _state = STOPPED;
          destroy();
       }
    }
 
    int threadEntity::initialize()
    {
+      int rc = 0;
+      _state = CREATING;
       unsigned threadId = 0;
       _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      if (INVALID_HANDLE_VALUE == _hThread)
+      {
+         rc = -1; // system error
+         _state = INVALID;
+         return rc;
+      }
+      _state = SUSPEND;
       _tid = threadId;
+      return rc;
    }
 
    int threadEntity::active()
