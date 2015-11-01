@@ -21,12 +21,14 @@ namespace inspire {
       return it->second;
    }
 
-   int threadMgr::create(int64& id)
+   int threadMgr::create(thdType t, int64& id)
    {
-      threadEntity* entity = new threadEntity();
+      int rc = 0;
+      threadEntity* entity = new threadEntity(t);
       if (entity)
       {
          // insert into idle ?
+         rc = entity->initialize();
          id = _id;
          ++_id;
       }

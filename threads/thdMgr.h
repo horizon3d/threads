@@ -14,7 +14,7 @@ namespace inspire {
       static threadMgr* instance();
 
       threadEntity* fetchIdle();
-      int create(int64& id);
+      int create(thdType t, int64& id);
       int release(const int64& id);
       int destroy(const int64&& id);
       int dispatch(thdTask* task);

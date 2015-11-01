@@ -8,7 +8,7 @@ namespace inspire {
 
    threadEntity::~threadEntity()
    {
-      if (_hThread && _state != STOPPED)
+      if (_hThread && _state != THREAD_STOPPED)
       {
          deactive();
          destroy();
@@ -18,16 +18,16 @@ namespace inspire {
    int threadEntity::initialize()
    {
       int rc = 0;
-      _state = CREATING;
+      _state = THREAD_CREATING;
       unsigned threadId = 0;
       _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
       if (INVALID_HANDLE_VALUE == _hThread)
       {
          rc = -1; // system error
-         _state = INVALID;
+         _state = THREAD_INVALID;
          return rc;
       }
-      _state = SUSPEND;
+      _state = THREAD_IDLE;
       _tid = threadId;
       return rc;
    }
@@ -39,9 +39,9 @@ namespace inspire {
 
    int threadEntity::deactive()
    {
-      if (STOPPED != _state)
+      if (THREAD_STOPPED != _state)
       {
-         _state = STOPPED;
+         _state = THREAD_STOPPING;
          if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
          {
             destroy();
@@ -52,11 +52,12 @@ namespace inspire {
    int threadEntity::destroy()
    {
       ::_endthreadex(-11);
+      _state = THREAD_STOPPED;
    }
 
    int threadEntity::_run()
    {
-      while ( STOPPED != _state )
+      while ( THREAD_STOPPED != _state )
       {
          //TODO:
       }

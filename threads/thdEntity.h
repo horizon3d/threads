@@ -7,12 +7,12 @@ namespace inspire {
 
    enum thdState
    {
-      INVALID  = 0,
-      CREATING = 1,
-      SUSPEND  = 2,
-      RUNNING  = 3,
-      STOPPING = 4,
-      STOPPED  = 5,
+      THREAD_INVALID  = 0,
+      THREAD_CREATING = 1,
+      THREAD_IDLE     = 2,
+      THREAD_RUNNING  = 3,
+      THREAD_STOPPING = 4,
+      THREAD_STOPPED  = 5,
    };
 
    enum thdType
