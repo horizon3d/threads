@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_THREAD_MANAGER_H_
 #define _INSPIRE_THREAD_MANAGER_H_
 
-#include <map>
+#include <queue>
 #include "thdEntity.h"
 
 namespace inspire {
@@ -22,6 +22,9 @@ namespace inspire {
       threadEntity* create();
       int release(threadEntity* entity);
 
+      void pooled(int64& id);
+      void pooled(threadEntity* entity);
+
    private:
       threadMgr();
       threadMgr(const threadMgr& rhs) = delete;
@@ -30,8 +33,8 @@ namespace inspire {
 
    private:
       int64 _id = 0;
-      std::map<int64, threadEntity*> _workQueue;
-      std::map<int64, threadEntity*> _idleQueue;
+      std::deque<std::pair<int64, threadEntity*> > _workQueue;
+      std::deque<std::pair<int64, threadEntity*> > _idleQueue;
    };
 }
 #endif

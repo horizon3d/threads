@@ -37,14 +37,17 @@ namespace inspire {
 
       const int64 tid() const { return _tid; }
 
-      bool isPooled() const { THREAD_WORK == _type; }
+      bool poolable() const { _pooled; }
 
    private:
       int _run();
 
+   public:
+      static int64 _entityId;
+
    private:
-      uint     _type;
-      int      _state = INVALID;
+      bool     _pooled;
+      int      _state = THREAD_INVALID;
       int64    _tid = -1;
       HANDLE   _hThread = INVALID_HANDLE_VALUE;
       //thdTask* _task;

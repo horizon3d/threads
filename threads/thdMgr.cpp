@@ -16,7 +16,7 @@ namespace inspire {
          return NULL;
       }
 
-      std::map<int64, threadEntity*>::iterator it = _idleQueue.begin();
+      std::deque<std::pair<int64, threadEntity*> >::iterator it = _idleQueue.begin();
       // INSPIRE_ASSERT(_idleQueue.end() != it)
       return it->second;
    }
@@ -33,6 +33,28 @@ namespace inspire {
          ++_id;
       }
       return ;
+   }
+
+   int threadMgr::release(const int64& id)
+   {
+      int rc = 0;
+      std::deque<std::pair<int64, threadEntity*> >::iterator it = _workQueue.begin();
+      while ( _workQueue.end() != it)
+      {
+         if (id == it->first)
+         {
+            threadEntity* entity = it->second;
+            entity->deactive();
+            if (entity->poolable())
+            {
+               _idleQueue.insert(std::make_pair<id, entity>);
+            }
+            else
+            {
+               entity->destroy();
+            }
+         }
+      }
    }
 
 }
