@@ -15,9 +15,11 @@ namespace inspire {
       explicit thdTask(threadEntity* thd);
       virtual ~thdTask();
 
-      virtual int run() = 0;
+      virtual int run() { _owner->active(); }
 
-   protected:
+   public:
+      void attach(threadEntity* thd);
+      void detach();
       void setOwner(threadEntity* thd);
 
    private:

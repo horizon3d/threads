@@ -1,8 +1,9 @@
 #include "thdEntity.h"
 #include <process.h>
+#include "thdTask.h"
 namespace inspire {
 
-   threadEntity::threadEntity(thdType t) : _type(t)
+   threadEntity::threadEntity()
    {
    }
 
@@ -11,7 +12,6 @@ namespace inspire {
       if (_hThread && _state != THREAD_STOPPED)
       {
          deactive();
-         destroy();
       }
    }
 
@@ -44,23 +44,21 @@ namespace inspire {
          _state = THREAD_STOPPING;
          if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
          {
-            destroy();
+            ::_endthreadex(-11);
+            _state = THREAD_STOPPED;
          }
       }
    }
 
-   int threadEntity::destroy()
-   {
-      ::_endthreadex(-11);
-      _state = THREAD_STOPPED;
-   }
-
    int threadEntity::_run()
    {
+      int rc = 0;
       while ( THREAD_STOPPED != _state )
       {
          //TODO:
       }
+      _state = THREAD_STOPPED;
+      return rc;
    }
 
    unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)

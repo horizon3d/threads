@@ -27,23 +27,23 @@ namespace inspire {
    {
       static unsigned __stdcall ENTRY_POINT(void* arg);
    public:
-      threadEntity(thdType t);
+      threadEntity();
       virtual ~threadEntity();
 
       int initialize();
       int active();
       int deactive();
-      int destroy();
+
+      int assigned(thdTask* task);
 
       const int64 tid() const { return _tid; }
+      const int state() const { return _state; }
 
       bool poolable() const { _pooled; }
+      void poolable(bool pooled) { _pooled = pooled; }
 
    private:
       int _run();
-
-   public:
-      static int64 _entityId;
 
    private:
       bool     _pooled;
