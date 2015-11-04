@@ -16,12 +16,14 @@ namespace inspire {
       THREAD_STOPPED  = 6,
    };
 
-   //class thdTask;
+   class thdTask;
+   class threadMgr;
    class threadEntity
    {
       static unsigned __stdcall ENTRY_POINT(void* arg);
+
    public:
-      threadEntity();
+      threadEntity(threadMgr* mgr);
       virtual ~threadEntity();
 
       int initialize();
@@ -31,6 +33,7 @@ namespace inspire {
       int join();
       int deactive();
       int destroy();
+      void wait(int seconds);
 
       void assigned(thdTask* task) { _task = task; }
 
@@ -43,20 +46,20 @@ namespace inspire {
       void poolable(bool pooled) { _pooled = pooled; }
 
       const int err() const { return _errno; }
-
-   protected:
       void err(const int e) { _errno = e; }
+      threadMgr* thdMgr() const { return _thdMgr; }
 
    private:
       int _run();
 
    private:
-      bool     _pooled;
-      int      _errno;
-      int      _state = THREAD_INVALID;
-      int64    _tid = -1;
-      HANDLE   _hThread = INVALID_HANDLE_VALUE;
-      thdTask* _task;
+      bool       _pooled;
+      int        _errno;
+      int        _state = THREAD_INVALID;
+      int64      _tid = -1;
+      HANDLE     _hThread = INVALID_HANDLE_VALUE;
+      thdTask*   _task;
+      threadMgr* _thdMgr;
 
    private:
       threadEntity(const threadEntity& rhs) = delete;

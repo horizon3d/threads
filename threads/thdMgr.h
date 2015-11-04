@@ -16,12 +16,13 @@ namespace inspire {
       int initialize();
       int destroy();
 
+      thdTask* fetchTask();
       threadEntity* fetchIdle();
-      int create(int64& id);
       threadEntity* create();
-      int release(const int64& id);
-      int release(threadEntity* entity);
-      int dispatch(thdTask* task);
+      int  create(int64& id);
+      int  release(const int64& id);
+      int  release(threadEntity* entity);
+      int  dispatch(thdTask* task);
       void pooled(const int64& id);
       void pooled(threadEntity* entity);
       void unpooled(const int64& id);
@@ -34,12 +35,14 @@ namespace inspire {
 
    private:
       void _recycle(threadEntity* entity);
+      void _remove(threadEntity* entity);
 
    private:
       threadMgr();
       threadMgr(const threadMgr& rhs) = delete;
       threadMgr& operator=(const threadMgr& rhs) = delete;
       virtual ~threadMgr();
+      static unsigned __stdcall ENTRY_POINT(void* arg);
 
    private:
       std::deque<threadEntity*> _workQueue;
