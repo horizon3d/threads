@@ -7,6 +7,8 @@
 namespace inspire {
 
    class threadEntity;
+   class threadMgr;
+
    class thdTask
    {
       friend class threadEntity;
@@ -15,17 +17,17 @@ namespace inspire {
       explicit thdTask(threadEntity* thd);
       virtual ~thdTask();
 
-      virtual int run() { _owner->active(); }
+      virtual int run() = 0;
 
    public:
-      void attach(threadEntity* thd);
-      void detach();
-      void setOwner(threadEntity* thd);
+      void attach(threadEntity* thd) { _thd = thd; }
+      void detach() { _thd = NULL; }
+      void notify();
 
    private:
-      int64 _taskId;
-      threadEntity* _owner;
-      THREAD_ENTRY  _entry;
+      int64         _taskId;
+      threadEntity* _thd;
+      threadMgr*    _mgr;
    };
 }
 #endif

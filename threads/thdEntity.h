@@ -11,15 +11,9 @@ namespace inspire {
       THREAD_CREATING = 1,
       THREAD_IDLE     = 2,
       THREAD_RUNNING  = 3,
-      THREAD_STOPPING = 4,
-      THREAD_STOPPED  = 5,
-   };
-
-   enum thdType
-   {
-      THREAD_SYSTEM,
-      THREAD_SERVICE,
-      THREAD_WORK,     // can be pooled
+      THREAD_SUSPEND  = 4,
+      THREAD_STOPPING = 5,
+      THREAD_STOPPED  = 6,
    };
 
    //class thdTask;
@@ -32,25 +26,37 @@ namespace inspire {
 
       int initialize();
       int active();
+      int suspend();
+      int resume();
+      int join();
       int deactive();
+      int destroy();
 
-      int assigned(thdTask* task);
+      void assigned(thdTask* task) { _task = task; }
 
       const int64 tid() const { return _tid; }
       const int state() const { return _state; }
+      void state(const int st) { _state = st; }
+      bool running() const { return THREAD_RUNNING == _state; }
 
-      bool poolable() const { _pooled; }
+      bool poolable() const { return _pooled; }
       void poolable(bool pooled) { _pooled = pooled; }
+
+      const int err() const { return _errno; }
+
+   protected:
+      void err(const int e) { _errno = e; }
 
    private:
       int _run();
 
    private:
       bool     _pooled;
+      int      _errno;
       int      _state = THREAD_INVALID;
       int64    _tid = -1;
       HANDLE   _hThread = INVALID_HANDLE_VALUE;
-      //thdTask* _task;
+      thdTask* _task;
 
    private:
       threadEntity(const threadEntity& rhs) = delete;

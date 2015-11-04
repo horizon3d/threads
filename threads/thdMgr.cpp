@@ -3,7 +3,6 @@
 
 namespace inspire {
 
-
    threadMgr* threadMgr::instance()
    {
       static threadMgr mgr;
@@ -27,9 +26,9 @@ namespace inspire {
          return NULL;
       }
 
-      std::deque<threadEntity*>::iterator it = _idleQueue.begin();
-      // INSPIRE_ASSERT(_idleQueue.end() != it)
-      return *it;
+      threadEntity* entity = _idleQueue.front();
+      _idleQueue.pop_front();
+      return entity;
    }
 
    int threadMgr::create(int64& id)
@@ -80,16 +79,7 @@ namespace inspire {
          if (id == (*it)->tid())
          {
             threadEntity* entity = *it;
-            entity->deactive();
-            if (entity->poolable())
-            {
-               _idleQueue.push_back(entity);
-            }
-            else
-            {
-               delete entity;
-               entity = NULL;
-            }
+            _recycle(entity);
             break;
          }
       }
@@ -99,25 +89,28 @@ namespace inspire {
    int threadMgr::release(threadEntity* entity)
    {
       int rc = 0;
-      std::deque<threadEntity*>::iterator it = _workQueue.begin();
-      while (_workQueue.end() != it)
-      {
-         if (entity == (*it))
-         {
-            entity->deactive();
-            if (entity->poolable())
-            {
-               _idleQueue.push_back(entity);
-            }
-            else
-            {
-               delete entity;
-               entity = NULL;
-            }
-            break;
-         }
-      }
+      _recycle(entity);
       return rc;
+   }
+
+   int threadMgr::dispatch(thdTask* task)
+   {
+      int rc = 0;
+      threadEntity* entity = fetchIdle();
+      if (NULL != entity)
+      {
+         _workQueue.push_back(entity);
+         task->attach(entity);
+         rc = entity->active();
+         // check return
+         task->detach();
+         _idleQueue.push_back(entity);
+         _workQueue.pop_back();
+      }
+      else
+      {
+         _taskQueue.push_back(task);
+      }
    }
 
    void threadMgr::pooled(const int64& id)
@@ -136,23 +129,46 @@ namespace inspire {
       pooled(entity->tid());
    }
 
-   int threadMgr::dispatch(thdTask* task)
+   void threadMgr::unpooled(const int64& id)
    {
-      int rc = 0;
-      threadEntity* entity = NULL;
-      if (!_idleQueue.empty())
+      std::map<int64, threadEntity*>::iterator it = _thdMap.find(id);
+      if (_thdMap.end() != it)
       {
-         entity = *_idleQueue.begin();
+         threadEntity* entity = it->second;
+         entity->poolable(false);
       }
-      _workQueue.push_back(entity);
-      _idleQueue.pop_front();
-      task->attach(entity);
-      rc = task->run();
-      task->detach();
-      _idleQueue.push_back(entity);
-      _workQueue.pop_back();
+      // LogError
    }
 
-   
+   void threadMgr::unpooled(threadEntity* entity)
+   {
+      unpooled(entity->tid());
+   }
+
+   void threadMgr::_recycle(threadEntity* entity)
+   {
+      if (entity->poolable())
+      {
+         entity->deactive();
+         _idleQueue.push_back(entity);
+      }
+      else
+      {
+         entity->destroy();
+         delete entity;
+         entity = NULL;
+      }
+   }
+
+   threadMgr::threadMgr()
+   {
+
+   }
+
+   threadMgr::~threadMgr()
+   {
+      std::map<int64, threadEntity*> _thdMap;
+   }
+
 
 }

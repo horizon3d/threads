@@ -9,7 +9,7 @@ namespace inspire {
 
    threadEntity::~threadEntity()
    {
-      if (_hThread && _state != THREAD_STOPPED)
+      if (_hThread && state() != THREAD_STOPPED)
       {
          deactive();
       }
@@ -24,7 +24,7 @@ namespace inspire {
       if (INVALID_HANDLE_VALUE == _hThread)
       {
          rc = -1; // system error
-         _state = THREAD_INVALID;
+         state(THREAD_INVALID);
          return rc;
       }
       _state = THREAD_IDLE;
@@ -34,19 +34,43 @@ namespace inspire {
 
    int threadEntity::active()
    {
+      state(THREAD_RUNNING);
+      return ::ResumeThread(_hThread);
+   }
+
+   int threadEntity::suspend()
+   {
+      state(THREAD_SUSPEND);
+      return ::SuspendThread(_hThread);
+   }
+
+   int threadEntity::resume()
+   {
+      state(THREAD_RUNNING);
       ::ResumeThread(_hThread);
+   }
+
+   int threadEntity::join()
+   {
+      int rc = ::WaitForSingleObject(_hThread, INFINITE);
+      return rc;
    }
 
    int threadEntity::deactive()
    {
-      if (THREAD_STOPPED != _state)
+      state(THREAD_STOPPING);
+      _task = NULL;
+   }
+
+   int threadEntity::destroy()
+   {
+      int rc = 0;
+      state(THREAD_STOPPING);
+      if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
       {
-         _state = THREAD_STOPPING;
-         if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
-         {
-            ::_endthreadex(-11);
-            _state = THREAD_STOPPED;
-         }
+         _state = THREAD_STOPPED;
+         ::_endthreadex(-11);
+         state(THREAD_STOPPED);
       }
    }
 
@@ -56,6 +80,7 @@ namespace inspire {
       while ( THREAD_STOPPED != _state )
       {
          //TODO:
+         _task->run();
       }
       _state = THREAD_STOPPED;
       return rc;

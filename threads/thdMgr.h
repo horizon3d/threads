@@ -18,14 +18,22 @@ namespace inspire {
 
       threadEntity* fetchIdle();
       int create(int64& id);
-      int release(const int64& id);
-      int dispatch(thdTask* task);
-
       threadEntity* create();
+      int release(const int64& id);
       int release(threadEntity* entity);
-
+      int dispatch(thdTask* task);
       void pooled(const int64& id);
       void pooled(threadEntity* entity);
+      void unpooled(const int64& id);
+      void unpooled(threadEntity* entity);
+
+      /*
+       * process task in task queue
+       */
+      int handle();
+
+   private:
+      void _recycle(threadEntity* entity);
 
    private:
       threadMgr();
@@ -36,6 +44,7 @@ namespace inspire {
    private:
       std::deque<threadEntity*> _workQueue;
       std::deque<threadEntity*> _idleQueue;
+      std::deque<thdTask*>      _taskQueue;
       std::map<int64, threadEntity*> _thdMap;
    };
 }
