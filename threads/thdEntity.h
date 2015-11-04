@@ -43,18 +43,18 @@ namespace inspire {
       void state(const int st) { _state = st; }
       bool running() const { return THREAD_RUNNING == _state; }
 
-      bool poolable() const { return _pooled; }
-      void poolable(bool pooled) { _pooled = pooled; }
+      bool poolable() const { return _worker; }
 
       const int err() const { return _errno; }
       void err(const int e) { _errno = e; }
+      thdTask* task() const { return _task; }
       threadMgr* thdMgr() const { return _thdMgr; }
 
    private:
       int _run();
 
    private:
-      bool       _pooled;
+      bool       _worker;
       int        _errno;
       int        _state = THREAD_INVALID;
       int64      _tid = -1;

@@ -153,6 +153,10 @@
     <ClInclude Include="..\threads\thdEntity.h" />
     <ClInclude Include="..\threads\thdMgr.h" />
     <ClInclude Include="..\threads\threads.h" />
+    <ClInclude Include="..\threads\util\condition.h" />
+    <ClInclude Include="..\threads\util\deque.h" />
+    <ClInclude Include="..\threads\util\map.h" />
+    <ClInclude Include="..\threads\util\spinlock.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\threads\thdEntity.cpp" />

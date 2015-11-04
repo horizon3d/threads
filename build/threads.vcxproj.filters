@@ -36,6 +36,18 @@
     <ClInclude Include="..\threads\thdTask.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\threads\util\spinlock.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\condition.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\deque.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\map.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\threads\thdEntity.cpp">

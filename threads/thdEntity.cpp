@@ -4,7 +4,7 @@
 #include "thdMgr.h"
 namespace inspire {
 
-   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _thdMgr(mgr)
+   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _pooled(worker), _thdMgr(mgr)
    {
    }
 
@@ -21,7 +21,14 @@ namespace inspire {
       int rc = 0;
       _state = THREAD_CREATING;
       unsigned threadId = 0;
-      _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      if (_pooled)
+      {
+         _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::WORKER_ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      }
+      else
+      {
+         _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      }
       if (INVALID_HANDLE_VALUE == _hThread)
       {
          rc = -1; // system error
@@ -103,7 +110,7 @@ namespace inspire {
       return rc;
    }
 
-   unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
+   unsigned __stdcall threadEntity::WORKER_ENTRY_POINT(void* arg)
    {
       threadEntity* entity = static_cast<threadEntity*>(arg);
       if (entity)
@@ -122,15 +129,27 @@ namespace inspire {
             int rc = 0;
             task->attach(entity);
             rc = task->run();
-            if (rc)
-            {
-               //LogEvent(...);
-               entity->err(rc);
-            }
+            entity->err(rc);
             task->detach();
-            mgr->release(entity);
+            mgr->release(entity->tid());
          }
-         entity->_run();
+      }
+   }
+
+   unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
+   {
+      threadEntity* entity = static_cast<threadEntity*>(arg);
+      if (entity)
+      {
+         while (THREAD_RUNNING == entity->state())
+         {
+            int rc = 0;
+            thdTask* task = entity->task();
+            task->attach(entity);
+            rc = task->run();
+            entity->err(rc);
+            task->detach();
+         }
       }
    }
 
