@@ -13,28 +13,23 @@ namespace inspire {
    {
    public:
       static threadMgr* instance();
+      // self
       int initialize();
       int destroy();
-
-      thdTask* fetchTask();
+      // thread
       threadEntity* fetchIdle();
+      void pushIdle(threadEntity* entity);
       threadEntity* create();
-      int  create(int64& id);
+      int  createWorker(const uint w);
       int  release(const int64& id);
-      int  release(threadEntity* entity);
-      int  dispatch(thdTask* task);
-      void pooled(const int64& id);
-      void pooled(threadEntity* entity);
-      void unpooled(const int64& id);
-      void unpooled(threadEntity* entity);
+      void recycle(threadEntity* entity);
 
-      /*
-       * process task in task queue
-       */
-      int handle();
+      // task
+      int  dispatch(thdTask* task);
+      thdTask* fetchTask();
 
    private:
-      void _recycle(threadEntity* entity);
+      int  _createEntity(bool worker, threadEntity*& entity);
       void _remove(threadEntity* entity);
 
    private:
@@ -42,12 +37,11 @@ namespace inspire {
       threadMgr(const threadMgr& rhs) = delete;
       threadMgr& operator=(const threadMgr& rhs) = delete;
       virtual ~threadMgr();
-      static unsigned __stdcall ENTRY_POINT(void* arg);
 
    private:
-      std::deque<threadEntity*> _workQueue;
       std::deque<threadEntity*> _idleQueue;
       std::deque<thdTask*>      _taskQueue;
+      std::map<int64, threadEntity*> _workQueue;
       std::map<int64, threadEntity*> _thdMap;
    };
 }

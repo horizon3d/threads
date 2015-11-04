@@ -7,7 +7,6 @@
 namespace inspire {
 
    class threadEntity;
-   class threadMgr;
 
    class thdTask
    {
@@ -22,12 +21,13 @@ namespace inspire {
    public:
       void attach(threadEntity* thd) { _thd = thd; }
       void detach() { _thd = NULL; }
-      void notify();
+      void notify() {}
+      void OnBegin() { /* LogEvent begin*/ }
+      void OnEnd()   { /* LogEvent end*/ }
 
    private:
       int64         _taskId;
       threadEntity* _thd;
-      threadMgr*    _mgr;
    };
 }
 #endif

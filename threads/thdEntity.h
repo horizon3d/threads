@@ -2,6 +2,7 @@
 #define _INSPIRE_THREAD_ENTITY_H_
 
 #include "threads.h"
+#include "entry/entry.h"
 
 namespace inspire {
 
@@ -20,10 +21,10 @@ namespace inspire {
    class threadMgr;
    class threadEntity
    {
+      static unsigned __stdcall WORKER_ENTRY_POINT(void* arg);
       static unsigned __stdcall ENTRY_POINT(void* arg);
-
    public:
-      threadEntity(threadMgr* mgr);
+      threadEntity(threadMgr* mgr, bool worker = false);
       virtual ~threadEntity();
 
       int initialize();

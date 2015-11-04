@@ -4,7 +4,7 @@
 #include "thdMgr.h"
 namespace inspire {
 
-   threadEntity::threadEntity(threadMgr* mgr) : _thdMgr(mgr)
+   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _thdMgr(mgr)
    {
    }
 
@@ -115,10 +115,10 @@ namespace inspire {
             thdTask* task = mgr->fetchTask();
             if (NULL == task)
             {
-               Sleep(2000);
+               entity->wait(2000);
                continue;
             }
-
+            // LogEvent fetch a task
             int rc = 0;
             task->attach(entity);
             rc = task->run();
@@ -128,6 +128,7 @@ namespace inspire {
                entity->err(rc);
             }
             task->detach();
+            mgr->release(entity);
          }
          entity->_run();
       }

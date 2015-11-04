@@ -19,18 +19,6 @@ namespace inspire {
       return 0;
    }
 
-   thdTask* threadMgr::fetchTask()
-   {
-      if (!_taskQueue.empty())
-      {
-         return NULL;
-      }
-      // lock task queue
-      thdTask* task = _taskQueue.front();
-      _taskQueue.pop_front();
-      return task;
-   }
-
    threadEntity* threadMgr::fetchIdle()
    {
       if (!_idleQueue.size())
@@ -43,31 +31,22 @@ namespace inspire {
       return entity;
    }
 
-   int threadMgr::create(int64& id)
+   void threadMgr::pushIdle(threadEntity* entity)
    {
-      int rc = 0;
-      threadEntity* entity = new threadEntity();
-      if (entity)
-      {
-         // insert into idle ?
-         rc = entity->initialize();
-         if (rc)
-         {
-            // LogError
-         }
-         id = entity->tid();
-         _idleQueue.push_back(entity);
-      }
-      return rc;
+      // lock _idle queue
+      _idleQueue.push_back(entity);
+      // lock work queue
+      release(entity->tid());
    }
 
    threadEntity* threadMgr::create()
    {
       int rc = 0;
-      threadEntity* entity = new threadEntity();
-      if (NULL != entity)
+      threadEntity* entity = NULL;
+      rc = _createEntity(false, entity);
+      if (rc)
       {
-         // LogError
+         // LogError OOM
          return NULL;
       }
       // insert into idle ?
@@ -77,31 +56,42 @@ namespace inspire {
          // LogError
          return NULL;
       }
+      // lock map
       _thdMap.insert(std::make_pair(entity->tid(), entity));
+      // lock idle queue
       _idleQueue.push_back(entity);
       return entity;
+   }
+
+   int threadMgr::createWorker(const uint w)
+   {
+      int rc = 0;
+      if (0 == w)
+         return rc;
+
+      for (int idx = 0; idx < w; ++idx)
+      {
+         threadEntity* entity = NULL;
+         rc = _createEntity(true, entity);
+         if (rc)
+         {
+            // LogError
+            rc = 
+         }
+      }
    }
 
    int threadMgr::release(const int64& id)
    {
       int rc = 0;
-      std::deque<threadEntity*>::iterator it = _workQueue.begin();
-      while ( _workQueue.end() != it)
+      std::map<int64, threadEntity*>::iterator it = _workQueue.find(id);
+      if ( _workQueue.end() != it)
       {
-         if (id == (*it)->tid())
-         {
-            threadEntity* entity = *it;
-            _recycle(entity);
-            break;
-         }
+         threadEntity* entity = it->second;
+         // lock work queue
+         _workQueue.erase(id);
+         recycle(entity);
       }
-      return rc;
-   }
-
-   int threadMgr::release(threadEntity* entity)
-   {
-      int rc = 0;
-      _recycle(entity);
       return rc;
    }
 
@@ -110,44 +100,25 @@ namespace inspire {
       _taskQueue.push_back(task);
    }
 
-   void threadMgr::pooled(const int64& id)
+   thdTask* threadMgr::fetchTask()
    {
-      std::map<int64, threadEntity*>::iterator it = _thdMap.find(id);
-      if (_thdMap.end() != it)
+      if (!_taskQueue.empty())
       {
-         threadEntity* entity = it->second;
-         entity->poolable(true);
+         return NULL;
       }
-      // LogError
+      // lock task queue
+      thdTask* task = _taskQueue.front();
+      _taskQueue.pop_front();
+      return task;
    }
 
-   void threadMgr::pooled(threadEntity* entity)
-   {
-      pooled(entity->tid());
-   }
-
-   void threadMgr::unpooled(const int64& id)
-   {
-      std::map<int64, threadEntity*>::iterator it = _thdMap.find(id);
-      if (_thdMap.end() != it)
-      {
-         threadEntity* entity = it->second;
-         entity->poolable(false);
-      }
-      // LogError
-   }
-
-   void threadMgr::unpooled(threadEntity* entity)
-   {
-      unpooled(entity->tid());
-   }
-
-   void threadMgr::_recycle(threadEntity* entity)
+   void threadMgr::recycle(threadEntity* entity)
    {
       if (entity->poolable())
       {
          entity->deactive();
-         _idleQueue.push_back(entity);
+         // lock idle queue
+         pushIdle(entity);
       }
       else
       {
@@ -156,11 +127,42 @@ namespace inspire {
       }
    }
 
+   int threadMgr::_createEntity(bool worker, threadEntity*& entity)
+   {
+      int rc = 0;
+      entity = new threadEntity(this, worker);
+      if (NULL != entity)
+      {
+         // LogError
+         // rc = -6; OOM
+         return NULL;
+      }
+      // insert into idle ?
+      rc = entity->initialize();
+      if (rc)
+      {
+         // LogError
+         return NULL;
+      }
+      // lock map
+      _thdMap.insert(std::make_pair(entity->tid(), entity));
+      // lock idle queue
+      _idleQueue.push_back(entity);
+      return rc;
+   }
+
    void threadMgr::_remove(threadEntity* entity)
    {
       // ASSERT(entity, "thread entity to be destructed cannot be NULL")
-      delete entity;
-      entity = NULL;
+      std::map<int64, threadEntity*>::iterator it = _thdMap.find(entity->tid());
+      if (_thdMap.end() != it)
+      {
+         threadEntity* entity = it->second;
+         // lock work queue
+         _thdMap.erase(entity->tid());
+         delete entity;
+         entity = NULL;
+      }
    }
 
    threadMgr::threadMgr()
@@ -171,34 +173,5 @@ namespace inspire {
    threadMgr::~threadMgr()
    {
       std::map<int64, threadEntity*> _thdMap;
-   }
-
-   unsigned __stdcall threadMgr::ENTRY_POINT(void* arg)
-   {
-      threadMgr* mgr = static_cast<threadMgr*>(arg);
-      // assert mgr not NULL
-      threadEntity* entity = mgr->fetchIdle();
-      if (NULL != entity)
-      {
-         while (THREAD_RUNNING == entity->state())
-         {
-            thdTask* task = mgr->fetchTask();
-            if (NULL == task)
-            {
-               Sleep(2000);
-               continue;
-            }
-
-            int rc = 0;
-            task->attach(entity);
-            rc = task->run();
-            if (rc)
-            {
-               //LogEvent(...);
-               entity->err(rc);
-            }
-            task->detach();
-         }
-      }
    }
 }
