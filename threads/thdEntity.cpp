@@ -4,7 +4,7 @@
 #include "thdMgr.h"
 namespace inspire {
 
-   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _pooled(worker), _thdMgr(mgr)
+   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _worker(worker), _thdMgr(mgr)
    {
    }
 
@@ -19,9 +19,9 @@ namespace inspire {
    int threadEntity::initialize()
    {
       int rc = 0;
-      _state = THREAD_CREATING;
+      state(THREAD_CREATING);
       unsigned threadId = 0;
-      if (_pooled)
+      if (_worker)
       {
          _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::WORKER_ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
       }
@@ -35,7 +35,7 @@ namespace inspire {
          state(THREAD_INVALID);
          return rc;
       }
-      _state = THREAD_IDLE;
+      state(THREAD_IDLE);
       _tid = threadId;
       return rc;
    }
@@ -48,7 +48,7 @@ namespace inspire {
 
    int threadEntity::suspend()
    {
-      state(THREAD_SUSPEND);
+      state(THREAD_IDLE);
       return ::SuspendThread(_hThread);
    }
 
@@ -66,19 +66,17 @@ namespace inspire {
 
    int threadEntity::deactive()
    {
-      state(THREAD_STOPPING);
       _task = NULL;
+      state(THREAD_STOPPING);
    }
 
    int threadEntity::destroy()
    {
       int rc = 0;
-      state(THREAD_STOPPING);
+      state(THREAD_STOPPED);
       if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
       {
-         _state = THREAD_STOPPED;
          ::_endthreadex(-11);
-         state(THREAD_STOPPED);
       }
    }
 
@@ -131,7 +129,6 @@ namespace inspire {
             rc = task->run();
             entity->err(rc);
             task->detach();
-            mgr->release(entity->tid());
          }
       }
    }
@@ -141,6 +138,8 @@ namespace inspire {
       threadEntity* entity = static_cast<threadEntity*>(arg);
       if (entity)
       {
+         threadMgr* mgr = entity->thdMgr();
+         // assert mgr not NULL
          while (THREAD_RUNNING == entity->state())
          {
             int rc = 0;
@@ -149,6 +148,7 @@ namespace inspire {
             rc = task->run();
             entity->err(rc);
             task->detach();
+            mgr->recycle(entity);
          }
       }
    }

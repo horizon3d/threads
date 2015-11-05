@@ -10,11 +10,10 @@ namespace inspire {
    {
       THREAD_INVALID  = 0,
       THREAD_CREATING = 1,
-      THREAD_IDLE     = 2,
+      THREAD_IDLE     = 2, // it means thread is suspended
       THREAD_RUNNING  = 3,
-      THREAD_SUSPEND  = 4,
-      THREAD_STOPPING = 5,
-      THREAD_STOPPED  = 6,
+      THREAD_STOPPING = 4,
+      THREAD_STOPPED  = 5,
    };
 
    class thdTask;

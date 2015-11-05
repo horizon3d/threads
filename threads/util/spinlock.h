@@ -1,6 +1,8 @@
 #ifndef _INSPIRE_UTIL_SPIN_LOCK_H_
 #define _INSPIRE_UTIL_SPIN_LOCK_H_
 
+#include <winbase.h>
+
 namespace inspire {
 
    class spinlock_t
@@ -27,7 +29,7 @@ namespace inspire {
 
       void unlock()
       {
-         InterlockedExchange(_spin, UNLOCK)
+         InterlockedExchange(_spin, UNLOCK);
       }
 
    private:

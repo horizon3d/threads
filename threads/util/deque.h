@@ -20,14 +20,14 @@ namespace inspire {
       T& pop()
       {
          condition_t cond(_spin);
-         T t = _deque.front();
+         T& t = _deque.front();
          _deque.pop_front();
          return t;
       }
 
       bool empty() const { return _deque.empty(); }
 
-      std::deque<T>::size_type size() const { return _deque.size(); }
+      uint size() const { return _deque.size(); }
 
    private:
       spinlock_t *_spin;

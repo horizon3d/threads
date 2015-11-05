@@ -17,6 +17,7 @@ namespace inspire {
       ~map() { delete _spin; _spin = NULL; }
 
    public:
+
       void insert(K key, V value)
       {
          condition_t cond(_spin);
@@ -43,12 +44,20 @@ namespace inspire {
 
       bool empty() const { return _map.empty(); }
 
-      std::map<K, V>::size_type size() const { return _map.size(); }
+      uint size() const { return _map.size(); }
 
-      V& operator[] (const K& key)
+      V& operator[] (const K& key) { return _map.at(key); }
+
+      V& find(const K& key)
       {
-         return _map.at(key);
+         iterator it = _map.find(key);
+         if (_map.end() != it)
+         {
+            return it->second;
+         }
       }
+
+      std::map<K, V>& raw() { return _map; }
 
    private:
       spinlock_t* _spin;

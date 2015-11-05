@@ -20,7 +20,7 @@ namespace inspire {
 
    public:
       void attach(threadEntity* thd) { _thd = thd; }
-      void detach() { _thd = NULL; }
+      void detach() { _thd->state(THREAD_STOPPING); _thd = NULL; }
       void notify() {}
       void OnBegin() { /* LogEvent begin*/ }
       void OnEnd()   { /* LogEvent end*/ }
