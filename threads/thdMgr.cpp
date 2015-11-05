@@ -40,6 +40,11 @@ namespace inspire {
       _workQueue.erase(entity->tid());
    }
 
+   void threadMgr::pushWorker(threadEntity* entity)
+   {
+      _workQueue.insert(entity->tid(), entity);
+   }
+
    int threadMgr::dispatch(thdTask* task)
    {
       _taskQueue.push_back(task);
@@ -66,17 +71,7 @@ namespace inspire {
          // LogError OOM
          return NULL;
       }
-      // insert into idle ?
-      rc = entity->initialize();
-      if (rc)
-      {
-         // LogError
-         return NULL;
-      }
 
-      _thdMap.insert(entity->tid(), entity);
-      // lock idle queue
-      _idleQueue.push_back(entity);
       return entity;
    }
 
@@ -144,10 +139,17 @@ namespace inspire {
          // LogError
          return NULL;
       }
-      // lock map
+
       _thdMap.insert(entity->tid(), entity);
-      // lock idle queue
-      _idleQueue.push_back(entity);
+
+      if (worker)
+      {
+         pushWorker(entity);
+      }
+      else
+      {
+         pushIdle(entity);
+      }
       return rc;
    }
 

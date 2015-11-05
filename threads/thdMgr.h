@@ -20,6 +20,7 @@ namespace inspire {
       threadEntity* fetchIdle();
       void pushIdle(threadEntity* entity);
       void popWorker(threadEntity* entity);
+      void pushWorker(threadEntity* entity);
       // task
       int  dispatch(thdTask* task);
       thdTask* fetchTask();
