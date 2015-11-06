@@ -25,9 +25,10 @@ namespace inspire {
          void initialize();
 
       protected:
-         int  _priority;
-         spinlock_t *_spin;
-         char _filename[MAX_LOG_FILE_NAME + 1];
+         int         _priority;
+         spinlock_t* _spin;
+         ossFile*    _logger;
+         char        _filename[MAX_LOG_FILE_NAME + 1]
       };
    }
 }

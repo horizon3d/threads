@@ -150,9 +150,9 @@
     <ClCompile Include="..\..\sample\main.cpp" />
     <ClCompile Include="..\threads\logger\base.cpp" />
     <ClCompile Include="..\threads\logger\writer.cpp" />
-    <ClCompile Include="..\threads\logger\util.hpp" />
     <ClCompile Include="..\threads\thdEntity.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
+    <ClCompile Include="..\threads\util\ossFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\threads\logger\writer.h" />
@@ -162,10 +162,13 @@
     <ClInclude Include="..\threads\thdMgr.h" />
     <ClInclude Include="..\threads\thdTask.h" />
     <ClInclude Include="..\threads\threads.h" />
+    <ClInclude Include="..\threads\util\charConvertor.h" />
     <ClInclude Include="..\threads\util\condition.h" />
     <ClInclude Include="..\threads\util\deque.h" />
     <ClInclude Include="..\threads\util\map.h" />
+    <ClInclude Include="..\threads\util\ossFile.h" />
     <ClInclude Include="..\threads\util\spinlock.h" />
+    <ClInclude Include="..\threads\util\util.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

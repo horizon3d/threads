@@ -32,11 +32,11 @@
     <ClCompile Include="..\threads\logger\base.cpp">
       <Filter>threads\logger</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\logger\util.hpp">
-      <Filter>threads\logger</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\logger\writer.cpp">
       <Filter>threads\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\util\ossFile.cpp">
+      <Filter>threads\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +72,15 @@
     </ClInclude>
     <ClInclude Include="..\threads\logger\writer.h">
       <Filter>threads\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\ossFile.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\charConvertor.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\util.hpp">
+      <Filter>threads\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
