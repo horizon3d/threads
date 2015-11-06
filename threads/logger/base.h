@@ -2,31 +2,31 @@
 #define _INSPIRE_LOGGER_BASE_H_
 
 namespace inspire {
-   namespace logger {
+   /*
+   * the bigger of value, the more logs
+   **/
+   enum PRIORITY
+   {
+      LOG_ALWAYS = 0,   // print always
+      LOG_EMERG = 100,
+      LOG_FATAL = 200,
+      LOG_CRITICAL = 300,
+      LOG_ERROR = 400,
+      LOG_EVENT = 500,
+      LOG_WARNING = 600,
+      LOG_DEBUG = 700,
+      LOG_NOTICE = 800, // for expected
+      LOG_INFO = 900,
+      LOG_DEFAULT = LOG_WARNING,
+   };
 
-      /*
-      * the bigger of value, the more logs
-      **/
-      enum PRIORITY
-      {
-         LOG_ALWAYS   = 0,   // print always
-         LOG_EMERG    = 100,
-         LOG_FATAL    = 200,
-         LOG_CRITICAL = 300,
-         LOG_ERROR    = 400,
-         LOG_EVENT    = 500,
-         LOG_WARNING  = 600,
-         LOG_DEBUG    = 700,
-         LOG_NOTICE   = 800, // for expected
-         LOG_INFO     = 900,
-         LOG_DEFAULT  = LOG_WARNING,
-      };
+   namespace logger {
 
       // macros
       #define LOG_BUFFER_SIZE 4096
       #define MAX_LOG_FILE_NAME 255
 
-      #ifdef _WIN32
+      #if defined(_WINDOWS)
          #define NEWLINE "\r\n"
          #define SEP "\\"
          #define CHAR_SEP '\\'

@@ -6,7 +6,7 @@
 namespace inspire {
 
    class spinlock_t;
-
+   class ossFile;
    namespace logger {
 
       class writerImpl : public logWriter
@@ -17,18 +17,18 @@ namespace inspire {
 #else
          writerImpl(const int priority = LOG_ERROR);
 #endif
-         virtual ~writerImpl() {};
+         virtual ~writerImpl();
 
-         virtual void writeLog(const int priority, const char* data);
+         virtual void writeLog(const unsigned priority, const char* data);
 
       protected:
          void initialize();
 
       protected:
-         int         _priority;
+         unsigned    _priority;
          spinlock_t* _spin;
          ossFile*    _logger;
-         char        _filename[MAX_LOG_FILE_NAME + 1]
+         char        _filename[MAX_LOG_FILE_NAME + 1];
       };
    }
 }

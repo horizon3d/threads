@@ -3,17 +3,21 @@
 #include <stdio.h>
 
 #include "base.h"
-#include "util.hpp"
+#include "util/util.hpp"
 
 namespace inspire {
 
    namespace logger {
 
-      const static char *logFmt = "%04d-%02d-%02d-%02d.%02d.%02d"NEWLINE
-                                  "PID: %-37dTID: %d"NEWLINE
-                                  "Level: %s"NEWLINE"Function: %-32s"NEWLINE
-                                  "File: %s"NEWLINE"Line: %d"NEWLINE
-                                  "Message:"NEWLINE"%s"NEWLINE NEWLINE;
+#ifdef _WIN32
+      const static char *logFmt = \
+         "%04d-%02d-%02d-%02d.%02d.%02d\r\nPID: %-37dTID: %d\r\nLevel: %s" \
+         "\r\nFile: %-32s\r\nFunction: %-32s\r\nLine: %d\r\nMessage:\r\n%s\r\n\r\n";
+#else
+      const static char *logFmt = \
+         "%04d-%02d-%02d-%02d.%02d.%02d\nPID: %-37dTID: %d\nLevel: %s" \
+         "\nFile: %-32s\nFunction: %-32s\nLine: %d\nMessage:\r\n%s\n\n";
+#endif
 
       const char* toString(const unsigned priority)
       {
@@ -42,8 +46,8 @@ namespace inspire {
          vsprintf_s(userInfo, LOG_BUFFER_SIZE, fmt, ap);
          va_end(ap);
 
-         char buffer[LOG_BUFFER_SIZE] = { 0 };
-         sprintf_s(buffer, LOG_BUFFER_SIZE, logFmt,
+         char buffer[LOG_BUFFER_SIZE + 1] = { 0 };
+         sprintf_s(buffer, LOG_BUFFER_SIZE + 1, logFmt,
                    otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
                    otm.tm_hour, otm.tm_min, otm.tm_sec,
                    toString(level), CurrentPid(), CurrentThreadId(),

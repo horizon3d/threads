@@ -20,9 +20,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\sample\main.cpp">
-      <Filter>sample</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\thdEntity.cpp">
       <Filter>threads</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
     </ClCompile>
     <ClCompile Include="..\threads\util\ossFile.cpp">
       <Filter>threads\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sample\main.cpp">
+      <Filter>sample</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

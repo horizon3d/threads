@@ -108,7 +108,7 @@ namespace inspire {
 
 #ifdef _WIN32
       DWORD bytes = 0;
-      bool bSuccess = ::ReadFile(_handle, (LPVOID)buffer, toRead, (LPDWORD)&bytes, NULL);
+      BOOL bSuccess = ::ReadFile(_handle, (LPVOID)buffer, toRead, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
       {
          return FetchLastError();
@@ -140,7 +140,7 @@ namespace inspire {
 
 #ifdef _WIN32
       DWORD bytes = 0;
-      bool bSuccess = ::WriteFile(_handle, buffer, toWrite, (LPDWORD)&bytes, NULL);
+      BOOL bSuccess = ::WriteFile(_handle, buffer, toWrite, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
       {
          return FetchLastError();

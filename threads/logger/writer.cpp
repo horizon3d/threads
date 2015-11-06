@@ -17,11 +17,19 @@ namespace inspire {
 
       writerImpl::~writerImpl()
       {
-         delete _spin;
-         _spin = NULL;
+         if (_logger)
+         {
+            delete _logger;
+            _logger = NULL;
+         }
+         if (_spin)
+         {
+            delete _spin;
+            _spin = NULL;
+         }
       }
 
-      void writerImpl::writeLog(const int priority, const char* data)
+      void writerImpl::writeLog(const unsigned priority, const char* data)
       {
          if (_priority <= priority)
          {
@@ -43,9 +51,8 @@ namespace inspire {
          struct tm otm;
          time_t tt = time(NULL);
          ::localtime_s(&otm, &tt);
-         char filename[MAX_LOG_FILE_NAME + 1] = { 0 };
-         sprintf_s(_filename, LOG_BUFFER_SIZE, "%04d-%02d-%02d-%02d.%02d.%02d.log",
-                   otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_yday,
+         sprintf_s(_filename, MAX_LOG_FILE_NAME, "%04d-%02d-%02d-%02d.%02d.%02d.log",
+                   otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
                    otm.tm_hour, otm.tm_min, otm.tm_sec);
          _logger = new ossFile();
          rc = _logger->open(_filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
