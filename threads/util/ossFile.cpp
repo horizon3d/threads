@@ -283,7 +283,7 @@ namespace inspire {
       }
 
       // shared mode
-      switch (mode | SHAREDWRITE)
+      switch (mode & SHAREDWRITE)
       {
       case EXCLUSIVE:
          sharedMode = 0;
@@ -337,7 +337,7 @@ namespace inspire {
       }
 
       // read/write access
-      switch (mode | ACCESS_READWRITE)
+      switch (mode & ACCESS_READWRITE)
       {
       case ACCESS_WRITEONLY:
          if(mode | SHAREDREAD)

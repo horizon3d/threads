@@ -14,22 +14,25 @@ namespace inspire {
       INSPIRE_SEEK_END,
    };
 
-   enum
+   enum RW_MOD
    {
-      MODE_DEFAULT     = 0,
-      MODE_CREATEONLY  = 1 << 0,
-      MODE_REPLACE     = 1 << 1,
-      MODE_CREATE      = MODE_CREATEONLY | MODE_REPLACE,
+      MODE_DEFAULT = 0,
+      MODE_CREATEONLY = 1 << 0,
+      MODE_REPLACE = 1 << 1,
+      MODE_CREATE = MODE_CREATEONLY | MODE_REPLACE,
+   };
 
+   enum ACCESS_MODE
+   {
       ACCESS_READONLY  = 1 << 2,
       ACCESS_WRITEONLY = 1 << 3,
       ACCESS_READWRITE = ACCESS_READONLY | ACCESS_WRITEONLY
    };
 
-   enum
+   enum SHARE_MODE
    {
       EXCLUSIVE    = 0,
-      SHAREDREAD   = 1 << 1,
+      SHAREDREAD   = 1 << 4,
       SHAREDWRITE  = 1 << 5 | SHAREDREAD,
       WRITETHROUGH = 1 << 6,
       DIRECTIO     = 1 << 7,
