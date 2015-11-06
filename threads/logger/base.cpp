@@ -11,12 +11,12 @@ namespace inspire {
 
 #ifdef _WIN32
       const static char *logFmt = \
-         "%04d-%02d-%02d-%02d.%02d.%02d\r\nPID: %-37dTID: %d\r\nLevel: %s" \
-         "\r\nFile: %-32s\r\nFunction: %-32s\r\nLine: %d\r\nMessage:\r\n%s\r\n\r\n";
+         "%04d-%02d-%02d-%02d.%02d.%02dLevel: %-37s\r\nPID: %-37dTID:  %d" \
+         "\r\nFunction: %-32sLine: %d\r\nFile: %s\r\nMessage:\r\n%s\r\n\r\n";
 #else
       const static char *logFmt = \
-         "%04d-%02d-%02d-%02d.%02d.%02d\nPID: %-37dTID: %d\nLevel: %s" \
-         "\nFile: %-32s\nFunction: %-32s\nLine: %d\nMessage:\r\n%s\n\n";
+         "%04d-%02d-%02d-%02d.%02d.%02d\nLevel: %-37s\nPID: %-37dTID:  %d" \
+         "\nFunction: %-32sLine: %d\nFile: %s\nMessage:\r\n%s\n\n";
 #endif
 
       const char* toString(const unsigned priority)
@@ -46,12 +46,12 @@ namespace inspire {
          vsprintf_s(userInfo, LOG_BUFFER_SIZE, fmt, ap);
          va_end(ap);
 
-         char buffer[LOG_BUFFER_SIZE + 1] = { 0 };
-         sprintf_s(buffer, LOG_BUFFER_SIZE + 1, logFmt,
+         char buffer[LOG_BUFFER_SIZE] = { 0 };
+         sprintf_s(buffer, LOG_BUFFER_SIZE, logFmt,
                    otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
                    otm.tm_hour, otm.tm_min, otm.tm_sec,
                    toString(level), CurrentPid(), CurrentThreadId(),
-                   func, file, line, userInfo);
+                   func, line, file, userInfo);
          loggerWriter()->writeLog(level, buffer);
       }
    }

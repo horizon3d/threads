@@ -1,23 +1,26 @@
 #ifndef _INSPIRE_LOGGER_UTIL_H_
 #define _INSPIRE_LOGGER_UTIL_H_
 
+#ifdef _WINDOWS
 #include <windows.h>
+#else
+#endif
 
-inline unsigned long long CurrentPid()
+inline unsigned CurrentPid()
 {
 #ifdef _WIN32
-   return (unsigned long long)::GetCurrentProcessId();
+   return (unsigned )::GetCurrentProcessId();
 #else
-   retun (unsigned long long)getpid();
+   retun (unsigned)getpid();
 #endif
 }
 
-inline unsigned long long CurrentThreadId()
+inline unsigned CurrentThreadId()
 {
 #ifdef _WIN32
-   return (unsigned long long)::GetCurrentThreadId();
+   return (unsigned)::GetCurrentThreadId();
 #else
-   retun (unsigned long long)syscall(SYS_gettid);
+   retun (unsigned)syscall(SYS_gettid);
 #endif
 }
 
