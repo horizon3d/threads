@@ -15,6 +15,9 @@
     <Filter Include="doc">
       <UniqueIdentifier>{7502520b-ecba-4357-8759-b1c4e56a0b68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\logger">
+      <UniqueIdentifier>{dec1a59a-9f6e-4d43-8639-932a61d052fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\sample\main.cpp">
@@ -25,6 +28,15 @@
     </ClCompile>
     <ClCompile Include="..\threads\thdMgr.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\logger\base.cpp">
+      <Filter>threads\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\logger\util.hpp">
+      <Filter>threads\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\logger\writer.cpp">
+      <Filter>threads\logger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +63,15 @@
     </ClInclude>
     <ClInclude Include="..\threads\threads.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\logger\logger.h">
+      <Filter>threads\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\logger\base.h">
+      <Filter>threads\logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\logger\writer.h">
+      <Filter>threads\logger</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

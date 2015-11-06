@@ -148,10 +148,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\sample\main.cpp" />
+    <ClCompile Include="..\threads\logger\base.cpp" />
+    <ClCompile Include="..\threads\logger\writer.cpp" />
+    <ClCompile Include="..\threads\logger\util.hpp" />
     <ClCompile Include="..\threads\thdEntity.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\threads\logger\writer.h" />
+    <ClInclude Include="..\threads\logger\logger.h" />
+    <ClInclude Include="..\threads\logger\base.h" />
     <ClInclude Include="..\threads\thdEntity.h" />
     <ClInclude Include="..\threads\thdMgr.h" />
     <ClInclude Include="..\threads\thdTask.h" />
