@@ -64,18 +64,18 @@ namespace inspire {
       return rc;
    }
 
-   int threadEntity::deactive()
+   void threadEntity::deactive()
    {
       _task = NULL;
       state(THREAD_STOPPING);
    }
 
-   int threadEntity::destroy()
+   void threadEntity::destroy()
    {
-      int rc = 0;
       state(THREAD_STOPPED);
       if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
       {
+         err(-11); // time out, kill force
          ::_endthreadex(-11);
       }
    }
@@ -131,6 +131,8 @@ namespace inspire {
             task->detach();
          }
       }
+
+      return 0;
    }
 
    unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
@@ -143,7 +145,7 @@ namespace inspire {
          while (THREAD_RUNNING == entity->state())
          {
             int rc = 0;
-            thdTask* task = entity->task();
+            thdTask* task = entity->fetch();
             task->attach(entity);
             rc = task->run();
             entity->err(rc);
@@ -151,6 +153,8 @@ namespace inspire {
             mgr->recycle(entity);
          }
       }
+
+      return 0;
    }
 
 }

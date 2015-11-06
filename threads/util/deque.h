@@ -2,6 +2,9 @@
 #define _INSPIRE_UTIL_DEQUEUE_H_
 
 #include <deque>
+#include "threads.h"
+#include "spinlock.h"
+
 namespace inspire {
 
    template<typename T>
@@ -27,7 +30,7 @@ namespace inspire {
 
       bool empty() const { return _deque.empty(); }
 
-      uint size() const { return _deque.size(); }
+      uint size() const { return (uint)_deque.size(); }
 
    private:
       spinlock_t *_spin;

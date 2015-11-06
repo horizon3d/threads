@@ -22,13 +22,13 @@ namespace inspire {
       void popWorker(threadEntity* entity);
       void pushWorker(threadEntity* entity);
       // task
-      int  dispatch(thdTask* task);
+      void  dispatch(thdTask* task);
       thdTask* fetchTask();
 
       threadEntity* create();
       int  createWorker(const uint w);
       void recycle(threadEntity* entity);
-      int suspend(threadEntity* entity);
+      void suspend(threadEntity* entity);
 
       void setIdleQueueSize(const uint count) { _maxPooledCount = count; }
 

@@ -1,31 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="doc">
+    <Filter Include="sample">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="sample">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="threads">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="threads\entry">
-      <UniqueIdentifier>{65accb13-5ebf-41d7-b96f-3549b3c1b235}</UniqueIdentifier>
-    </Filter>
     <Filter Include="threads\util">
-      <UniqueIdentifier>{ea637c4b-bc90-41c9-989e-bd56365a022d}</UniqueIdentifier>
+      <UniqueIdentifier>{786fdb20-d58b-49ce-9f94-a18e09226821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="doc">
+      <UniqueIdentifier>{7502520b-ecba-4357-8759-b1c4e56a0b68}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\threads\threads.h">
+    <ClCompile Include="..\..\sample\main.cpp">
+      <Filter>sample</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\thdEntity.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\thdMgr.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\threads\util\condition.h">
+      <Filter>threads\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\entry\entry.h">
-      <Filter>threads\entry</Filter>
+    <ClInclude Include="..\threads\util\deque.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\map.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\spinlock.h">
+      <Filter>threads\util</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\thdEntity.h">
       <Filter>threads</Filter>
@@ -36,25 +49,8 @@
     <ClInclude Include="..\threads\thdTask.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\spinlock.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\condition.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\deque.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\map.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\threads\thdEntity.cpp">
+    <ClInclude Include="..\threads\threads.h">
       <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\threads\thdMgr.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -45,7 +45,7 @@ namespace inspire {
       _workQueue.insert(entity->tid(), entity);
    }
 
-   int threadMgr::dispatch(thdTask* task)
+   void threadMgr::dispatch(thdTask* task)
    {
       _taskQueue.push_back(task);
    }
@@ -81,7 +81,7 @@ namespace inspire {
       if (0 == w)
          return rc;
 
-      for (int idx = 0; idx < w; ++idx)
+      for (uint idx = 0; idx < w; ++idx)
       {
          threadEntity* entity = NULL;
          rc = _createEntity(true, entity);
@@ -91,11 +91,13 @@ namespace inspire {
             return rc;
          }
       }
+      // LogError
+      return rc;
    }
 
    void threadMgr::recycle(threadEntity* entity)
    {
-      if (entity->poolable())
+      if (entity->isWorker())
       {
          // worker do not need pool to idle queue
          return;
@@ -115,7 +117,7 @@ namespace inspire {
       }
    }
 
-   int threadMgr::suspend(threadEntity* entity)
+   void threadMgr::suspend(threadEntity* entity)
    {
       popWorker(entity);
       entity->state(THREAD_IDLE);
@@ -156,12 +158,13 @@ namespace inspire {
    void threadMgr::_remove(threadEntity* entity)
    {
       // ASSERT(entity, "thread entity to be destructed cannot be NULL")
-      threadEntity* entity = _thdMap.find(entity->tid());
-      if (entity)
+      bool fetch = _thdMap.find(entity->tid());
+      if (fetch)
       {
          _thdMap.erase(entity->tid());
-         delete entity;
-         entity = NULL;
       }
+      // LogError thread is not create by thread manager
+      delete entity;
+      entity = NULL;
    }
 }

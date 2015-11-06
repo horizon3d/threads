@@ -1,6 +1,8 @@
 #ifndef _INSPIRE_UTIL_MAP_H_
 #define _INSPIRE_UTIL_MAP_H_
 
+#include <map>
+#include "threads.h"
 #include "condition.h"
 
 namespace inspire {
@@ -9,10 +11,6 @@ namespace inspire {
    class map
    {
    public:
-      typedef iterator std::map<K, V>::iterator;
-      typedef const_iterator std::map<K, V>::const_iterator;
-      typedef reverse_iterator std::map<K, V>::reverse_iterator;
-
       map()  { _spin = new spinlock_t(); }
       ~map() { delete _spin; _spin = NULL; }
 
@@ -30,31 +28,20 @@ namespace inspire {
          _map.erase(key);
       }
 
-      void erase(const_iterator& it, const_iterator& end)
-      {
-         condition_t cond(_spin);
-         _map.erase(it, end);
-      }
-
-      void erase(const_iterator& it)
-      {
-         condition_t cond(_spin);
-         _map.erase(it);
-      }
-
       bool empty() const { return _map.empty(); }
 
-      uint size() const { return _map.size(); }
+      uint size() const { return (uint)_map.size(); }
 
       V& operator[] (const K& key) { return _map.at(key); }
 
-      V& find(const K& key)
+      bool find(const K& key)
       {
-         iterator it = _map.find(key);
-         if (_map.end() != it)
+         std::map<K, V>::iterator it = _map.find(key);
+         if (_map.end() == it)
          {
-            return it->second;
+            return false;
          }
+         return true;
       }
 
       std::map<K, V>& raw() { return _map; }
