@@ -88,5 +88,8 @@
     <ClInclude Include="..\threads\util\mutex.h">
       <Filter>threads\util</Filter>
     </ClInclude>
+    <ClInclude Include="..\threads\util\lock.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

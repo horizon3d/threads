@@ -21,7 +21,7 @@ namespace inspire {
 
    threadEntity* threadMgr::fetchIdle()
    {
-      if (_idleQueue.size())
+      if (_idleQueue.empty())
       {
          return NULL;
       }
@@ -109,8 +109,8 @@ namespace inspire {
       if ( _idleQueue.size() < _maxPooledCount)
       {
          popWorker(entity);
-         entity->suspend();
          pushIdle(entity);
+         entity->suspend();
       }
       else
       {
@@ -125,6 +125,10 @@ namespace inspire {
       popWorker(entity);
       entity->state(THREAD_IDLE);
       pushIdle(entity);
+   }
+
+   void threadMgr::sigExit()
+   {
    }
 
    int threadMgr::_createEntity(bool worker, threadEntity*& entity)

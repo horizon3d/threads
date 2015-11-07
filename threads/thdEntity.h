@@ -44,6 +44,8 @@ namespace inspire {
 
       bool isWorker() const { return _worker; }
 
+      HANDLE handle() const { return _hThread; }
+
       const int err() const { return _errno; }
       void err(const int e) { _errno = e; }
       

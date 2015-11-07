@@ -1,9 +1,9 @@
 #include <ctime>
 #include <stdio.h>
 #include "writer.h"
-#include "util/spinlock.h"
 #include "util/condition.h"
 #include "util/ossFile.h"
+#include "util/mutex.h"
 
 namespace inspire {
 
@@ -11,7 +11,6 @@ namespace inspire {
 
       writerImpl::writerImpl(const int priority) : _priority(priority)
       {
-         _spin = new inspire::spinlock_t();
          initialize();
       }
 
@@ -22,10 +21,11 @@ namespace inspire {
             delete _logger;
             _logger = NULL;
          }
-         if (_spin)
+
+         if (_mtx)
          {
-            delete _spin;
-            _spin = NULL;
+            delete _mtx;
+            _mtx = NULL;
          }
       }
 
@@ -38,7 +38,7 @@ namespace inspire {
 
          unsigned len = strlen(data);
          unsigned written = 0;
-         condition_t cond(_spin);
+         condition_t cond(_mtx);
          _logger->open(_filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
          _logger->seekToEnd();
          _logger->write(data, len + 1, len, written);
@@ -61,6 +61,7 @@ namespace inspire {
             // TODO:
          }
          _logger->close();
+         _mtx = new mutex("logger");
       }
 
       static writerImpl writer;

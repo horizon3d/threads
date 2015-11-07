@@ -166,6 +166,7 @@
     <ClInclude Include="..\threads\util\charConvertor.h" />
     <ClInclude Include="..\threads\util\condition.h" />
     <ClInclude Include="..\threads\util\deque.h" />
+    <ClInclude Include="..\threads\util\lock.h" />
     <ClInclude Include="..\threads\util\map.h" />
     <ClInclude Include="..\threads\util\mutex.h" />
     <ClInclude Include="..\threads\util\ossFile.h" />

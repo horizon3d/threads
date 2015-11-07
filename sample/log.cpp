@@ -4,7 +4,7 @@ void ossFetchCurrentIdle()
 {
    LogEvent("c = %d", 10 + 11);
 }
-
+/*
 int main(int argc, char** argv)
 {
 
@@ -16,4 +16,4 @@ int main(int argc, char** argv)
    LogError("Program ending");
 
    return 0;
-}
+}*/

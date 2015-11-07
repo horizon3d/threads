@@ -33,6 +33,7 @@ namespace inspire {
       void setIdleQueueSize(const uint count) { _maxPooledCount = count; }
 
       bool handled() const { return _taskQueue.empty(); }
+      void sigExit();
 
    private:
       int  _createEntity(bool worker, threadEntity*& entity);
@@ -45,7 +46,7 @@ namespace inspire {
       virtual ~threadMgr() {}
 
    private:
-      uint _maxPooledCount = 20;
+      uint _maxPooledCount = 50;
       deque<threadEntity*>      _idleQueue;
       deque<thdTask*>           _taskQueue;
       map<int64, threadEntity*> _workQueue;

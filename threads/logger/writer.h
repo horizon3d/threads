@@ -5,8 +5,8 @@
 
 namespace inspire {
 
-   class spinlock_t;
    class ossFile;
+   class mutex;
    namespace logger {
 
       class writerImpl : public logWriter
@@ -25,10 +25,10 @@ namespace inspire {
          void initialize();
 
       protected:
-         unsigned    _priority;
-         spinlock_t* _spin;
-         ossFile*    _logger;
-         char        _filename[MAX_LOG_FILE_NAME + 1];
+         unsigned _priority;
+         mutex*   _mtx;
+         ossFile* _logger;
+         char     _filename[MAX_LOG_FILE_NAME + 1];
       };
    }
 }

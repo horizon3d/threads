@@ -1,12 +1,15 @@
 #include "logger/logger.h"
 #include "thdTask.h"
+#include "util/mutex.h"
 #include "util/spinlock.h"
 #include "util/condition.h"
 #include "logger/logger.h"
 #include "thdMgr.h"
+#include <iostream>
 
 struct mtxnumber
 {
+   //inspire::mutex _spin;
    inspire::spinlock_t _spin;
    int index = 0;
 };
@@ -20,40 +23,67 @@ public:
    taskA() : thdTask(taskId) { ++taskId; }
    ~taskA() {}
 
+   void test()
+   {
+      
+   }
+
    virtual int run()
    {
       inspire::condition_t cond(&no._spin);
-      int tmp = no.index;
       ++no.index;
-      LogEvent("from %d ---> %d", tmp, no.index);
-      Sleep(10000);
+      //LogEvent("from %d ---> %d", tmp, no.index);
+      std::cout << " ---> " << no.index << std::endl;
       return 0;
    }
 };
 
-/*int main(int argc, char** argv)
+int main(int argc, char** argv)
 {
+   DWORD dw1 = GetTickCount();
    inspire::threadMgr* mgr = inspire::threadMgr::instance();
-   inspire::thdTask* ts[50];
-   for (int idx = 0; idx < 50; ++idx)
+   inspire::thdTask* ts[20];
+   for (int idx = 0; idx < 20; ++idx)
    {
       inspire::thdTask* t = new taskA();
-      mgr->dispatch(t);
       ts[idx] = t;
    }
 
-   mgr->createWorker(10);
-
-   while (!mgr->handled())
+   HANDLE h[10];
+   for (int idx = 0; idx < 10; ++idx)
    {
-      Sleep(5000);
+      inspire::threadEntity* thd = mgr->create();
+      h[idx] = thd->handle();
    }
 
-   for (INT idx = 0; idx < 50; ++idx)
+   int idx = 0;
+   while (idx < 20)
+   {
+      inspire::threadEntity* thd = mgr->fetchIdle();
+      if (NULL != thd)
+      {
+         thd->assigned(ts[idx]);
+         ++idx;
+         thd->active();
+      }
+      else
+      {
+         continue;
+      }
+   }
+
+   while (no.index < 20)
+   {
+      Sleep(1000);
+   }
+
+   for (INT idx = 0; idx < 20; ++idx)
    {
       delete ts[idx];
       ts[idx] = NULL;
    }
+   DWORD dw2 = GetTickCount();
 
+   std::cout << "total time cost: " << (dw2 - dw1) / 1000.0 << "ms" << std::endl;
    return 0;
-}*/
+}

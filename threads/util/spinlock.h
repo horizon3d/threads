@@ -1,39 +1,47 @@
 #ifndef _INSPIRE_UTIL_SPIN_LOCK_H_
 #define _INSPIRE_UTIL_SPIN_LOCK_H_
 
-#include "threads.h"
+#include <windows.h>
+#include "lock.h"
 
 namespace inspire {
 
-   class spinlock_t
+   class spinlock_t : public ILock
    {
-      static const uint LOCK = 1;
-      static const uint UNLOCK = 0;
+      static const unsigned LOCK = 1;
+      static const unsigned UNLOCK = 0;
    public:
-      spinlock_t() { _spin = new uint(0); }
-      virtual ~spinlock_t() { delete _spin; _spin = NULL; }
+      spinlock_t() : _spin(0) {}
+      virtual ~spinlock_t() {}
 
-      bool tryLock()
+      virtual bool tryLock()
       {
-         return (UNLOCK == InterlockedCompareExchange(_spin, LOCK, UNLOCK));
+         int times = 11;
+         do 
+         {
+            --times;
+         } while (InterlockedCompareExchange(&_spin, LOCK, UNLOCK) && times > 0);
+         if (times > 0)
+            return true;
+         return false;
       }
 
-      void lock()
+      virtual void lock()
       {
-         uint pin = 0;
+         unsigned pin = 0;
          do 
          {
             ++pin;
-         } while (InterlockedCompareExchange(_spin, LOCK, UNLOCK));
+         } while (InterlockedCompareExchange(&_spin, LOCK, UNLOCK));
       }
 
-      void unlock()
+      virtual void unlock()
       {
-         InterlockedExchange(_spin, UNLOCK);
+         InterlockedExchange(&_spin, UNLOCK);
       }
 
    private:
-      uint * volatile _spin;
+      unsigned volatile _spin;
    };
 }
 #endif
