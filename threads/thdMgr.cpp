@@ -21,7 +21,7 @@ namespace inspire {
 
    threadEntity* threadMgr::fetchIdle()
    {
-      if (!_idleQueue.size())
+      if (_idleQueue.size())
       {
          return NULL;
       }
@@ -37,7 +37,10 @@ namespace inspire {
 
    void threadMgr::popWorker(threadEntity* entity)
    {
-      _workQueue.erase(entity->tid());
+      if (_workQueue.find(entity->tid()))
+      {
+         _workQueue.erase(entity->tid());
+      }
    }
 
    void threadMgr::pushWorker(threadEntity* entity)
@@ -52,7 +55,7 @@ namespace inspire {
 
    thdTask* threadMgr::fetchTask()
    {
-      if (!_taskQueue.empty())
+      if (_taskQueue.empty())
       {
          return NULL;
       }
@@ -87,9 +90,9 @@ namespace inspire {
          rc = _createEntity(true, entity);
          if (rc)
          {
-            // LogError
             return rc;
          }
+         entity->active();
       }
       // LogError
       return rc;
@@ -127,31 +130,32 @@ namespace inspire {
    int threadMgr::_createEntity(bool worker, threadEntity*& entity)
    {
       int rc = 0;
-      entity = new threadEntity(this, worker);
-      if (NULL != entity)
+      threadEntity* thd = new threadEntity(this, worker);
+      if (NULL == thd)
       {
          // LogError
          // rc = -6; OOM
          return NULL;
       }
       // insert into idle ?
-      rc = entity->initialize();
+      rc = thd->initialize();
       if (rc)
       {
          // LogError
          return NULL;
       }
 
-      _thdMap.insert(entity->tid(), entity);
+      _thdMap.insert(thd->tid(), thd);
 
       if (worker)
       {
-         pushWorker(entity);
+         pushWorker(thd);
       }
       else
       {
-         pushIdle(entity);
+         pushIdle(thd);
       }
+      entity = thd;
       return rc;
    }
 

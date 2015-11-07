@@ -2,10 +2,10 @@
 #define _INSPIRE_THREAD_TASK_H_
 
 #include "threads.h"
+#include "thdEntity.h"
 
 namespace inspire {
 
-   class threadEntity;
    class taskMgr;
 
    class thdTask
@@ -19,7 +19,7 @@ namespace inspire {
    public:
       thdTask(const int64& id) : _status(TASK_UNHANDLED), _taskId(id), _thd(NULL) {}
       explicit thdTask(const int64& id, threadEntity* thd) : _status(TASK_UNHANDLED), _taskId(id), _thd(thd) {}
-      virtual ~thdTask();
+      virtual ~thdTask() {}
 
       virtual int run() = 0;
 
@@ -32,7 +32,7 @@ namespace inspire {
          }
          OnBegin();
       }
-      void detach() { _status = TASK_HANDLED; _thd->state(THREAD_STOPPING); _thd = NULL; OnEnd(); }
+      void detach() { _status = TASK_HANDLED; _thd = NULL; OnEnd(); }
 
    private:
       void notify() {}

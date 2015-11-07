@@ -32,6 +32,8 @@ namespace inspire {
 
       void setIdleQueueSize(const uint count) { _maxPooledCount = count; }
 
+      bool handled() const { return _taskQueue.empty(); }
+
    private:
       int  _createEntity(bool worker, threadEntity*& entity);
       void _remove(threadEntity* entity);

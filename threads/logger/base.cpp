@@ -11,12 +11,12 @@ namespace inspire {
 
 #ifdef _WIN32
       const static char *logFmt = \
-         "%04d-%02d-%02d-%02d.%02d.%02dLevel: %-37s\r\nPID: %-37dTID:  %d" \
-         "\r\nFunction: %-32sLine: %d\r\nFile: %s\r\nMessage:\r\n%s\r\n\r\n";
+         "%04d-%02d-%02d-%02d.%02d.%-25dLevel: %-37s\r\nPID: %-37dTID:   %d" \
+         "\r\nFunction: %-32sLine:  %d\r\nFile: %s\r\nMessage:\r\n%s\r\n\r\n";
 #else
       const static char *logFmt = \
-         "%04d-%02d-%02d-%02d.%02d.%02d\nLevel: %-37s\nPID: %-37dTID:  %d" \
-         "\nFunction: %-32sLine: %d\nFile: %s\nMessage:\r\n%s\n\n";
+         "%04d-%02d-%02d-%02d.%02d.%-25d\nLevel: %-37s\nPID: %-37dTID:   %d" \
+         "\nFunction: %-32sLine:  %d\nFile: %s\nMessage:\r\n%s\n\n";
 #endif
 
       const char* toString(const unsigned priority)

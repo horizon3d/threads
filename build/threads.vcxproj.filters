@@ -35,7 +35,10 @@
     <ClCompile Include="..\threads\util\ossFile.cpp">
       <Filter>threads\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\sample\main.cpp">
+    <ClCompile Include="..\sample\log.cpp">
+      <Filter>sample</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sample\threads.cpp">
       <Filter>sample</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,6 +83,9 @@
       <Filter>threads\util</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\util.hpp">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\mutex.h">
       <Filter>threads\util</Filter>
     </ClInclude>
   </ItemGroup>

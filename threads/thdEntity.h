@@ -2,7 +2,7 @@
 #define _INSPIRE_THREAD_ENTITY_H_
 
 #include "threads.h"
-
+#include "logger/logger.h"
 namespace inspire {
 
    enum thdState
@@ -39,7 +39,7 @@ namespace inspire {
 
       const int64 tid() const { return _tid; }
       const int state() const { return _state; }
-      void state(const int st) { _state = st; }
+      void state(const int st) { _state = st;  }
       bool running() const { return THREAD_RUNNING == _state; }
 
       bool isWorker() const { return _worker; }

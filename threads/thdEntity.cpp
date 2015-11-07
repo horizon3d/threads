@@ -120,7 +120,8 @@ namespace inspire {
             thdTask* task = mgr->fetchTask();
             if (NULL == task)
             {
-               entity->wait(2000);
+               //entity->wait(2000);
+               Sleep(500);
                continue;
             }
             // LogEvent fetch a task
@@ -131,7 +132,6 @@ namespace inspire {
             task->detach();
          }
       }
-
       return 0;
    }
 
