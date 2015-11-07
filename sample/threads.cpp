@@ -9,8 +9,8 @@
 
 struct mtxnumber
 {
-   //inspire::mutex _spin;
-   inspire::spinlock_t _spin;
+   inspire::mutex _spin;
+   //inspire::spinlock_t _spin;
    int index = 0;
 };
 
@@ -31,9 +31,10 @@ public:
    virtual int run()
    {
       inspire::condition_t cond(&no._spin);
+      int tmp = no.index;
       ++no.index;
-      //LogEvent("from %d ---> %d", tmp, no.index);
-      std::cout << " ---> " << no.index << std::endl;
+      LogEvent("from %d ---> %d", tmp, no.index);
+      //std::cout << " ---> " << no.index << std::endl;
       return 0;
    }
 };
@@ -84,6 +85,6 @@ int main(int argc, char** argv)
    }
    DWORD dw2 = GetTickCount();
 
-   std::cout << "total time cost: " << (dw2 - dw1) / 1000.0 << "ms" << std::endl;
+   LogEvent("total time cost: %f", (dw2 - dw1) / 1000.0)
    return 0;
 }

@@ -30,22 +30,9 @@ namespace inspire {
       return entity;
    }
 
-   void threadMgr::pushIdle(threadEntity* entity)
+   void threadMgr::push(threadEntity* entity)
    {
       _idleQueue.push_back(entity);
-   }
-
-   void threadMgr::popWorker(threadEntity* entity)
-   {
-      if (_workQueue.find(entity->tid()))
-      {
-         _workQueue.erase(entity->tid());
-      }
-   }
-
-   void threadMgr::pushWorker(threadEntity* entity)
-   {
-      _workQueue.insert(entity->tid(), entity);
    }
 
    void threadMgr::dispatch(thdTask* task)
@@ -53,7 +40,7 @@ namespace inspire {
       _taskQueue.push_back(task);
    }
 
-   thdTask* threadMgr::fetchTask()
+   thdTask* threadMgr::fetch()
    {
       if (_taskQueue.empty())
       {
@@ -67,100 +54,45 @@ namespace inspire {
    threadEntity* threadMgr::create()
    {
       int rc = 0;
-      threadEntity* entity = NULL;
-      rc = _createEntity(false, entity);
-      if (rc)
+      threadEntity* entity = new threadEntity(this);
+      if (NULL == entity)
       {
-         // LogError OOM
+         LogError("Failed to create thread entity, out of memory");
          return NULL;
       }
+      // insert into idle ?
+      rc = entity->initialize();
+      if (rc)
+      {
+         return NULL;
+      }
+
+      _thdMap.insert(entity->tid(), entity);
+      push(entity);
 
       return entity;
    }
 
-   int threadMgr::createWorker(const uint w)
+   void threadMgr::deactive(threadEntity* entity)
    {
-      int rc = 0;
-      if (0 == w)
-         return rc;
-
-      for (uint idx = 0; idx < w; ++idx)
-      {
-         threadEntity* entity = NULL;
-         rc = _createEntity(true, entity);
-         if (rc)
-         {
-            return rc;
-         }
-         entity->active();
-      }
-      // LogError
-      return rc;
+      recycle(entity);
    }
 
    void threadMgr::recycle(threadEntity* entity)
    {
-      if (entity->isWorker())
-      {
-         // worker do not need pool to idle queue
-         return;
-      }
-
       if ( _idleQueue.size() < _maxPooledCount)
       {
-         popWorker(entity);
-         pushIdle(entity);
          entity->suspend();
       }
       else
       {
-         entity->deactive();
-         entity->destroy();
-         _remove(entity);
+         entity->state(THREAD_STOPPED);
       }
-   }
-
-   void threadMgr::suspend(threadEntity* entity)
-   {
-      popWorker(entity);
-      entity->state(THREAD_IDLE);
-      pushIdle(entity);
-   }
-
-   void threadMgr::sigExit()
-   {
    }
 
    int threadMgr::_createEntity(bool worker, threadEntity*& entity)
    {
-      int rc = 0;
-      threadEntity* thd = new threadEntity(this, worker);
-      if (NULL == thd)
-      {
-         // LogError
-         // rc = -6; OOM
-         return NULL;
-      }
-      // insert into idle ?
-      rc = thd->initialize();
-      if (rc)
-      {
-         // LogError
-         return NULL;
-      }
-
-      _thdMap.insert(thd->tid(), thd);
-
-      if (worker)
-      {
-         pushWorker(thd);
-      }
-      else
-      {
-         pushIdle(thd);
-      }
-      entity = thd;
-      return rc;
+      
    }
 
    void threadMgr::_remove(threadEntity* entity)

@@ -4,13 +4,20 @@
 #include "thdMgr.h"
 namespace inspire {
 
-   threadEntity::threadEntity(threadMgr* mgr, bool worker) : _worker(worker), _thdMgr(mgr)
+   threadEntity::threadEntity(threadMgr* mgr) : _thdMgr(mgr)
    {
    }
 
    threadEntity::~threadEntity()
    {
-      if (_hThread && state() != THREAD_STOPPED)
+      if (THREAD_IDLE == _state)
+      {
+         state(THREAD_STOPPED);
+         // if thread is suspended, we should state it stopped and active it
+         active(); 
+      }
+
+      if (_hThread)
       {
          deactive();
       }
@@ -19,20 +26,11 @@ namespace inspire {
    int threadEntity::initialize()
    {
       int rc = 0;
-      state(THREAD_CREATING);
       unsigned threadId = 0;
-      if (_worker)
-      {
-         _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::WORKER_ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
-      }
-      else
-      {
-         _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
-      }
+      _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
       if (INVALID_HANDLE_VALUE == _hThread)
       {
          rc = -1; // system error
-         state(THREAD_INVALID);
          return rc;
       }
       state(THREAD_IDLE);
@@ -60,24 +58,38 @@ namespace inspire {
 
    int threadEntity::join()
    {
-      int rc = ::WaitForSingleObject(_hThread, INFINITE);
+      int rc = 0;
+      _task->attach(this);
+      rc = _task->run();
+      error(rc);
+      _task->detach();
       return rc;
    }
 
-   void threadEntity::deactive()
+   int threadEntity::stop()
    {
-      _task = NULL;
-      state(THREAD_STOPPING);
-   }
+      if (THREAD_IDLE == _state)
+      {
+         state(THREAD_STOPPED);
+         // if thread is suspended, we should state it stopped and active it
+         active();
+      }
 
-   void threadEntity::destroy()
-   {
-      state(THREAD_STOPPED);
+      if (THREAD_STOPPED != _state)
+      {
+         state(THREAD_STOPPED);
+      }
+
+      _task = NULL;
+      _thdMgr = NULL;
+
       if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
       {
-         err(-11); // time out, kill force
-         ::_endthreadex(-11);
+         // should we kill it by force?
+         // error(-1);
+         //::_endthreadex(-11);
       }
+      ::CloseHandle(_hThread);
    }
 
    void threadEntity::wait(int seconds)
@@ -96,45 +108,6 @@ namespace inspire {
 #endif
    }
 
-   int threadEntity::_run()
-   {
-      int rc = 0;
-      while ( THREAD_STOPPED != _state )
-      {
-         //TODO:
-         _task->run();
-      }
-      _state = THREAD_STOPPED;
-      return rc;
-   }
-
-   unsigned __stdcall threadEntity::WORKER_ENTRY_POINT(void* arg)
-   {
-      threadEntity* entity = static_cast<threadEntity*>(arg);
-      if (entity)
-      {
-         threadMgr* mgr = entity->thdMgr();
-         // assert mgr not NULL
-         while (THREAD_RUNNING == entity->state())
-         {
-            thdTask* task = mgr->fetchTask();
-            if (NULL == task)
-            {
-               //entity->wait(2000);
-               Sleep(500);
-               continue;
-            }
-            // LogEvent fetch a task
-            int rc = 0;
-            task->attach(entity);
-            rc = task->run();
-            entity->err(rc);
-            task->detach();
-         }
-      }
-      return 0;
-   }
-
    unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
    {
       threadEntity* entity = static_cast<threadEntity*>(arg);
@@ -148,9 +121,12 @@ namespace inspire {
             thdTask* task = entity->fetch();
             task->attach(entity);
             rc = task->run();
-            entity->err(rc);
+            if (rc)
+            {
+               entity->error(rc);
+            }
             task->detach();
-            mgr->recycle(entity);
+            mgr->deactive(entity);
          }
       }
 

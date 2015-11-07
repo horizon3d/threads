@@ -18,22 +18,16 @@ namespace inspire {
       int destroy();
       // thread
       threadEntity* fetchIdle();
-      void pushIdle(threadEntity* entity);
-      void popWorker(threadEntity* entity);
-      void pushWorker(threadEntity* entity);
       // task
       void  dispatch(thdTask* task);
-      thdTask* fetchTask();
 
       threadEntity* create();
-      int  createWorker(const uint w);
+      void deactive(threadEntity* entity);
+
+   protected:
+      thdTask* fetch();
+      void push(threadEntity* entity);
       void recycle(threadEntity* entity);
-      void suspend(threadEntity* entity);
-
-      void setIdleQueueSize(const uint count) { _maxPooledCount = count; }
-
-      bool handled() const { return _taskQueue.empty(); }
-      void sigExit();
 
    private:
       int  _createEntity(bool worker, threadEntity*& entity);
@@ -46,7 +40,6 @@ namespace inspire {
       virtual ~threadMgr() {}
 
    private:
-      uint _maxPooledCount = 50;
       deque<threadEntity*>      _idleQueue;
       deque<thdTask*>           _taskQueue;
       map<int64, threadEntity*> _workQueue;
