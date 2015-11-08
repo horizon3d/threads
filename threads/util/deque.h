@@ -3,7 +3,7 @@
 
 #include <deque>
 #include "threads.h"
-#include "spinlock.h"
+#include "mutex.h"
 
 namespace inspire {
 
@@ -11,18 +11,18 @@ namespace inspire {
    class deque
    {
    public:
-      deque()  { _spin = new spinlock_t(); }
-      ~deque() { delete _spin; _spin = NULL; }
+      deque()  {}
+      ~deque() {}
 
       void push_back(T& t)
       {
-         condition_t cond(_spin);
+         condition_t cond(_mtx);
          _deque.push_back(t);
       }
 
       T& pop()
       {
-         condition_t cond(_spin);
+         condition_t cond(_mtx);
          T& t = _deque.front();
          _deque.pop_front();
          return t;
@@ -32,8 +32,10 @@ namespace inspire {
 
       uint size() const { return (uint)_deque.size(); }
 
+      std::deque<T>& raw() { return _deque; }
+
    private:
-      spinlock_t *_spin;
+      mutex_t _mtx;
       std::deque<T> _deque;
    };
 }

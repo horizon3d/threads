@@ -16,7 +16,9 @@ namespace inspire {
       // self
       int initialize();
       int destroy();
+      int process();
       void setIdleCount(const uint maxCount = 10);
+
       // thread
       threadEntity* fetchIdle();
       // task
@@ -27,8 +29,10 @@ namespace inspire {
 
    protected:
       thdTask* fetch();
-      void push(threadEntity* entity);
+      void enIdle(threadEntity* entity);
       void recycle(threadEntity* entity);
+      void store(threadEntity* entity);
+      threadEntity* acquire();
 
    private:
       int destroy(threadEntity* entity);
@@ -43,7 +47,7 @@ namespace inspire {
       uint                      _maxIdleCount = 10;
       deque<threadEntity*>      _idleQueue;
       deque<thdTask*>           _taskQueue;
-      map<int64, threadEntity*> _workQueue;
+      deque<threadEntity*>      _entityQueue;
       map<int64, threadEntity*> _thdMap;
    };
 }

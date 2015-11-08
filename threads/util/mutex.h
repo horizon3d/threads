@@ -8,10 +8,10 @@
 
 namespace inspire {
 
-   class mutex : public ILock
+   class mutex_t : public ILock
    {
    public:
-      mutex(const char* name = NULL)
+      mutex_t(const char* name = NULL)
       {
 #ifdef _WINDOWS
          CharConvertor uname(name);
@@ -26,7 +26,7 @@ namespace inspire {
          }
       }
 
-      ~mutex()
+      ~mutex_t()
       {
 #ifdef _WINDOWS
          ::CloseHandle(_hMutex);

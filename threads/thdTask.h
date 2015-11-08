@@ -23,6 +23,8 @@ namespace inspire {
 
       virtual int run() = 0;
 
+      virtual const char* name() = 0;
+
    public:
       void attach(threadEntity* thd = NULL)
       {

@@ -11,20 +11,20 @@ namespace inspire {
    class map
    {
    public:
-      map()  { _spin = new spinlock_t(); }
-      ~map() { delete _spin; _spin = NULL; }
+      map()  {}
+      ~map() {}
 
    public:
 
       void insert(K key, V value)
       {
-         condition_t cond(_spin);
+         condition_t cond(_mtx);
          _map.insert(std::make_pair(key, value));
       }
 
       void erase(const K& key)
       {
-         condition_t cond(_spin);
+         condition_t cond(_mtx);
          _map.erase(key);
       }
 
@@ -32,7 +32,7 @@ namespace inspire {
 
       uint size() const { return (uint)_map.size(); }
 
-      V& operator[] (const K& key) { return _map.at(key); }
+      //V& operator[] (const K& key) { return _map.at(key); }
 
       bool find(const K& key)
       {
@@ -47,7 +47,7 @@ namespace inspire {
       std::map<K, V>& raw() { return _map; }
 
    private:
-      spinlock_t* _spin;
+      mutex_t _mtx;
       std::map<K, V> _map;
    };
 }
