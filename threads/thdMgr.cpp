@@ -19,6 +19,11 @@ namespace inspire {
       return 0;
    }
 
+   void threadMgr::setIdleCount(const uint maxCount)
+   {
+      _maxIdleCount = maxCount;
+   }
+
    threadEntity* threadMgr::fetchIdle()
    {
       if (_idleQueue.empty())
@@ -27,6 +32,14 @@ namespace inspire {
       }
 
       threadEntity* entity = _idleQueue.pop();
+      while (THREAD_IDLE != entity->state())
+      {
+         // when a thread pooled and pushed to idle queue
+         // its state may not be THREAD_IDLE
+         // so we need to fetch next to support request
+         push(entity);
+         entity = _idleQueue.pop();
+      }
       return entity;
    }
 
@@ -80,31 +93,18 @@ namespace inspire {
 
    void threadMgr::recycle(threadEntity* entity)
    {
-      if ( _idleQueue.size() < _maxPooledCount)
+      if ( _idleQueue.size() < _maxIdleCount)
       {
+         // push the thread to idle
+         push(entity);
          entity->suspend();
       }
       else
       {
+         // change state to stop, thread will be exit
          entity->state(THREAD_STOPPED);
+         delete entity;
+         entity = NULL;
       }
-   }
-
-   int threadMgr::_createEntity(bool worker, threadEntity*& entity)
-   {
-      
-   }
-
-   void threadMgr::_remove(threadEntity* entity)
-   {
-      // ASSERT(entity, "thread entity to be destructed cannot be NULL")
-      bool fetch = _thdMap.find(entity->tid());
-      if (fetch)
-      {
-         _thdMap.erase(entity->tid());
-      }
-      // LogError thread is not create by thread manager
-      delete entity;
-      entity = NULL;
    }
 }

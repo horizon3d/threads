@@ -16,6 +16,7 @@ namespace inspire {
       // self
       int initialize();
       int destroy();
+      void setIdleCount(const uint maxCount = 10);
       // thread
       threadEntity* fetchIdle();
       // task
@@ -30,16 +31,13 @@ namespace inspire {
       void recycle(threadEntity* entity);
 
    private:
-      int  _createEntity(bool worker, threadEntity*& entity);
-      void _remove(threadEntity* entity);
-
-   private:
       threadMgr() {}
       threadMgr(const threadMgr& rhs) = delete;
       threadMgr& operator=(const threadMgr& rhs) = delete;
       virtual ~threadMgr() {}
 
    private:
+      uint                      _maxIdleCount = 10;
       deque<threadEntity*>      _idleQueue;
       deque<thdTask*>           _taskQueue;
       map<int64, threadEntity*> _workQueue;
