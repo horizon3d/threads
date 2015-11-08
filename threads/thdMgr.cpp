@@ -43,25 +43,9 @@ namespace inspire {
       return entity;
    }
 
-   void threadMgr::push(threadEntity* entity)
-   {
-      _idleQueue.push_back(entity);
-   }
-
    void threadMgr::dispatch(thdTask* task)
    {
       _taskQueue.push_back(task);
-   }
-
-   thdTask* threadMgr::fetch()
-   {
-      if (_taskQueue.empty())
-      {
-         return NULL;
-      }
-
-      thdTask* task = _taskQueue.pop();
-      return task;
    }
 
    threadEntity* threadMgr::create()
@@ -91,6 +75,22 @@ namespace inspire {
       recycle(entity);
    }
 
+   void threadMgr::push(threadEntity* entity)
+   {
+      _idleQueue.push_back(entity);
+   }
+
+   thdTask* threadMgr::fetch()
+   {
+      if (_taskQueue.empty())
+      {
+         return NULL;
+      }
+
+      thdTask* task = _taskQueue.pop();
+      return task;
+   }
+
    void threadMgr::recycle(threadEntity* entity)
    {
       if ( _idleQueue.size() < _maxIdleCount)
@@ -106,5 +106,17 @@ namespace inspire {
          delete entity;
          entity = NULL;
       }
+   }
+
+   int threadMgr::destroy(threadEntity* entity)
+   {
+      int rc = entity->error();
+      DWORD dw = ::WaitForSingleObject(entity->handle(), INFINITE);
+      if (WAIT_OBJECT_0 != dw)
+      {
+         LogError("Failed to stop thread in soon");
+         entity->kill();
+      }
+      return rc;
    }
 }

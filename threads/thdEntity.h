@@ -28,6 +28,7 @@ namespace inspire {
       int resume();
       int join();
       int stop();
+      int kill();
       void wait(int seconds);
 
       void assigned(thdTask* task) { _task = task; }

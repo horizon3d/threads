@@ -31,6 +31,9 @@ namespace inspire {
       void recycle(threadEntity* entity);
 
    private:
+      int destroy(threadEntity* entity);
+
+   private:
       threadMgr() {}
       threadMgr(const threadMgr& rhs) = delete;
       threadMgr& operator=(const threadMgr& rhs) = delete;

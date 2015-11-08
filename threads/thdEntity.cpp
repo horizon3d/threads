@@ -10,16 +10,9 @@ namespace inspire {
 
    threadEntity::~threadEntity()
    {
-      if (THREAD_IDLE == _state)
-      {
-         state(THREAD_STOPPED);
-         // if thread is suspended, we should state it stopped and active it
-         active(); 
-      }
-
       if (_hThread)
       {
-         deactive();
+         stop();
       }
    }
 
@@ -90,6 +83,12 @@ namespace inspire {
          //::_endthreadex(-11);
       }
       ::CloseHandle(_hThread);
+   }
+
+   int threadEntity::kill()
+   {
+      ::_endthreadex(-1);
+      return 0;
    }
 
    void threadEntity::wait(int seconds)
