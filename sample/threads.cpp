@@ -34,7 +34,7 @@ public:
       int tmp = no.index;
       ++no.index;
       LogEvent("from %d ---> %d", tmp, no.index);
-      //std::cout << " ---> " << no.index << std::endl;
+      std::cout << " ---> " << no.index << std::endl;
       return 0;
    }
 
@@ -45,39 +45,22 @@ int main(int argc, char** argv)
 {
    DWORD dw1 = GetTickCount();
    inspire::threadMgr* mgr = inspire::threadMgr::instance();
+   mgr->setIdleCount(3);
    inspire::thdTask* ts[20];
    for (int idx = 0; idx < 20; ++idx)
    {
       inspire::thdTask* t = new taskA();
       ts[idx] = t;
+      mgr->dispatch(t);
    }
 
-   HANDLE h[10];
-   for (int idx = 0; idx < 10; ++idx)
+   bool exit = false;
+   while (!exit)
    {
-      inspire::threadEntity* thd = mgr->create();
-      h[idx] = thd->handle();
-   }
-
-   int idx = 0;
-   while (idx < 20)
-   {
-      inspire::threadEntity* thd = mgr->fetchIdle();
-      if (NULL != thd)
+      if (mgr->process())
       {
-         thd->assigned(ts[idx]);
-         ++idx;
-         thd->active();
-      }
-      else
-      {
-         continue;
-      }
-   }
 
-   while (no.index < 20)
-   {
-      Sleep(1000);
+      }
    }
 
    for (INT idx = 0; idx < 20; ++idx)

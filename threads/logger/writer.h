@@ -2,11 +2,11 @@
 #define _INSPIRE_LOGGER_WRITER_H_
 
 #include "base.h"
+#include "util/mutex.h"
 
 namespace inspire {
 
    class ossFile;
-   class mutex;
    namespace logger {
 
       class writerImpl : public logWriter
@@ -26,7 +26,7 @@ namespace inspire {
 
       protected:
          unsigned _priority;
-         mutex*   _mtx;
+         mutex_t   _mtx;
          ossFile* _logger;
          char     _filename[MAX_LOG_FILE_NAME + 1];
       };

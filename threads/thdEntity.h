@@ -23,9 +23,9 @@ namespace inspire {
       virtual ~threadEntity();
 
       int initialize();
-      int active();
-      int suspend();
-      int resume();
+      void active();
+      void suspend();
+      void resume();
       int join();
       int stop();
       int kill();

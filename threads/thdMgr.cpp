@@ -21,33 +21,57 @@ namespace inspire {
       return 0;
    }
 
+   void threadMgr::wait()
+   {
+      DWORD dw = ::WaitForSingleObject(_hExit, INFINITE);
+      if (WAIT_OBJECT_0 == dw)
+      {
+         ::CloseHandle(_hExit);
+      }
+   }
+
+   threadMgr::threadMgr()
+   {
+      _hExit = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+   }
+
+   threadMgr::~threadMgr()
+   {
+
+   }
+
    int threadMgr::process()
    {
       int rc = 0;
-      while (true)
+
+      // handle entity
+      threadEntity* thd = NULL;
+      if (_entityQueue.pop_front(thd))
       {
-         // process tasks
-         thdTask* task = fetch();
-         if (NULL != task)
+         destroy(thd);
+         thd = NULL;
+      }
+
+      // process tasks
+      thdTask* task = fetch();
+      if (NULL != task)
+      {
+         threadEntity* entity = fetchIdle();
+         if (NULL == entity)
          {
-            threadEntity* entity = fetchIdle();
+            entity = create();
             if (NULL == entity)
             {
-               entity = create();
-               if (NULL == entity)
-               {
-                  rc = -1; // OOM
-               }
-               entity->assigned(task);
-               rc = entity->active();
-               if (rc)
-               {
-                  LogError("Get an error when processing tash: %s", task->name());
-               }
+               rc = -1; // OOM
+               LogError("Failed to create thread entity");
+               return rc;
             }
          }
+         entity->assigned(task);
+         entity->active();
       }
-      
+
+      return rc;
    }
 
    void threadMgr::setIdleCount(const uint maxCount)
@@ -58,7 +82,7 @@ namespace inspire {
    threadEntity* threadMgr::fetchIdle()
    {
       threadEntity* entity = NULL;
-      while (_idleQueue.pop_front(entity))
+      if (_idleQueue.pop_front(entity))
       {
          if (THREAD_IDLE != entity->state())
          {
@@ -66,11 +90,9 @@ namespace inspire {
             // its state may not be THREAD_IDLE
             // so we need to fetch next to support request
             enIdle(entity);
-            continue;
          }
          else
          {
-            break;
             return entity;
          }
       }
@@ -102,7 +124,8 @@ namespace inspire {
          return NULL;
       }
 
-      _entityQueue.push_back(entity);
+      //_entityQueue.push_back(entity);
+      //enIdle(entity);
 
       return entity;
    }
@@ -129,7 +152,7 @@ namespace inspire {
 
    void threadMgr::recycle(threadEntity* entity)
    {
-      if ( _idleQueue.size() < _maxIdleCount)
+      if (_idleQueue.size() < _maxIdleCount)
       {
          // push the thread to idle
          enIdle(entity);
@@ -139,6 +162,7 @@ namespace inspire {
       {
          // change state to stop, thread will be exit
          entity->state(THREAD_STOPPED);
+         _entityQueue.push_back(entity);
       }
    }
 
@@ -155,12 +179,8 @@ namespace inspire {
    int threadMgr::destroy(threadEntity* entity)
    {
       int rc = entity->error();
-      DWORD dw = ::WaitForSingleObject(entity->handle(), 10 * 1000);
-      if (WAIT_OBJECT_0 != dw)
-      {
-         LogError("Failed to stop thread in soon");
-         entity->kill();
-      }
+      delete entity;
+      entity = NULL;
       return rc;
    }
 }

@@ -16,13 +16,13 @@ namespace inspire {
 
       void push_back(T& t)
       {
-         condition_t cond(_mtx);
+         condition_t cond(&_mtx);
          _deque.push_back(t);
       }
 
       bool pop_front(T& t)
       {
-         condition_t cond(_mtx);
+         condition_t cond(&_mtx);
          if (!_deque.empty())
          {
             t = _deque.front();

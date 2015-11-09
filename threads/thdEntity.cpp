@@ -31,22 +31,22 @@ namespace inspire {
       return rc;
    }
 
-   int threadEntity::active()
+   void threadEntity::active()
    {
       state(THREAD_RUNNING);
-      return ::ResumeThread(_hThread);
+      ::ResumeThread(_hThread);
    }
 
-   int threadEntity::suspend()
+   void threadEntity::suspend()
    {
       state(THREAD_IDLE);
-      return ::SuspendThread(_hThread);
+      ::SuspendThread(_hThread);
    }
 
-   int threadEntity::resume()
+   void threadEntity::resume()
    {
       state(THREAD_RUNNING);
-      return ::ResumeThread(_hThread);
+      ::ResumeThread(_hThread);
    }
 
    int threadEntity::join()
@@ -67,8 +67,7 @@ namespace inspire {
          // if thread is suspended, we should state it stopped and active it
          active();
       }
-
-      if (THREAD_STOPPED != _state)
+      else if (THREAD_STOPPED != _state)
       {
          state(THREAD_STOPPED);
       }
@@ -76,13 +75,18 @@ namespace inspire {
       _task = NULL;
       _thdMgr = NULL;
 
-      if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
+      if (INVALID_HANDLE_VALUE != _hThread)
       {
-         // should we kill it by force?
-         // error(-1);
-         //::_endthreadex(-11);
+         if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
+         {
+            // should we kill it by force?
+            // error(-1);
+            //::_endthreadex(-11);
+         }
+         ::CloseHandle(_hThread);
       }
-      ::CloseHandle(_hThread);
+
+      return 0;
    }
 
    int threadEntity::kill()
