@@ -75,16 +75,6 @@ namespace inspire {
       _task = NULL;
       _thdMgr = NULL;
 
-      if (INVALID_HANDLE_VALUE != _hThread)
-      {
-         if (WAIT_TIMEOUT == ::WaitForSingleObject(_hThread, 10000))
-         {
-            // should we kill it by force?
-            // error(-1);
-            //::_endthreadex(-11);
-         }
-         ::CloseHandle(_hThread);
-      }
 
       return 0;
    }
@@ -131,6 +121,7 @@ namespace inspire {
             task->detach();
             mgr->deactive(entity);
          }
+         entity->close();
       }
 
       return 0;

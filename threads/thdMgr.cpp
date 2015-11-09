@@ -21,36 +21,17 @@ namespace inspire {
       return 0;
    }
 
-   void threadMgr::wait()
-   {
-      DWORD dw = ::WaitForSingleObject(_hExit, INFINITE);
-      if (WAIT_OBJECT_0 == dw)
-      {
-         ::CloseHandle(_hExit);
-      }
-   }
-
    threadMgr::threadMgr()
    {
-      _hExit = ::CreateEvent(NULL, TRUE, FALSE, NULL);
    }
 
    threadMgr::~threadMgr()
    {
-
    }
 
    int threadMgr::process()
    {
       int rc = 0;
-
-      // handle entity
-      threadEntity* thd = NULL;
-      if (_entityQueue.pop_front(thd))
-      {
-         destroy(thd);
-         thd = NULL;
-      }
 
       // process tasks
       thdTask* task = fetch();
@@ -117,15 +98,12 @@ namespace inspire {
             return NULL;
          }
       }
-      // insert into idle ?
+
       rc = entity->initialize();
       if (rc)
       {
          return NULL;
       }
-
-      //_entityQueue.push_back(entity);
-      //enIdle(entity);
 
       return entity;
    }

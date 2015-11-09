@@ -27,9 +27,6 @@ namespace inspire {
       threadEntity* create();
       void deactive(threadEntity* entity);
 
-      void sigExit() { _exit = true; }
-      void wait();
-
    protected:
       thdTask* fetch();
       void enIdle(threadEntity* entity);
@@ -50,7 +47,6 @@ namespace inspire {
    private:
       bool                 _exit = false;
       uint                 _maxIdleCount = 10;
-      HANDLE               _hExit;
       deque<threadEntity*> _idleQueue;
       deque<thdTask*>      _taskQueue;
       deque<threadEntity*> _entityQueue;

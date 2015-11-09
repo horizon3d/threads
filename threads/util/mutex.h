@@ -30,6 +30,7 @@ namespace inspire {
       {
 #ifdef _WINDOWS
          ::CloseHandle(_hMutex);
+         _hMutex = INVALID_HANDLE_VALUE;
 #else
          int res;
          do 

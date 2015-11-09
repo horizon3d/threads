@@ -36,7 +36,9 @@ namespace inspire {
 
       bool running() const { return THREAD_RUNNING == _state; }
       const int64 tid() const { return _tid; }
+
       HANDLE handle() const { return _hThread; }
+      void   close() { ::CloseHandle(_hThread); _hThread = INVALID_HANDLE_VALUE; }
 
       const int state() const { return _state; }
       void state(const int st) { _state = st;  }
