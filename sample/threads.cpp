@@ -9,7 +9,7 @@
 
 struct mtxnumber
 {
-   inspire::mutex _spin;
+   inspire::mutex_t _spin;
    //inspire::spinlock_t _spin;
    int index = 0;
 };
@@ -37,6 +37,8 @@ public:
       //std::cout << " ---> " << no.index << std::endl;
       return 0;
    }
+
+   virtual const char* name() { return "A task"; }
 };
 
 int main(int argc, char** argv)

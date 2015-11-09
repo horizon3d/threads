@@ -20,12 +20,16 @@ namespace inspire {
          _deque.push_back(t);
       }
 
-      T& pop()
+      bool pop_front(T& t)
       {
          condition_t cond(_mtx);
-         T& t = _deque.front();
-         _deque.pop_front();
-         return t;
+         if (!_deque.empty())
+         {
+            t = _deque.front();
+            _deque.pop_front();
+            return true;
+         }
+         return false;
       }
 
       bool empty() const { return _deque.empty(); }

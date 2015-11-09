@@ -44,11 +44,11 @@ namespace inspire {
       virtual ~threadMgr() {}
 
    private:
-      uint                      _maxIdleCount = 10;
-      deque<threadEntity*>      _idleQueue;
-      deque<thdTask*>           _taskQueue;
-      deque<threadEntity*>      _entityQueue;
-      map<int64, threadEntity*> _thdMap;
+      uint                 _maxIdleCount = 10;
+      deque<threadEntity*> _idleQueue;
+      deque<thdTask*>      _taskQueue;
+      deque<threadEntity*> _entityQueue;
+      deque<threadEntity*> _thdMap;
    };
 }
 #endif

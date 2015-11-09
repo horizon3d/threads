@@ -57,19 +57,22 @@ namespace inspire {
 
    threadEntity* threadMgr::fetchIdle()
    {
-      if (_idleQueue.empty())
+      threadEntity* entity = NULL;
+      while (_idleQueue.pop_front(entity))
       {
-         return NULL;
-      }
-
-      threadEntity* entity = _idleQueue.pop();
-      while (THREAD_IDLE != entity->state())
-      {
-         // when a thread pooled and pushed to idle queue
-         // its state may not be THREAD_IDLE
-         // so we need to fetch next to support request
-         enIdle(entity);
-         entity = _idleQueue.pop();
+         if (THREAD_IDLE != entity->state())
+         {
+            // when a thread pooled and pushed to idle queue
+            // its state may not be THREAD_IDLE
+            // so we need to fetch next to support request
+            enIdle(entity);
+            continue;
+         }
+         else
+         {
+            break;
+            return entity;
+         }
       }
       return entity;
    }
@@ -99,8 +102,7 @@ namespace inspire {
          return NULL;
       }
 
-      _thdMap.insert(entity->tid(), entity);
-      //push(entity);
+      _entityQueue.push_back(entity);
 
       return entity;
    }
@@ -117,13 +119,12 @@ namespace inspire {
 
    thdTask* threadMgr::fetch()
    {
-      if (_taskQueue.empty())
+      thdTask* task = NULL;
+      if (_taskQueue.pop_front(task))
       {
-         return NULL;
+         return task;
       }
-
-      thdTask* task = _taskQueue.pop();
-      return task;
+      return NULL;
    }
 
    void threadMgr::recycle(threadEntity* entity)
@@ -141,10 +142,20 @@ namespace inspire {
       }
    }
 
+   threadEntity* threadMgr::acquire()
+   {
+      threadEntity* entity = NULL;
+      if (_entityQueue.pop_front(entity))
+      {
+         return entity;
+      }
+      return NULL;
+   }
+
    int threadMgr::destroy(threadEntity* entity)
    {
       int rc = entity->error();
-      DWORD dw = ::WaitForSingleObject(entity->handle(), INFINITE);
+      DWORD dw = ::WaitForSingleObject(entity->handle(), 10 * 1000);
       if (WAIT_OBJECT_0 != dw)
       {
          LogError("Failed to stop thread in soon");

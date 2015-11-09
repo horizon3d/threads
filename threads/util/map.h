@@ -24,15 +24,13 @@ namespace inspire {
 
       void erase(const K& key)
       {
-         condition_t cond(_mtx);
+         condition_t cond(&_mtx);
          _map.erase(key);
       }
 
       bool empty() const { return _map.empty(); }
 
       uint size() const { return (uint)_map.size(); }
-
-      //V& operator[] (const K& key) { return _map.at(key); }
 
       bool find(const K& key)
       {
