@@ -18,7 +18,7 @@ namespace inspire {
 
       void insert(K key, V value)
       {
-         condition_t cond(_mtx);
+         condition_t cond(&_mtx);
          _map.insert(std::make_pair(key, value));
       }
 
@@ -28,6 +28,18 @@ namespace inspire {
          _map.erase(key);
       }
 
+      bool fetch(const K& key, V& v)
+      {
+         condition_t cond(&_mtx);
+         std::map<K, V>::iterator it = _map.find(key);
+         if (_map.end() != it)
+         {
+            v = it->second;
+            return true;
+         }
+         return false;
+      }
+
       bool empty() const { return _map.empty(); }
 
       uint size() const { return (uint)_map.size(); }
@@ -35,11 +47,11 @@ namespace inspire {
       bool find(const K& key)
       {
          std::map<K, V>::iterator it = _map.find(key);
-         if (_map.end() == it)
+         if (_map.end() != it)
          {
-            return false;
+            return true;
          }
-         return true;
+         return false;
       }
 
       std::map<K, V>& raw() { return _map; }

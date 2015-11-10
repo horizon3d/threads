@@ -8,7 +8,7 @@
 namespace inspire {
 
    class thdTask;
-
+   class thdTaskMgr;
    class threadMgr
    {
    public:
@@ -35,7 +35,7 @@ namespace inspire {
       threadEntity* acquire();
 
    private:
-      int destroy(threadEntity* entity);
+      int destroy(threadEntity*& entity);
 
 
    private:
@@ -47,6 +47,7 @@ namespace inspire {
    private:
       bool                 _exit = false;
       uint                 _maxIdleCount = 10;
+      thdTaskMgr*          _taskMgr;
       deque<threadEntity*> _idleQueue;
       deque<thdTask*>      _taskQueue;
       deque<threadEntity*> _entityQueue;

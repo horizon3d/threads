@@ -23,10 +23,12 @@ namespace inspire {
 
    threadMgr::threadMgr()
    {
+      _taskMgr = thdTaskMgr::instance();
    }
 
    threadMgr::~threadMgr()
    {
+      _taskMgr = NULL;
    }
 
    int threadMgr::process()
@@ -154,7 +156,7 @@ namespace inspire {
       return NULL;
    }
 
-   int threadMgr::destroy(threadEntity* entity)
+   int threadMgr::destroy(threadEntity*& entity)
    {
       int rc = entity->error();
       delete entity;

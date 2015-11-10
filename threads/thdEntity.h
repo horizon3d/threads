@@ -29,7 +29,6 @@ namespace inspire {
       int join();
       int stop();
       int kill();
-      void wait(int seconds);
 
       void assigned(thdTask* task) { _task = task; }
       thdTask* fetch() const { return _task; }

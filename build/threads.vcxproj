@@ -153,6 +153,7 @@
     <ClCompile Include="..\threads\logger\writer.cpp" />
     <ClCompile Include="..\threads\thdEntity.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
+    <ClCompile Include="..\threads\thdTaskMgr.cpp" />
     <ClCompile Include="..\threads\util\ossFile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="..\threads\thdEntity.h" />
     <ClInclude Include="..\threads\thdMgr.h" />
     <ClInclude Include="..\threads\thdTask.h" />
+    <ClInclude Include="..\threads\thdTaskMgr.h" />
     <ClInclude Include="..\threads\threads.h" />
     <ClInclude Include="..\threads\util\charConvertor.h" />
     <ClInclude Include="..\threads\util\condition.h" />

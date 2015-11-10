@@ -84,21 +84,21 @@ namespace inspire {
       return 0;
    }
 
-   void threadEntity::wait(int seconds)
-   {
-      // TODO:
-#ifdef _WINDOWS
-      YieldProcessor();
-#elif _LINUX
-   #if defined(_AIX)
-      __asm__ __volatile__("pause\n": : : "memory");
-   #elif defined(_PPCLIN64)
-      __asm__ __volatile__("or 27, 27, 27");
-   #elif defined(_AIX)
-      __asm__ __volatile__("or 27, 27, 27");
-   #endif
-#endif
-   }
+//    void threadEntity::wait(int seconds)
+//    {
+//       // TODO:
+// #ifdef _WINDOWS
+//       YieldProcessor();
+// #elif _LINUX
+//    #if defined(_AIX)
+//       __asm__ __volatile__("pause\n": : : "memory");
+//    #elif defined(_PPCLIN64)
+//       __asm__ __volatile__("or 27, 27, 27");
+//    #elif defined(_AIX)
+//       __asm__ __volatile__("or 27, 27, 27");
+//    #endif
+// #endif
+//    }
 
    unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
    {
@@ -113,13 +113,16 @@ namespace inspire {
             thdTask* task = entity->fetch();
             if (NULL == task)
                continue;
-
+            // keep task to the entity
+            // so that we can catch information when handling task
             task->attach(entity);
             rc = task->run();
             if (rc)
             {
                entity->error(rc);
             }
+            // now we clean task assigned to entity
+            entity->assigned(NULL);
             task->detach();
             mgr->deactive(entity);
          }

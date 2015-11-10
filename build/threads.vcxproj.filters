@@ -41,6 +41,9 @@
     <ClCompile Include="..\sample\threads.cpp">
       <Filter>sample</Filter>
     </ClCompile>
+    <ClCompile Include="..\threads\thdTaskMgr.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\threads\util\condition.h">
@@ -90,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="..\threads\util\lock.h">
       <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\thdTaskMgr.h">
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
