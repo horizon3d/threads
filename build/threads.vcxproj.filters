@@ -18,6 +18,9 @@
     <Filter Include="threads\logger">
       <UniqueIdentifier>{dec1a59a-9f6e-4d43-8639-932a61d052fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\task">
+      <UniqueIdentifier>{0bae6811-96c6-4c23-9c77-53b6a7cfb492}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\threads\thdEntity.cpp">

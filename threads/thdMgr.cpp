@@ -11,8 +11,6 @@ namespace inspire {
 
    int threadMgr::initialize()
    {
-//       std::deque<threadEntity*>& rqueue = _idleQueue.raw();
-//       std::map<int64, threadEntity*>& rmap = _thdMap.raw();
       return 0;
    }
 
@@ -34,7 +32,6 @@ namespace inspire {
    int threadMgr::process()
    {
       int rc = 0;
-
       // process tasks
       thdTask* task = fetch();
       if (NULL != task)
@@ -51,6 +48,7 @@ namespace inspire {
             }
          }
          entity->assigned(task);
+         LogEvent("assigned task: %lld to thread: %d", task->id(), entity->tid());
          entity->active();
       }
 
@@ -87,6 +85,11 @@ namespace inspire {
       _taskQueue.push_back(task);
    }
 
+   void threadMgr::over(thdTask* task)
+   {
+      _taskMgr->over(task);
+   }
+
    threadEntity* threadMgr::create()
    {
       int rc = 0;
@@ -112,6 +115,7 @@ namespace inspire {
 
    void threadMgr::deactive(threadEntity* entity)
    {
+      over(entity->fetch());
       recycle(entity);
    }
 
@@ -132,6 +136,7 @@ namespace inspire {
 
    void threadMgr::recycle(threadEntity* entity)
    {
+      entity->assigned(NULL);
       if (_idleQueue.size() < _maxIdleCount)
       {
          // push the thread to idle
@@ -154,13 +159,5 @@ namespace inspire {
          return entity;
       }
       return NULL;
-   }
-
-   int threadMgr::destroy(threadEntity*& entity)
-   {
-      int rc = entity->error();
-      delete entity;
-      entity = NULL;
-      return rc;
    }
 }

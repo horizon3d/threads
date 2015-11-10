@@ -20,13 +20,8 @@ static int taskId = 0;
 class taskA : public inspire::thdTask
 {
 public:
-   taskA() : thdTask(taskId) { ++taskId; }
+   taskA() : thdTask(taskId, "A task") { ++taskId; }
    ~taskA() {}
-
-   void test()
-   {
-      
-   }
 
    virtual int run()
    {
@@ -38,19 +33,17 @@ public:
       return 0;
    }
 
-   virtual const char* name() { return "A task"; }
+private:
+   const char* _name;
 };
 
 int main(int argc, char** argv)
 {
-   DWORD dw1 = GetTickCount();
    inspire::threadMgr* mgr = inspire::threadMgr::instance();
    mgr->setIdleCount(3);
-   inspire::thdTask* ts[20];
    for (int idx = 0; idx < 20; ++idx)
    {
       inspire::thdTask* t = new taskA();
-      ts[idx] = t;
       mgr->dispatch(t);
    }
 
@@ -63,13 +56,5 @@ int main(int argc, char** argv)
       }
    }
 
-   for (INT idx = 0; idx < 20; ++idx)
-   {
-      delete ts[idx];
-      ts[idx] = NULL;
-   }
-   DWORD dw2 = GetTickCount();
-
-   LogEvent("total time cost: %f", (dw2 - dw1) / 1000.0)
    return 0;
 }

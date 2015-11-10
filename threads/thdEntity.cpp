@@ -26,11 +26,13 @@ namespace inspire {
       _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
       if (INVALID_HANDLE_VALUE == _hThread)
       {
-         rc = -1; // system error
+         LogError("Failed to start a thread, error: %d", FetchLastError());
+         rc = FetchLastError();
          return rc;
       }
       state(THREAD_IDLE);
       _tid = threadId;
+      _task = NULL;
       return rc;
    }
 
@@ -122,7 +124,6 @@ namespace inspire {
                entity->error(rc);
             }
             // now we clean task assigned to entity
-            entity->assigned(NULL);
             task->detach();
             mgr->deactive(entity);
          }

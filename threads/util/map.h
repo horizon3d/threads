@@ -4,6 +4,7 @@
 #include <map>
 #include "threads.h"
 #include "condition.h"
+#include "mutex.h"
 
 namespace inspire {
 

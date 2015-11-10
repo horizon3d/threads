@@ -22,7 +22,8 @@ namespace inspire {
       // thread
       threadEntity* fetchIdle();
       // task
-      void  dispatch(thdTask* task);
+      void dispatch(thdTask* task);
+      void over(thdTask* task);
 
       threadEntity* create();
       void deactive(threadEntity* entity);
@@ -33,10 +34,6 @@ namespace inspire {
       void recycle(threadEntity* entity);
       void store(threadEntity* entity);
       threadEntity* acquire();
-
-   private:
-      int destroy(threadEntity*& entity);
-
 
    private:
       threadMgr();

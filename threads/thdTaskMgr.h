@@ -13,14 +13,14 @@ namespace inspire {
    public:
       static thdTaskMgr* instance();
       void registerTask(thdTask* task);
-      void over(thdTask*& task);
+      void over(thdTask* task);
       thdTask* get(const int64& id);
 
    protected:
       void clean();
 
    private:
-      thdTaskMgr();
+      thdTaskMgr() {};
       thdTaskMgr(const thdTaskMgr& rhs) = delete;
       thdTaskMgr& operator= (const thdTaskMgr& rhs) = delete;
       ~thdTaskMgr() { clean(); }

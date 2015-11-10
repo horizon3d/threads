@@ -14,20 +14,19 @@ namespace inspire {
       TASK_HANDLED = 2,
    };
 
-   class taskMgr;
    class thdTask
    {
    public:
-      thdTask(const int64& id) : _status(TASK_UNHANDLED), _taskId(id), _thd(NULL)
+      thdTask(const int64& id, const char* name) : _status(TASK_UNHANDLED), _taskId(id), _thd(NULL), _name(name)
       {
          thdTaskMgr::instance()->registerTask(this);
       }
-      explicit thdTask(const int64& id, threadEntity* thd) : _status(TASK_UNHANDLED), _taskId(id), _thd(thd) {}
+      explicit thdTask(const int64& id, const char* name, threadEntity* thd) : _status(TASK_UNHANDLED), _taskId(id), _thd(thd), _name(name) {}
       virtual ~thdTask() {}
 
       virtual int run() = 0;
 
-      virtual const char* name() = 0;
+      virtual const char* name() { return _name; };
 
    public:
       const int64 id() const { return _taskId; }
@@ -53,7 +52,6 @@ namespace inspire {
       void OnEnd()
       {
          status(TASK_HANDLED);
-         _thd->assigned(NULL);
          _thd = NULL;
          LogEvent("Task: %lld over", _taskId);
       }
@@ -61,6 +59,7 @@ namespace inspire {
    private:
       uint          _status;
       int64         _taskId;
+      const char*   _name;
       threadEntity* _thd;
    };
 }
