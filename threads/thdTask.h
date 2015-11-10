@@ -46,7 +46,7 @@ namespace inspire {
       void OnBegin()
       {
          status(TASK_HANDLEING);
-         LogEvent("Task: %lld begin, current thread id: %d", _taskId, _thd->tid());
+         LogEvent("Task: %lld begin, current thread id: %lld", _taskId, _thd->tid());
       }
 
       void OnEnd()

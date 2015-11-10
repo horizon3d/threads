@@ -48,8 +48,12 @@ namespace inspire {
             }
          }
          entity->assigned(task);
-         LogEvent("assigned task: %lld to thread: %d", task->id(), entity->tid());
+         LogEvent("assigned task: %lld to thread: %lld", task->id(), entity->tid());
          entity->active();
+      }
+      else
+      {
+         ::Sleep(100);
       }
 
       return rc;

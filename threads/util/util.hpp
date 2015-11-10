@@ -6,21 +6,21 @@
 #else
 #endif
 
-inline unsigned CurrentPid()
+inline unsigned long long CurrentPid()
 {
 #ifdef _WIN32
-   return (unsigned )::GetCurrentProcessId();
+   return (unsigned long long)::GetCurrentProcessId();
 #else
-   retun (unsigned)getpid();
+   retun (unsigned long long)getpid();
 #endif
 }
 
-inline unsigned CurrentThreadId()
+inline unsigned long long CurrentThreadId()
 {
 #ifdef _WIN32
-   return (unsigned)::GetCurrentThreadId();
+   return (unsigned long long)::GetCurrentThreadId();
 #else
-   retun (unsigned)syscall(SYS_gettid);
+   retun (unsigned long long)syscall(SYS_gettid);
 #endif
 }
 
