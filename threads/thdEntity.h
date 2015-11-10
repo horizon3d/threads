@@ -17,7 +17,11 @@ namespace inspire {
    class threadMgr;
    class threadEntity
    {
+#ifdef _WINDOWS
       static unsigned __stdcall ENTRY_POINT(void* arg);
+#else
+      static void* ENTRY_POINT(void* arg);
+#endif
    public:
       threadEntity(threadMgr* mgr);
       virtual ~threadEntity();

@@ -6,6 +6,30 @@
 #else
 #endif
 
+inline void Sleep(int seconds)
+{
+#ifdef _WINDOWS
+   ::Sleep(1000 * seconds);
+#else
+   usleep(1000000 * seconds);
+#endif
+}
+
+inline void wait(int seconds)
+{
+#ifdef _WINDOWS
+   YieldProcessor();
+#elif _LINUX
+#if defined(_AIX)
+   __asm__ __volatile__("pause": : : "memory");
+#elif defined(_PPCLIN64)
+   __asm__ __volatile__("or 27, 27, 27");
+#elif defined(_AIX)
+   __asm__ __volatile__("or 27, 27, 27");
+#endif
+#endif
+   }
+
 inline unsigned long long CurrentPid()
 {
 #ifdef _WIN32

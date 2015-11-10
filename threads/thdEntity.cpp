@@ -22,6 +22,7 @@ namespace inspire {
    int threadEntity::initialize()
    {
       int rc = 0;
+#ifdef _WINDOWS
       unsigned threadId = 0;
       _hThread = (HANDLE)_beginthreadex(NULL, 0, threadEntity::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
       if (INVALID_HANDLE_VALUE == _hThread)
@@ -30,6 +31,16 @@ namespace inspire {
          rc = FetchLastError();
          return rc;
       }
+#else
+      pthread_t t;
+      rc = pthread_create(&t, NULL, threadEntity::ENTRY_POINT, this);
+      if (rc)
+      {
+         LogError("Failed to start a thread, error: %d", FetchLastError());
+         rc = FetchLastError();
+         return rc;
+      }
+#endif
       state(THREAD_IDLE);
       _tid = threadId;
       _task = NULL;
@@ -86,23 +97,11 @@ namespace inspire {
       return 0;
    }
 
-//    void threadEntity::wait(int seconds)
-//    {
-//       // TODO:
-// #ifdef _WINDOWS
-//       YieldProcessor();
-// #elif _LINUX
-//    #if defined(_AIX)
-//       __asm__ __volatile__("pause\n": : : "memory");
-//    #elif defined(_PPCLIN64)
-//       __asm__ __volatile__("or 27, 27, 27");
-//    #elif defined(_AIX)
-//       __asm__ __volatile__("or 27, 27, 27");
-//    #endif
-// #endif
-//    }
-
+#ifdef _WINDOWS
    unsigned __stdcall threadEntity::ENTRY_POINT(void* arg)
+#else
+   void* threadEntity::ENTRY_POINT(void* arg)
+#endif
    {
       threadEntity* entity = static_cast<threadEntity*>(arg);
       if (entity)
@@ -129,8 +128,11 @@ namespace inspire {
          }
          entity->close();
       }
-
+#ifdef _WINDOWS
       return 0;
+#else
+      return NULL;
+#endif
    }
 
 }
