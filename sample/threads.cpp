@@ -50,10 +50,7 @@ int main(int argc, char** argv)
    bool exit = false;
    while (!exit)
    {
-      if (mgr->process())
-      {
-
-      }
+      mgr->process();
    }
 
    return 0;
