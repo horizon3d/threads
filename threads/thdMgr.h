@@ -50,7 +50,6 @@ namespace inspire {
       deque<threadEntity*> _idleQueue;
       deque<thdTask*>      _taskQueue;
       deque<threadEntity*> _entityQueue;
-      deque<threadEntity*> _thdMap;
    };
 }
 #endif

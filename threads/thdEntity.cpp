@@ -14,6 +14,9 @@ namespace inspire {
       {
          stop();
       }
+
+      _task = NULL;
+      _thdMgr = NULL;
    }
 
    int threadEntity::initialize()
@@ -72,10 +75,6 @@ namespace inspire {
          state(THREAD_STOPPED);
       }
 
-      _task = NULL;
-      _thdMgr = NULL;
-
-
       return 0;
    }
 
@@ -112,6 +111,9 @@ namespace inspire {
          {
             int rc = 0;
             thdTask* task = entity->fetch();
+            if (NULL == task)
+               continue;
+
             task->attach(entity);
             rc = task->run();
             if (rc)
