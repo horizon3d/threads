@@ -10,7 +10,7 @@ namespace inspire {
 
    threadEntity::~threadEntity()
    {
-      if (_hThread)
+      if (THREAD_STOPPED != _state)
       {
          stop();
       }
@@ -31,70 +31,81 @@ namespace inspire {
          rc = FetchLastError();
          return rc;
       }
+      _tid = threadId;
 #else
-      pthread_t t;
-      rc = pthread_create(&t, NULL, threadEntity::ENTRY_POINT, this);
+      pthread_t ntid;
+      rc = pthread_create(&ntid, NULL, threadEntity::ENTRY_POINT, this);
       if (rc)
       {
-         LogError("Failed to start a thread, error: %d", FetchLastError());
-         rc = FetchLastError();
+         LogError("Failed to start a thread, error: %d", rc);
          return rc;
       }
+      _tid = (int64)ntid;
 #endif
       state(THREAD_IDLE);
-      _tid = threadId;
       _task = NULL;
+
       return rc;
    }
 
    void threadEntity::active()
    {
       state(THREAD_RUNNING);
+#ifdef _WINDOWS
       ::ResumeThread(_hThread);
+#endif
    }
 
    void threadEntity::suspend()
    {
       state(THREAD_IDLE);
+#ifdef _WINDOWS
       ::SuspendThread(_hThread);
+#endif
    }
 
    void threadEntity::resume()
    {
-      state(THREAD_RUNNING);
-      ::ResumeThread(_hThread);
-   }
-
-   int threadEntity::join()
-   {
-      int rc = 0;
-      _task->attach(this);
-      rc = _task->run();
-      error(rc);
-      _task->detach();
-      return rc;
+      active();
    }
 
    int threadEntity::stop()
    {
       if (THREAD_IDLE == _state)
       {
-         state(THREAD_STOPPED);
          // if thread is suspended, we should state it stopped and active it
          active();
+         state(THREAD_STOPPED);
       }
       else if (THREAD_STOPPED != _state)
       {
          state(THREAD_STOPPED);
       }
 
-      return 0;
-   }
+      int rc = 0;
+#ifdef _WINDOWS
+      if (INVALID_HANDLE_VALUE != _hThread)
+      {
+         DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
+         if (WAIT_OBJECT_0 != dw)
+         {
+            rc = FetchLastError();
+            LogError("Thread: %lld exit with error: %d", _tid, rc);
+         }
+      }
+#else
+      if (0 != _tid)
+      {
+         int* err = &_errno;
+         rc = pthread_join(_tid, &err);
+         if (rc)
+         {
+            LogError("Thread: %lld exit with error: %d", (int64)_tid, rc);
+         }
+      }
+#endif
 
-   int threadEntity::kill()
-   {
-      ::_endthreadex(-1);
-      return 0;
+      return rc;
    }
 
 #ifdef _WINDOWS
@@ -108,23 +119,36 @@ namespace inspire {
       {
          threadMgr* mgr = entity->thdMgr();
          // assert mgr not NULL
-         while (THREAD_RUNNING == entity->state())
+         while (THREAD_RUNNING & entity->state())
          {
+#ifndef _WINDOWS
+            if (THREAD_IDLE == entity->state())
+            {
+               ::inSleep(1000);
+               continue;
+            }
+#endif
             int rc = 0;
             thdTask* task = entity->fetch();
-            if (NULL == task)
-               continue;
-            // keep task to the entity
-            // so that we can catch information when handling task
-            task->attach(entity);
-            rc = task->run();
-            if (rc)
+            if (NULL != task)
             {
-               entity->error(rc);
+               // keep task to the entity
+               // so that we can catch information when handling task
+               task->attach(entity);
+               rc = task->run();
+               if (rc)
+               {
+                  entity->error(rc);
+               }
+               // now we clean task assigned to entity
+               task->detach();
+               mgr->deactive(entity);
             }
-            // now we clean task assigned to entity
-            task->detach();
-            mgr->deactive(entity);
+            else
+            {
+               ::inSleep(100);
+               continue;
+            }
          }
          entity->close();
       }
@@ -134,5 +158,4 @@ namespace inspire {
       return NULL;
 #endif
    }
-
 }

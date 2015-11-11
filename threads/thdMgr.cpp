@@ -32,6 +32,16 @@ namespace inspire {
    int threadMgr::process()
    {
       int rc = 0;
+      if (_exit)
+      {
+         std::deque<threadEntity*>& rqueue = _idleQueue.raw();
+         std::deque<threadEntity*>::iterator it = rqueue.begin();
+         for (; rqueue.end() != it; ++it)
+         {
+            (*it)->stop();
+         }
+         return rc;
+      }
       // process tasks
       thdTask* task = fetch();
       if (NULL != task)
@@ -53,7 +63,7 @@ namespace inspire {
       }
       else
       {
-         ::Sleep(100);
+         ::inSleep(100);
       }
 
       return rc;
@@ -141,7 +151,7 @@ namespace inspire {
    void threadMgr::recycle(threadEntity* entity)
    {
       entity->assigned(NULL);
-      if (_idleQueue.size() < _maxIdleCount)
+      if (_idleQueue.size() < _maxIdleCount && !_exit)
       {
          // push the thread to idle
          enIdle(entity);

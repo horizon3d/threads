@@ -6,12 +6,12 @@
 #else
 #endif
 
-inline void Sleep(int seconds)
+inline void inSleep(int ms)
 {
 #ifdef _WINDOWS
-   ::Sleep(1000 * seconds);
+   ::Sleep(ms);
 #else
-   usleep(1000000 * seconds);
+   usleep(1000 * ms);
 #endif
 }
 

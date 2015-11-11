@@ -6,7 +6,7 @@
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <sys/thread>
+#include <pthread.h>
 #endif
 
 typedef long long int64;

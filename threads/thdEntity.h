@@ -3,14 +3,15 @@
 
 #include "threads.h"
 #include "logger/logger.h"
+
 namespace inspire {
 
    enum thdState
    {
-      THREAD_INVALID  = 0,
-      THREAD_IDLE     = 1, // it means thread is suspended
-      THREAD_RUNNING  = 2,
-      THREAD_STOPPED  = 3,
+      THREAD_INVALID  = 1 << 0,
+      THREAD_RUNNING  = 1 << 1,
+      THREAD_STOPPED  = 1 << 2,
+      THREAD_IDLE     = 1 | THREAD_RUNNING, // it means thread is suspended
    };
 
    class thdTask;
@@ -30,9 +31,7 @@ namespace inspire {
       void active();
       void suspend();
       void resume();
-      int join();
-      int stop();
-      int kill();
+      int  stop();
 
       void assigned(thdTask* task) { _task = task; }
       thdTask* fetch() const { return _task; }
@@ -41,27 +40,43 @@ namespace inspire {
       const int64 tid() const { return _tid; }
 
       HANDLE handle() const { return _hThread; }
-      void   close() { ::CloseHandle(_hThread); _hThread = INVALID_HANDLE_VALUE; }
+      void   close()
+      {
+#ifdef _WINDOWS
+         if (_hThread)
+         {
+            ::CloseHandle(_hThread);
+            _hThread = INVALID_HANDLE_VALUE;
+         }
+#else
+#endif
+      }
 
       const int state() const { return _state; }
       void state(const int st) { _state = st;  }
 
       const int error() const { return _errno; }
       void error(const int e) { _errno = e; }
-      
+
       threadMgr* thdMgr() const { return _thdMgr; }
 
    private:
       int        _errno;
       int        _state = THREAD_INVALID;
-      int64      _tid = -1;
-      HANDLE     _hThread = INVALID_HANDLE_VALUE;
       thdTask*   _task;
       threadMgr* _thdMgr;
+#ifdef _WINDOWS
+      HANDLE     _hThread = INVALID_HANDLE_VALUE;
+      int64      _tid = -1;
+#else
+      pthread_t  _tid;
+      pthread_cond_t _cond;
+      pthread_mutex_t _mtx;
+#endif
 
    private:
-      threadEntity(const threadEntity& rhs) = delete;
-      threadEntity& operator= (const threadEntity& rhs) = delete;
+      threadEntity(const threadEntity& rhs);
+      threadEntity& operator= (const threadEntity& rhs);
    };
 }
 #endif
