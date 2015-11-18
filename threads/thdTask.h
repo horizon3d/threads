@@ -13,11 +13,11 @@ namespace inspire {
       TASK_HANDLEING = 1,
       TASK_HANDLED = 2,
    };
-
+   typedef void (*TASK_OVER_CALL)(void* result);
    class thdTask
    {
    public:
-      thdTask(const int64& id, const char* name) : _status(TASK_UNHANDLED), _taskId(id), _thd(NULL), _name(name)
+      thdTask(const int64& id, const char* name) : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
       {
          thdTaskMgr::instance()->registerTask(this);
       }
@@ -42,6 +42,12 @@ namespace inspire {
       }
       void detach() { OnEnd(); }
 
+      TASK_OVER_CALL setTaskCallBack(TASK_OVER_CALL cb)
+      {
+         TASK_OVER_CALL old = _cb;
+         _cb = cb;
+         return old;
+      }
    private:
       void OnBegin()
       {
@@ -51,16 +57,18 @@ namespace inspire {
 
       void OnEnd()
       {
+         _cb(NULL); // need to be finish parameter
          status(TASK_HANDLED);
-         _thd = NULL;
          LogEvent("Task: %lld over", _taskId);
+         _thd = NULL;
       }
 
    private:
-      uint          _status;
-      int64         _taskId;
-      const char*   _name;
-      threadEntity* _thd;
+      uint           _status;
+      int64          _taskId;
+      const char*    _name;
+      threadEntity*  _thd;
+      TASK_OVER_CALL _cb;
    };
 }
 #endif
