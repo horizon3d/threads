@@ -46,20 +46,20 @@ namespace inspire {
       thdTask* task = fetch();
       if (NULL != task)
       {
-         thread* entity = fetchIdle();
-         if (NULL == entity)
+         thread* thd = fetchIdle();
+         if (NULL == thd)
          {
-            entity = create();
-            if (NULL == entity)
+            thd = create();
+            if (NULL == thd)
             {
                rc = -1; // OOM
-               LogError("Failed to create thread entity");
+               LogError("Failed to create thread thd");
                return rc;
             }
          }
-         entity->assigned(task);
-         LogEvent("assigned task: %lld to thread: %lld", task->id(), entity->tid());
-         entity->active();
+         thd->assigned(task);
+         LogEvent("assigned task: %lld to thread: %lld", task->id(), thd->tid());
+         thd->active();
       }
       else
       {
@@ -76,22 +76,22 @@ namespace inspire {
 
    thread* thdMgr::fetchIdle()
    {
-      thread* entity = NULL;
-      if (_idleQueue.pop_front(entity))
+      thread* thd = NULL;
+      if (_idleQueue.pop_front(thd))
       {
-         if (THREAD_IDLE != entity->state())
+         if (THREAD_IDLE != thd->state())
          {
             // when a thread pooled and pushed to idle queue
             // its state may not be THREAD_IDLE
             // so we need to fetch next to support request
-            enIdle(entity);
+            enIdle(thd);
          }
          else
          {
-            return entity;
+            return thd;
          }
       }
-      return entity;
+      return thd;
    }
 
    void thdMgr::dispatch(thdTask* task)
@@ -107,35 +107,35 @@ namespace inspire {
    thread* thdMgr::create()
    {
       int rc = 0;
-      thread* entity = acquire();
-      if (NULL == entity)
+      thread* thd = acquire();
+      if (NULL == thd)
       {
-         entity =  new thread(this);
-         if (NULL == entity)
+         thd =  new thread(this);
+         if (NULL == thd)
          {
-            LogError("Failed to create thread entity, out of memory");
+            LogError("Failed to create thread thd, out of memory");
             return NULL;
          }
       }
 
-      rc = entity->create();
+      rc = thd->create();
       if (rc)
       {
          return NULL;
       }
 
-      return entity;
+      return thd;
    }
 
-   void thdMgr::deactive(thread* entity)
+   void thdMgr::deactive(thread* thd)
    {
-      over(entity->fetch());
-      recycle(entity);
+      over(thd->fetch());
+      recycle(thd);
    }
 
-   void thdMgr::enIdle(thread* entity)
+   void thdMgr::enIdle(thread* thd)
    {
-      _idleQueue.push_back(entity);
+      _idleQueue.push_back(thd);
    }
 
    thdTask* thdMgr::fetch()
@@ -148,29 +148,29 @@ namespace inspire {
       return NULL;
    }
 
-   void thdMgr::recycle(thread* entity)
+   void thdMgr::recycle(thread* thd)
    {
-      entity->assigned(NULL);
+      thd->assigned(NULL);
       if (_idleQueue.size() < _maxIdleCount && !_exit)
       {
          // push the thread to idle
-         enIdle(entity);
-         entity->suspend();
+         enIdle(thd);
+         thd->suspend();
       }
       else
       {
          // change state to stop, thread will be exit
-         entity->state(THREAD_STOPPED);
-         _entityQueue.push_back(entity);
+         thd->state(THREAD_STOPPED);
+         _thdQueue.push_back(thd);
       }
    }
 
    thread* thdMgr::acquire()
    {
-      thread* entity = NULL;
-      if (_entityQueue.pop_front(entity))
+      thread* thd = NULL;
+      if (_thdQueue.pop_front(thd))
       {
-         return entity;
+         return thd;
       }
       return NULL;
    }

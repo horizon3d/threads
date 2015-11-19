@@ -25,13 +25,13 @@ namespace inspire {
       void over(thdTask* task);
 
       thread* create();
-      void deactive(thread* entity);
+      void deactive(thread* thd);
 
    protected:
       thdTask* fetch();
-      void enIdle(thread* entity);
-      void recycle(thread* entity);
-      void store(thread* entity);
+      void enIdle(thread* thd);
+      void recycle(thread* thd);
+      void store(thread* thd);
       thread* acquire();
 
    private:
@@ -46,7 +46,7 @@ namespace inspire {
       thdTaskMgr*          _taskMgr;
       deque<thread*>    _idleQueue;
       deque<thdTask*>      _taskQueue;
-      deque<thread*>    _entityQueue;
+      deque<thread*>    _thdQueue;
    };
 }
 #endif
