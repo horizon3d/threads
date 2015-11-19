@@ -118,7 +118,7 @@ namespace inspire {
          }
       }
 
-      rc = entity->initialize();
+      rc = entity->create();
       if (rc)
       {
          return NULL;

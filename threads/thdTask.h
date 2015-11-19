@@ -13,15 +13,18 @@ namespace inspire {
       TASK_HANDLEING = 1,
       TASK_HANDLED = 2,
    };
-   typedef void (*TASK_OVER_CALL)(void* result);
+   typedef void (*ON_TASK_END)(void* result);
    class thdTask
    {
    public:
-      thdTask(const int64& id, const char* name) : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
+      thdTask(const int64& id, const char* name)
+         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
       {
          thdTaskMgr::instance()->registerTask(this);
       }
-      explicit thdTask(const int64& id, const char* name, threadEntity* thd) : _status(TASK_UNHANDLED), _taskId(id), _thd(thd), _name(name) {}
+      explicit thdTask(const int64& id, const char* name, threadEntity* thd)
+         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(thd), _cb(NULL)
+      {}
       virtual ~thdTask() {}
 
       virtual int run() = 0;
@@ -38,24 +41,11 @@ namespace inspire {
          {
             _thd = thd;
          }
-         OnBegin();
-      }
-      void detach() { OnEnd(); }
-
-      TASK_OVER_CALL setTaskCallBack(TASK_OVER_CALL cb)
-      {
-         TASK_OVER_CALL old = _cb;
-         _cb = cb;
-         return old;
-      }
-   private:
-      void OnBegin()
-      {
          status(TASK_HANDLEING);
-         LogEvent("Task: %lld begin, current thread id: %lld", _taskId, _thd->tid());
+         LogEvent("Task: %lld begin handling", _taskId, _thd->tid());
       }
 
-      void OnEnd()
+      void detach()
       {
          _cb(NULL); // need to be finish parameter
          status(TASK_HANDLED);
@@ -63,12 +53,19 @@ namespace inspire {
          _thd = NULL;
       }
 
+      ON_TASK_END setTaskCallBack(ON_TASK_END cb)
+      {
+         ON_TASK_END old = _cb;
+         _cb = cb;
+         return old;
+      }
+
    private:
-      uint           _status;
-      int64          _taskId;
-      const char*    _name;
-      threadEntity*  _thd;
-      TASK_OVER_CALL _cb;
+      uint          _status;
+      int64         _taskId;
+      const char*   _name;
+      threadEntity* _thd;
+      ON_TASK_END   _cb;
    };
 }
 #endif

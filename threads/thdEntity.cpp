@@ -19,7 +19,7 @@ namespace inspire {
       _thdMgr = NULL;
    }
 
-   int threadEntity::initialize()
+   int threadEntity::create()
    {
       int rc = 0;
 #ifdef _WINDOWS
@@ -33,14 +33,14 @@ namespace inspire {
       }
       _tid = threadId;
 #else
-      pthread_t ntid;
-      rc = pthread_create(&ntid, NULL, threadEntity::ENTRY_POINT, this);
+      rc = pthread_create(&_ntid, NULL, threadEntity::ENTRY_POINT, this);
       if (rc)
       {
          LogError("Failed to start a thread, error: %d", rc);
          return rc;
       }
-      _tid = (int64)ntid;
+      state(THREAD_IDLE);
+      _tid = (int64)_ntid;
 #endif
       state(THREAD_IDLE);
       _task = NULL;
@@ -53,6 +53,9 @@ namespace inspire {
       state(THREAD_RUNNING);
 #ifdef _WINDOWS
       ::ResumeThread(_hThread);
+#else
+      pthread_mutex_unlock(&_mtx);
+      pthread_cond_signal(_cond);
 #endif
    }
 
@@ -61,6 +64,8 @@ namespace inspire {
       state(THREAD_IDLE);
 #ifdef _WINDOWS
       ::SuspendThread(_hThread);
+#else
+      pthread_mutex_lock(&_mtx);
 #endif
    }
 
@@ -69,7 +74,7 @@ namespace inspire {
       active();
    }
 
-   int threadEntity::stop()
+   void threadEntity::stop()
    {
       if (THREAD_IDLE == _state)
       {
@@ -81,31 +86,29 @@ namespace inspire {
       {
          state(THREAD_STOPPED);
       }
+   }
 
-      int rc = 0;
+   void threadEntity::join()
+   {
+      state(THREAD_STOPPED);
 #ifdef _WINDOWS
-      if (INVALID_HANDLE_VALUE != _hThread)
+      ::TerminateThread(_hThread, 0);
+      DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
+      if (WAIT_OBJECT_0 == dw || WAIT_ABANDONED == dw)
       {
-         DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
-         if (WAIT_OBJECT_0 != dw)
-         {
-            rc = FetchLastError();
-            LogError("Thread: %lld exit with error: %d", _tid, rc);
-         }
+         ::CloseHandle(_hThread);
+         _hThread = NULL;
+      }
+      else
+      {
+         LogError("thread ending with error");
+         error(FetchLastError());
       }
 #else
-      if (0 != _tid)
-      {
-         int* err = &_errno;
-         rc = pthread_join(_tid, &err);
-         if (rc)
-         {
-            LogError("Thread: %lld exit with error: %d", (int64)_tid, rc);
-         }
-      }
+      int ret = &_errno;
+      pthread_cancle(_ntid);
+      pthread_join(_ntid, &ret);
 #endif
-
-      return rc;
    }
 
 #ifdef _WINDOWS
@@ -114,9 +117,13 @@ namespace inspire {
    void* threadEntity::ENTRY_POINT(void* arg)
 #endif
    {
+      LogEvent("Thread starting");
       threadEntity* entity = static_cast<threadEntity*>(arg);
       if (entity)
       {
+#ifndef _WINDOWS
+         entity->suspend();
+#endif
          threadMgr* mgr = entity->thdMgr();
          // assert mgr not NULL
          while (THREAD_RUNNING & entity->state())
@@ -124,7 +131,7 @@ namespace inspire {
 #ifndef _WINDOWS
             if (THREAD_IDLE == entity->state())
             {
-               ::inSleep(1000);
+               inSleep(1000);
                continue;
             }
 #endif
@@ -150,10 +157,11 @@ namespace inspire {
                continue;
             }
          }
-         entity->close();
       }
+      entity->join();
+      LogEvent("Thread endding");
 #ifdef _WINDOWS
-      return 0;
+      return entity->error();
 #else
       return NULL;
 #endif

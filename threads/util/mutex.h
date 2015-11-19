@@ -11,13 +11,16 @@ namespace inspire {
    class mutex_t : public ILock
    {
    public:
+      
+#ifdef _WINDOWS
       mutex_t(const char* name = NULL)
       {
-#ifdef _WINDOWS
          CharConvertor uname(name);
          _hMutex = CreateEvent(NULL, FALSE, TRUE, uname.toString());
          if (INVALID_HANDLE_VALUE == _hMutex)
 #else
+      mutex_t()
+      {
          int res = pthread_mutex_init(&m, NULL);
          if (res)
 #endif
@@ -109,11 +112,11 @@ namespace inspire {
       }
 
    private:
-      const char* name;
 #ifdef _WINDOWS
-      HANDLE _hMutex;
+      const char* name = NULL;
+      HANDLE _hMutex = INVALID_HANDLE_VALUE;
 #else
-      pthread_mutex_t _hMutex;
+      pthread_mutex_t _hMutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
    };
 }

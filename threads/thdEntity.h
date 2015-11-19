@@ -27,11 +27,12 @@ namespace inspire {
       threadEntity(threadMgr* mgr);
       virtual ~threadEntity();
 
-      int initialize();
+      int  create();
       void active();
       void suspend();
       void resume();
-      int  stop();
+      void stop();
+      void join();
 
       void assigned(thdTask* task) { _task = task; }
       thdTask* fetch() const { return _task; }
@@ -40,17 +41,6 @@ namespace inspire {
       const int64 tid() const { return _tid; }
 
       HANDLE handle() const { return _hThread; }
-      void   close()
-      {
-#ifdef _WINDOWS
-         if (_hThread)
-         {
-            ::CloseHandle(_hThread);
-            _hThread = INVALID_HANDLE_VALUE;
-         }
-#else
-#endif
-      }
 
       const int state() const { return _state; }
       void state(const int st) { _state = st;  }
@@ -65,13 +55,13 @@ namespace inspire {
       int        _state = THREAD_INVALID;
       thdTask*   _task;
       threadMgr* _thdMgr;
+      int64      _tid = -1;
 #ifdef _WINDOWS
       HANDLE     _hThread = INVALID_HANDLE_VALUE;
-      int64      _tid = -1;
 #else
-      pthread_t  _tid;
-      pthread_cond_t _cond;
-      pthread_mutex_t _mtx;
+      pthread_t  _ntid;
+      pthread_cond_t _cond = PTHREAD_COND_INITIALIZER;
+      pthread_mutex_t _mtx = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
    private:
