@@ -48,7 +48,7 @@ inline unsigned long long CurrentThreadId()
 #endif
 }
 
-inline int FetchLastError()
+inline int utilGetLastError()
 {
 #ifdef _WIN32
    return (int)::GetLastError();

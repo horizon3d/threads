@@ -23,9 +23,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\threads\thdEntity.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\thdMgr.cpp">
       <Filter>threads</Filter>
     </ClCompile>
@@ -47,6 +44,9 @@
     <ClCompile Include="..\threads\thdTaskMgr.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\threads\thread.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\threads\util\condition.h">
@@ -60,9 +60,6 @@
     </ClInclude>
     <ClInclude Include="..\threads\util\spinlock.h">
       <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\thdEntity.h">
-      <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\thdMgr.h">
       <Filter>threads</Filter>
@@ -99,6 +96,12 @@
     </ClInclude>
     <ClInclude Include="..\threads\thdTaskMgr.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\thread.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\assert.h">
+      <Filter>threads\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

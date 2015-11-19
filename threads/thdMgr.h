@@ -2,17 +2,16 @@
 #define _INSPIRE_THREAD_MANAGER_H_
 
 #include "util/deque.h"
-#include "util/map.h"
-#include "thdEntity.h"
+#include "thread.h"
 
 namespace inspire {
 
    class thdTask;
    class thdTaskMgr;
-   class threadMgr
+   class thdMgr
    {
    public:
-      static threadMgr* instance();
+      static thdMgr* instance();
       // self
       int initialize();
       int destroy();
@@ -20,34 +19,34 @@ namespace inspire {
       void setIdleCount(const uint maxCount = 10);
 
       // thread
-      threadEntity* fetchIdle();
+      thread* fetchIdle();
       // task
       void dispatch(thdTask* task);
       void over(thdTask* task);
 
-      threadEntity* create();
-      void deactive(threadEntity* entity);
+      thread* create();
+      void deactive(thread* entity);
 
    protected:
       thdTask* fetch();
-      void enIdle(threadEntity* entity);
-      void recycle(threadEntity* entity);
-      void store(threadEntity* entity);
-      threadEntity* acquire();
+      void enIdle(thread* entity);
+      void recycle(thread* entity);
+      void store(thread* entity);
+      thread* acquire();
 
    private:
-      threadMgr();
-      threadMgr(const threadMgr& rhs) = delete;
-      threadMgr& operator=(const threadMgr& rhs) = delete;
-      virtual ~threadMgr();
+      thdMgr();
+      thdMgr(const thdMgr& rhs) = delete;
+      thdMgr& operator=(const thdMgr& rhs) = delete;
+      virtual ~thdMgr();
 
    private:
       bool                 _exit = false;
       uint                 _maxIdleCount = 10;
       thdTaskMgr*          _taskMgr;
-      deque<threadEntity*> _idleQueue;
+      deque<thread*>    _idleQueue;
       deque<thdTask*>      _taskQueue;
-      deque<threadEntity*> _entityQueue;
+      deque<thread*>    _entityQueue;
    };
 }
 #endif

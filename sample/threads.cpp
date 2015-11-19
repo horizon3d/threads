@@ -39,7 +39,7 @@ private:
 
 int main(int argc, char** argv)
 {
-   inspire::threadMgr* mgr = inspire::threadMgr::instance();
+   inspire::thdMgr* mgr = inspire::thdMgr::instance();
    mgr->setIdleCount(3);
    for (int idx = 0; idx < 20; ++idx)
    {

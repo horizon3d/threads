@@ -1,10 +1,10 @@
 #ifndef _INSPIRE_THREAD_BASE_H_
 #define _INSPIRE_THREAD_BASE_H_
 
-
-
+#include "util/assert.h"
 #ifdef _WIN32
 #include <windows.h>
+#include <process.h>
 #else
 #include <pthread.h>
 #endif

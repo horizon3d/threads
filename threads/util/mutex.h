@@ -80,6 +80,7 @@ namespace inspire {
          }
 #endif
       }
+
       virtual bool tryLock()
       {
          bool ok = true;
@@ -116,7 +117,7 @@ namespace inspire {
       const char* name = NULL;
       HANDLE _hMutex = INVALID_HANDLE_VALUE;
 #else
-      pthread_mutex_t _hMutex = PTHREAD_MUTEX_INITIALIZER;
+      pthread_mutex_t _hMutex;
 #endif
    };
 }

@@ -46,7 +46,7 @@ namespace inspire {
       _handle = ::CreateFile(fname.toString(), rwMode, sharedMode, NULL, crMode, attri, NULL );
       if (INVALID_HANDLE_VALUE == _handle)
       {
-         rc = FetchLastError();
+         rc = utilGetLastError();
 //          if (ERROR_SHARING_VIOLATION == rc)
 //          {
 //             LogError("Failed to open file, filename = %s, no permission", _filename);
@@ -61,7 +61,7 @@ namespace inspire {
       _fd = open(filename, iMode, iPermission);
       if (-1 == _fd)
       {
-         return FetchLastError();
+         return utilGetLastError();
 //          uint rc = errno;
 //          if (EINVAL == rc)
 //          {
@@ -111,13 +111,13 @@ namespace inspire {
       BOOL bSuccess = ::ReadFile(_handle, (LPVOID)buffer, toRead, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
 #else
       int bytes = read(_fd, buffer, toRead);
       if (-1 == bytes)
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
 #endif
       totalRead = (unsigned)bytes;
@@ -143,13 +143,13 @@ namespace inspire {
       BOOL bSuccess = ::WriteFile(_handle, buffer, toWrite, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
 #else
       int bytes = write(_fd, buffer, toWrite);
       if (-1 == bytes)
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
 #endif
       totalWrite = (unsigned)bytes;
@@ -177,7 +177,7 @@ namespace inspire {
       LARGE_INTEGER li;
       if (!GetFileSizeEx(_handle, &li))
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
       totalSize = li.QuadPart;
 #else
@@ -186,7 +186,7 @@ namespace inspire {
       rc = fstat(_fd, &sb);
       if (-1 == rc)
       {
-         return FetchLastError();
+         return utilGetLastError();
       }
       else
       {
@@ -212,7 +212,7 @@ namespace inspire {
       LARGE_INTEGER li;
       li.QuadPart = offset;
       li.LowPart = SetFilePointer( _handle, li.LowPart, &li.HighPart, (DWORD)whence );
-      if (INVALID_SET_FILE_POINTER == li.LowPart && NO_ERROR == FetchLastError())
+      if (INVALID_SET_FILE_POINTER == li.LowPart && NO_ERROR == utilGetLastError())
       {
          // I/O exception occurred when seek
          rc = -1;

@@ -1,8 +1,7 @@
 #ifndef _INSPIRE_THREAD_TASK_H_
 #define _INSPIRE_THREAD_TASK_H_
 
-#include "threads.h"
-#include "thdEntity.h"
+#include "thread.h"
 #include "thdTaskMgr.h"
 
 namespace inspire {
@@ -22,7 +21,7 @@ namespace inspire {
       {
          thdTaskMgr::instance()->registerTask(this);
       }
-      explicit thdTask(const int64& id, const char* name, threadEntity* thd)
+      explicit thdTask(const int64& id, const char* name, thread* thd)
          : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(thd), _cb(NULL)
       {}
       virtual ~thdTask() {}
@@ -35,7 +34,7 @@ namespace inspire {
       const int64 id() const { return _taskId; }
       const uint status() const { return _status; }
       void status(const uint st) { _status = st; }
-      void attach(threadEntity* thd = NULL)
+      void attach(thread* thd = NULL)
       {
          if(NULL != thd)
          {
@@ -64,7 +63,7 @@ namespace inspire {
       uint          _status;
       int64         _taskId;
       const char*   _name;
-      threadEntity* _thd;
+      thread*    _thd;
       ON_TASK_END   _cb;
    };
 }

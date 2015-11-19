@@ -3,39 +3,39 @@
 
 namespace inspire {
 
-   threadMgr* threadMgr::instance()
+   thdMgr* thdMgr::instance()
    {
-      static threadMgr mgr;
+      static thdMgr mgr;
       return &mgr;
    }
 
-   int threadMgr::initialize()
+   int thdMgr::initialize()
    {
       return 0;
    }
 
-   int threadMgr::destroy()
+   int thdMgr::destroy()
    {
       return 0;
    }
 
-   threadMgr::threadMgr()
+   thdMgr::thdMgr()
    {
       _taskMgr = thdTaskMgr::instance();
    }
 
-   threadMgr::~threadMgr()
+   thdMgr::~thdMgr()
    {
       _taskMgr = NULL;
    }
 
-   int threadMgr::process()
+   int thdMgr::process()
    {
       int rc = 0;
       if (_exit)
       {
-         std::deque<threadEntity*>& rqueue = _idleQueue.raw();
-         std::deque<threadEntity*>::iterator it = rqueue.begin();
+         std::deque<thread*>& rqueue = _idleQueue.raw();
+         std::deque<thread*>::iterator it = rqueue.begin();
          for (; rqueue.end() != it; ++it)
          {
             (*it)->stop();
@@ -46,7 +46,7 @@ namespace inspire {
       thdTask* task = fetch();
       if (NULL != task)
       {
-         threadEntity* entity = fetchIdle();
+         thread* entity = fetchIdle();
          if (NULL == entity)
          {
             entity = create();
@@ -69,14 +69,14 @@ namespace inspire {
       return rc;
    }
 
-   void threadMgr::setIdleCount(const uint maxCount)
+   void thdMgr::setIdleCount(const uint maxCount)
    {
       _maxIdleCount = maxCount;
    }
 
-   threadEntity* threadMgr::fetchIdle()
+   thread* thdMgr::fetchIdle()
    {
-      threadEntity* entity = NULL;
+      thread* entity = NULL;
       if (_idleQueue.pop_front(entity))
       {
          if (THREAD_IDLE != entity->state())
@@ -94,23 +94,23 @@ namespace inspire {
       return entity;
    }
 
-   void threadMgr::dispatch(thdTask* task)
+   void thdMgr::dispatch(thdTask* task)
    {
       _taskQueue.push_back(task);
    }
 
-   void threadMgr::over(thdTask* task)
+   void thdMgr::over(thdTask* task)
    {
       _taskMgr->over(task);
    }
 
-   threadEntity* threadMgr::create()
+   thread* thdMgr::create()
    {
       int rc = 0;
-      threadEntity* entity = acquire();
+      thread* entity = acquire();
       if (NULL == entity)
       {
-         entity =  new threadEntity(this);
+         entity =  new thread(this);
          if (NULL == entity)
          {
             LogError("Failed to create thread entity, out of memory");
@@ -127,18 +127,18 @@ namespace inspire {
       return entity;
    }
 
-   void threadMgr::deactive(threadEntity* entity)
+   void thdMgr::deactive(thread* entity)
    {
       over(entity->fetch());
       recycle(entity);
    }
 
-   void threadMgr::enIdle(threadEntity* entity)
+   void thdMgr::enIdle(thread* entity)
    {
       _idleQueue.push_back(entity);
    }
 
-   thdTask* threadMgr::fetch()
+   thdTask* thdMgr::fetch()
    {
       thdTask* task = NULL;
       if (_taskQueue.pop_front(task))
@@ -148,7 +148,7 @@ namespace inspire {
       return NULL;
    }
 
-   void threadMgr::recycle(threadEntity* entity)
+   void thdMgr::recycle(thread* entity)
    {
       entity->assigned(NULL);
       if (_idleQueue.size() < _maxIdleCount && !_exit)
@@ -165,9 +165,9 @@ namespace inspire {
       }
    }
 
-   threadEntity* threadMgr::acquire()
+   thread* thdMgr::acquire()
    {
-      threadEntity* entity = NULL;
+      thread* entity = NULL;
       if (_entityQueue.pop_front(entity))
       {
          return entity;
