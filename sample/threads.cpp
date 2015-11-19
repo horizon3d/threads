@@ -44,7 +44,7 @@ int main(int argc, char** argv)
    for (int idx = 0; idx < 20; ++idx)
    {
       inspire::thdTask* t = new taskA();
-      mgr->dispatch(t);
+      mgr->assign(t);
    }
 
    bool exit = false;

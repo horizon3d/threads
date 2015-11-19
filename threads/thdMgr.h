@@ -21,7 +21,7 @@ namespace inspire {
       // thread
       thread* fetchIdle();
       // task
-      void dispatch(thdTask* task);
+      void assign(thdTask* task);
       void over(thdTask* task);
 
       thread* create();
@@ -33,6 +33,7 @@ namespace inspire {
       void recycle(thread* thd);
       void store(thread* thd);
       thread* acquire();
+      void dispatch(thdTask* task);
 
    private:
       thdMgr();
@@ -41,11 +42,11 @@ namespace inspire {
       virtual ~thdMgr();
 
    private:
-      bool                 _exit = false;
-      uint                 _maxIdleCount = 10;
-      thdTaskMgr*          _taskMgr;
+      bool              _exit = false;
+      uint              _maxIdleCount = 10;
+      thdTaskMgr*       _taskMgr;
       deque<thread*>    _idleQueue;
-      deque<thdTask*>      _taskQueue;
+      deque<thdTask*>   _taskQueue;
       deque<thread*>    _thdQueue;
    };
 }

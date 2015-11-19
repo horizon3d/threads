@@ -63,7 +63,7 @@ namespace inspire {
       }
       else
       {
-         ::inSleep(100);
+         inSleep(100);
       }
 
       return rc;
@@ -94,7 +94,7 @@ namespace inspire {
       return thd;
    }
 
-   void thdMgr::dispatch(thdTask* task)
+   void thdMgr::assign(thdTask* task)
    {
       _taskQueue.push_back(task);
    }
@@ -151,7 +151,7 @@ namespace inspire {
    void thdMgr::recycle(thread* thd)
    {
       thd->assigned(NULL);
-      if (_idleQueue.size() < _maxIdleCount && !_exit)
+      if (!_exit && _idleQueue.size() < _maxIdleCount)
       {
          // push the thread to idle
          enIdle(thd);
