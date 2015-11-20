@@ -15,7 +15,7 @@ inline void inSleep(int ms)
 #endif
 }
 
-inline void wait(int seconds)
+inline void yeild(int seconds)
 {
 #ifdef _WINDOWS
    YieldProcessor();
@@ -28,7 +28,7 @@ inline void wait(int seconds)
    __asm__ __volatile__("or 27, 27, 27");
 #endif
 #endif
-   }
+}
 
 inline unsigned long long CurrentPid()
 {

@@ -151,8 +151,9 @@
     <ClCompile Include="..\sample\threads.cpp" />
     <ClCompile Include="..\threads\logger\base.cpp" />
     <ClCompile Include="..\threads\logger\writer.cpp" />
+    <ClCompile Include="..\threads\task\thdMgrTask.cpp" />
+    <ClCompile Include="..\threads\task\thdTaskMgr.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
-    <ClCompile Include="..\threads\thdTaskMgr.cpp" />
     <ClCompile Include="..\threads\thread.cpp" />
     <ClCompile Include="..\threads\util\ossFile.cpp" />
   </ItemGroup>
@@ -160,9 +161,11 @@
     <ClInclude Include="..\threads\logger\writer.h" />
     <ClInclude Include="..\threads\logger\logger.h" />
     <ClInclude Include="..\threads\logger\base.h" />
+    <ClInclude Include="..\threads\task\thdMgrTask.h" />
+    <ClInclude Include="..\threads\task\thdTask.h" />
+    <ClInclude Include="..\threads\task\thdTaskMgr.h" />
+    <ClInclude Include="..\threads\thdEvent.h" />
     <ClInclude Include="..\threads\thdMgr.h" />
-    <ClInclude Include="..\threads\thdTask.h" />
-    <ClInclude Include="..\threads\thdTaskMgr.h" />
     <ClInclude Include="..\threads\thread.h" />
     <ClInclude Include="..\threads\threads.h" />
     <ClInclude Include="..\threads\util\assert.h" />

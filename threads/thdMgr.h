@@ -3,6 +3,7 @@
 
 #include "util/deque.h"
 #include "thread.h"
+#include "thdEvent.h"
 
 namespace inspire {
 
@@ -11,28 +12,58 @@ namespace inspire {
    class thdMgr
    {
    public:
+      void initialize();
+      void active();
+      void destroy();
+
       static thdMgr* instance();
-      // self
-      int initialize();
-      int destroy();
-      int process();
-      void setIdleCount(const uint maxCount = 10);
+      /*
+      * receive event and handle event
+      */
+      void process();
+      /*
+      * set max count of idle thread to be stored
+      */
+      void reverseIdleCount(const uint maxCount = 10);
 
-      // thread
-      thread* fetchIdle();
-      // task
-      void assign(thdTask* task);
-      void over(thdTask* task);
-
+      /*
+      * create a thread
+      */
       thread* create();
+      /*
+      * deactive a thread, the thread may be recycled if idle queue not full
+      */
       void deactive(thread* thd);
+      /*
+      * notify thread manager to handle a event
+      * return false if program is going exiting
+      * more event detail, defined in thdEvent.h
+      */
+      bool notify(const char st, void* pObj);
 
    protected:
-      thdTask* fetch();
+      /*
+      * peek a thread from idle queue
+      * create a new thread if idle queue is empty
+      */
+      thread* fetchIdle();
+      /*
+      * push a thread into idle queue for reusing
+      */
       void enIdle(thread* thd);
+      /*
+      * recycle a thread, it determines a thread is to be idle or destroyed
+      */
       void recycle(thread* thd);
-      void store(thread* thd);
+      /*
+      * before create a thread, we should get a thread entity pooled in thread queue
+      * if a thread exit, the thread entity will be restored for next request
+      * this strategy aims at decreasing use of new and delete
+      */
       thread* acquire();
+      /*
+      * dispatch a task to a thread which is ready
+      */
       void dispatch(thdTask* task);
 
    private:
@@ -42,12 +73,12 @@ namespace inspire {
       virtual ~thdMgr();
 
    private:
-      bool              _exit = false;
       uint              _maxIdleCount = 10;
+      thread*           _mThd;
       thdTaskMgr*       _taskMgr;
       deque<thread*>    _idleQueue;
-      deque<thdTask*>   _taskQueue;
       deque<thread*>    _thdQueue;
+      deque<thdEvent>   _eventQueue;
    };
 }
 #endif

@@ -26,11 +26,10 @@ namespace inspire {
       {}
       virtual ~thdTask() {}
 
-      virtual int run() = 0;
-
-      virtual const char* name() { return _name; };
+      virtual const int run() = 0;
 
    public:
+      const char* name() { return _name; };
       const int64 id() const { return _taskId; }
       const uint status() const { return _status; }
       void status(const uint st) { _status = st; }
@@ -59,12 +58,12 @@ namespace inspire {
          return old;
       }
 
-   private:
-      uint          _status;
-      int64         _taskId;
-      const char*   _name;
-      thread*    _thd;
-      ON_TASK_END   _cb;
+   protected:
+      uint        _status;
+      int64       _taskId;
+      const char* _name;
+      thread*     _thd;
+      ON_TASK_END _cb;
    };
 }
 #endif

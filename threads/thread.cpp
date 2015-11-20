@@ -1,6 +1,6 @@
 #include "thread.h"
 #include "thdMgr.h"
-#include "thdTask.h"
+#include "task/thdTask.h"
 
 namespace inspire {
 
@@ -55,8 +55,9 @@ namespace inspire {
          ::ResumeThread(_hThread);
       }
 #else
+      pthread_mutex_lock(&_mtx);
+      pthread_cond_signal(&_cond);
       pthread_mutex_unlock(&_mtx);
-      pthread_cond_signal(_cond);
 #endif
    }
 
@@ -68,8 +69,6 @@ namespace inspire {
       {
          ::SuspendThread(_hThread);
       }
-#else
-      pthread_mutex_lock(&_mtx);
 #endif
    }
 
@@ -80,6 +79,9 @@ namespace inspire {
 
    void thread::stop()
    {
+      // in order to exit thread safety, we should state thread STOPPED
+      // and then wake up thread to continue
+      // thread will exit if it fetch NULL task
       state(THREAD_STOPPED);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
@@ -87,8 +89,9 @@ namespace inspire {
          ::ResumeThread(_hThread);
       }
 #else
+      pthread_mutex_lock(&_mtx);
+      pthread_cond_signal(&_cond);
       pthread_mutex_unlock(&_mtx);
-      pthread_cond_signal(_cond);
 #endif
    }
 
@@ -117,7 +120,34 @@ namespace inspire {
       pthread_cancle(ntid);
       pthread_join(ntid, &ret);
 #endif
+      state(THREAD_INVALID);
    }
+
+#ifndef _WINDOWS
+   bool thread::wait(uint seconds)
+   {
+      bool ok = false;
+      // lock thread, and thread will wait for resume
+      pthread_mutex_lock(&_mtx);
+      if (seconds > 0)
+      {
+         struct timespec ts;
+         ts.tv_sec = time(NULL) + seconds;
+         ts.tv_nsec = 0;
+         int rc = pthread_cond_timedwait(&_cond, &_mtx, &ts);
+         if (ETIMEDOUT == rc)
+         {
+            return false;
+         }
+      }
+      else
+      {
+         pthread_cond_wait(&_cond, &_mtx);
+      }
+      pthread_mutex_unlock(&_mtx);
+      return true;
+   }
+#endif
 
 #ifdef _WINDOWS
    unsigned __stdcall thread::ENTRY_POINT(void* arg)
@@ -147,7 +177,6 @@ namespace inspire {
             task->detach();
             mgr->deactive(thd);
          }
-         thd->join();
       }
       LogEvent("Thread endding");
       return thd->error();
@@ -157,36 +186,39 @@ namespace inspire {
    {
       INSPIRE_ASSERT(NULL != arg, "Thread addition parameter cannot be NULL");
       LogEvent("Thread starting");
-      int rc = 0;
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
-         thdMgr* mgr = entity->thdMgr();
+         thdMgr* mgr = thd->thdMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
-         while (THREAD_RUNNING &= entity->state())
+         while (THREAD_RUNNING &= thd->state())
          {
             // Linux do not support suspend
             // so we should wait until receive a signal
-            // TODO:
-            thdTask* task = entity->fetch();
+            if (THREAD_IDLE == thd->state())
+            {
+               while (!thd->wait())
+               {
+                  // DO NOTHING and continue WAITING
+               }
+            }
+            thdTask* task = thd->fetch();
             if (NULL != task)
             {
-               // keep task to the entity
+               // keep task to the thd
                // so that we can catch information when handling task
-               task->attach(entity);
-               rc = task->run();
+               task->attach(thd);
+               int rc = task->run();
                if (rc)
                {
-                  entity->error(rc);
+                  thd->error(rc);
                }
-               // now we clean task assigned to entity
+               // now we clean task assigned to thread
                task->detach();
-               mgr->deactive(entity);
+               mgr->deactive(thd);
             }
          }
-         thd->join();
-         rc = entity->error();
       }
       LogEvent("Thread endding");
       return NULL;

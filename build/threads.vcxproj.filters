@@ -41,11 +41,14 @@
     <ClCompile Include="..\sample\threads.cpp">
       <Filter>sample</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\thdTaskMgr.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\thread.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\task\thdTaskMgr.cpp">
+      <Filter>threads\task</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\task\thdMgrTask.cpp">
+      <Filter>threads\task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,9 +65,6 @@
       <Filter>threads\util</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\thdMgr.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\thdTask.h">
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\threads.h">
@@ -94,14 +94,23 @@
     <ClInclude Include="..\threads\util\lock.h">
       <Filter>threads\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\thdTaskMgr.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\thread.h">
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\assert.h">
       <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\thdEvent.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\task\thdTask.h">
+      <Filter>threads\task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\task\thdTaskMgr.h">
+      <Filter>threads\task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\task\thdMgrTask.h">
+      <Filter>threads\task</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

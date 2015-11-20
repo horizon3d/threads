@@ -39,6 +39,8 @@ namespace inspire {
       void error(const int err) { _errno = err; }
       const int error() const { return _errno; }
 
+      bool running() const { THREAD_RUNNING == _state; }
+
    public:
       int  create();
       void active();
@@ -46,17 +48,20 @@ namespace inspire {
       void resume();
       void stop();
       void join();
+#ifndef _WINDOWS
+      bool wait(uint seconds = 0);
+#endif
 
    private:
       thread(const thread& rhs);
       thread& operator= (const thread& rhs);
 
    protected:
-      char       _state;
-      int        _errno;
-      uint64     _tid;
-      thdTask*   _task;
-      thdMgr* _thdMgr;
+      char     _state;
+      int      _errno;
+      uint64   _tid;
+      thdTask* _task;
+      thdMgr*  _thdMgr;
 #ifdef _WINDOWS
       HANDLE _hThread = INVALID_HANDLE_VALUE;
 #else
