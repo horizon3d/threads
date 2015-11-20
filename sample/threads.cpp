@@ -61,6 +61,6 @@ int main(int argc, char** argv)
 
    //inSleep(20 * 1000);
    mgr->destroy();
-   inSleep(2000);
+   //inSleep(2000);
    return 0;
 }

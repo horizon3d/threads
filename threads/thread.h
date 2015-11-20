@@ -48,6 +48,7 @@ namespace inspire {
       void resume();
       void stop();
       void join();
+      void waitExit();
 #ifndef _WINDOWS
       bool wait(uint seconds = 0);
 #endif

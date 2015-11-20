@@ -164,6 +164,31 @@ namespace inspire {
       state(THREAD_INVALID);
    }
 
+   void thread::waitExit()
+   {
+#ifdef _WINDOWS
+      if (INVALID_HANDLE_VALUE != _hThread)
+      {
+         DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
+         if (WAIT_OBJECT_0 == dw || WAIT_ABANDONED == dw)
+         {
+            ::CloseHandle(_hThread);
+            _hThread = NULL;
+         }
+         else
+         {
+            _errno = utilGetLastError();
+            LogError("thread ending with error, errno: %d", _errno);
+         }
+      }
+#else
+      int ret = &_errno;
+      int ntid = (pthread_t)_tid;
+      pthread_join(ntid, &ret);
+#endif
+      state(THREAD_INVALID);
+   }
+
 #ifndef _WINDOWS
    bool thread::wait(uint seconds)
    {

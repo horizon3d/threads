@@ -78,7 +78,7 @@ namespace inspire {
 
    private:
       uint              _maxIdleCount = 10;
-      thread*           _mThd;
+      thread*           _mThd;           // special thread for handling event
       thdTaskMgr*       _taskMgr;
       deque<thread*>    _idleQueue;
       deque<thread*>    _thdQueue;

@@ -45,18 +45,10 @@ namespace inspire {
    void thdMgr::initialize()
    {
       thdTask* t = new thdMgrTask(this);
-      if (NULL == t)
-      {
-         LogError("Failed to allocate event processing task");
-         Panic();
-      }
+      STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
 
       thread* thd = create();
-      if (NULL == thd)
-      {
-         LogError("cannot start event processing thread, exit");
-         Panic();
-      }
+      STRONG_ASSERT(NULL != thd, "cannot start event processing thread, exit");
       _mThd = thd;
       _mThd->assigned(t);
    }
@@ -91,7 +83,7 @@ namespace inspire {
             LogEvent("dispatch a task, id:%lld", task->id());
             dispatch(task);
          }
-            break;
+         break;
          case EVENT_THREAD_SUSPEND:
          {
             thread* thd = (thread*)ev.evObject;
@@ -178,9 +170,8 @@ namespace inspire {
 
    void thdMgr::deactive(thread* thd)
    {
-      INSPIRE_ASSERT(NULL != thd, "try to deactive a NULL thread");
+      INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
       recycle(thd);
-      //notify(EVENT_THREAD_RECYCLE, thd);
    }
 
    bool thdMgr::notify(const char t, void* pObj)
@@ -198,7 +189,9 @@ namespace inspire {
       {
          if (EVENT_DISPATCH_TASK == t)
          {
-            LogError("a exit signal received, do not accept task dispatch event any more");
+            thdTask* task = (thdTask*)pObj;
+            LogError("a exit signal received, do not accept task dispatch event"
+                     " any more, task id: %lld, name:[%s]", task->id(), task->name());
          }
       }
       return false;
@@ -221,7 +214,7 @@ namespace inspire {
          _taskMgr->over(task);
       }
 
-      if (_mThd != thd)
+      if (_mThd != thd/* && !_mThd->running()*/)
       {
          // signal to manager to destroy the thread
          notify(EVENT_THREAD_RELEASE, thd);
