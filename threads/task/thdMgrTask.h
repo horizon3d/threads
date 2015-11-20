@@ -11,7 +11,7 @@ namespace inspire {
    {
    public:
       thdMgrTask(thdMgr* mgr)
-         : thdTask(-1, "Event Process Task"), _thdMgr(mgr) {}
+         : thdTask(0, "Event Process Task"), _thdMgr(mgr) {}
       ~thdMgrTask() { _thdMgr = NULL; }
 
       virtual const int run();

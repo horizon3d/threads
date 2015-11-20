@@ -16,12 +16,19 @@ struct mtxnumber
 };
 
 static mtxnumber no;
-static int taskId = 0;
+static mtxnumber taskId;
+
+int64 inc()
+{
+   inspire::condition_t cond(&taskId._spin);
+   ++taskId.index;
+   return taskId.index;
+}
 
 class taskA : public inspire::thdTask
 {
 public:
-   taskA() : thdTask(taskId, "A task") { ++taskId; }
+   taskA(int64 id) : thdTask(id, "A task") {  }
    ~taskA() {}
 
    virtual const int run()
@@ -44,15 +51,16 @@ int main(int argc, char** argv)
    mgr->initialize();
    mgr->active();
 
-
    mgr->reverseIdleCount(3);
    for (int idx = 0; idx < 20; ++idx)
    {
-      inspire::thdTask* t = new taskA();
+      int tt = inc();
+      inspire::thdTask* t = new taskA(tt);
       mgr->notify(inspire::EVENT_DISPATCH_TASK, t);
    }
 
+   //inSleep(20 * 1000);
    mgr->destroy();
-
+   inSleep(2000);
    return 0;
 }

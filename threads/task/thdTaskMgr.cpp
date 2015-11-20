@@ -14,11 +14,11 @@ namespace inspire {
       thdTask* t = NULL;
       if (!_taskMap.fetch(task->id(), t))
       {
-         int64 a = task->id();
-         const char* b = task->name();
+         int64 tId = task->id();
+         const char* tName = task->name();
          LogEvent("insert a new task into map, id: %lld, name: %s",
-                  task->id(), task->name());
-         _taskMap.insert(task->id(), task);
+                  tId, tName);
+         _taskMap.insert(tId, task);
       }
 #ifdef _DEBUG
       else
@@ -32,6 +32,7 @@ namespace inspire {
 
    void thdTaskMgr::over(thdTask* task)
    {
+      LogEvent("handled a task, id:%lld", task->id());
       thdTask* t = NULL;
       if (_taskMap.fetch(task->id(), t) && t == task)
       {

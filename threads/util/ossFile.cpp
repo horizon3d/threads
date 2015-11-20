@@ -165,7 +165,7 @@ namespace inspire {
          _handle = INVALID_HANDLE_VALUE;
 #else
         ::close(_fd);
-        _fd = 0;
+        _fd = -1;
 #endif
       }
    }

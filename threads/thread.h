@@ -24,7 +24,7 @@ namespace inspire {
 #endif
    public:
       thread(thdMgr* mgr);
-      virtual ~thread() {}
+      virtual ~thread();
 
       int64 tid() { return _tid; }
       
@@ -39,7 +39,7 @@ namespace inspire {
       void error(const int err) { _errno = err; }
       const int error() const { return _errno; }
 
-      bool running() const { THREAD_RUNNING == _state; }
+      bool running() const { return THREAD_RUNNING == _state; }
 
    public:
       int  create();

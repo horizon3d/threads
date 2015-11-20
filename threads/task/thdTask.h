@@ -45,7 +45,11 @@ namespace inspire {
 
       void detach()
       {
-         _cb(NULL); // need to be finish parameter
+         if (NULL != _cb)
+         {
+            // need to be finish parameter
+            // _cb(NULL);
+         }
          status(TASK_HANDLED);
          LogEvent("Task: %lld over", _taskId);
          _thd = NULL;

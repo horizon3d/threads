@@ -59,6 +59,7 @@ namespace inspire {
       pthread_cond_signal(&_cond);
       pthread_mutex_unlock(&_mtx);
 #endif
+      LogEvent("resume thread");
    }
 
    void thread::suspend()
@@ -70,11 +71,13 @@ namespace inspire {
          ::SuspendThread(_hThread);
       }
 #endif
+      LogEvent("suspend thread");
    }
 
    void thread::resume()
    {
       active();
+      LogEvent("resume thread");
    }
 
    void thread::stop()
@@ -82,26 +85,54 @@ namespace inspire {
       // in order to exit thread safety, we should state thread STOPPED
       // and then wake up thread to continue
       // thread will exit if it fetch NULL task
-      state(THREAD_STOPPED);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
-         ::ResumeThread(_hThread);
+         if (running())
+         {
+            state(THREAD_STOPPED);
+         }
+         else
+         {
+            state(THREAD_STOPPED);
+            ::ResumeThread(_hThread);
+         }
+         ::CloseHandle(_hThread);
+         _hThread = INVALID_HANDLE_VALUE;
       }
 #else
-      pthread_mutex_lock(&_mtx);
-      pthread_cond_signal(&_cond);
-      pthread_mutex_unlock(&_mtx);
+      if (running())
+      {
+         state(THREAD_STOPPED);
+      }
+      else
+      {
+         state(THREAD_STOPPED);
+         pthread_mutex_lock(&_mtx);
+         pthread_cond_signal(&_cond);
+         pthread_mutex_unlock(&_mtx);
+      }
+      int ret = &_errno;
+      int ntid = (pthread_t)_tid;
+      pthread_join(ntid, &ret);
 #endif
+      LogEvent("stop thread");
    }
 
    void thread::join()
    {
-      state(THREAD_STOPPED);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
-         ::ResumeThread(_hThread);
+         if (running())
+         {
+            state(THREAD_STOPPED);
+         }
+         else
+         {
+            state(THREAD_STOPPED);
+            ::ResumeThread(_hThread);
+         }
          DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
          if (WAIT_OBJECT_0 == dw || WAIT_ABANDONED == dw)
          {
@@ -115,9 +146,19 @@ namespace inspire {
          }
       }
 #else
+      if (running())
+      {
+         state(THREAD_STOPPED);
+      }
+      else
+      {
+         state(THREAD_STOPPED);
+         pthread_mutex_lock(&_mtx);
+         pthread_cond_signal(&_cond);
+         pthread_mutex_unlock(&_mtx);
+      }
       int ret = &_errno;
       int ntid = (pthread_t)_tid;
-      pthread_cancle(ntid);
       pthread_join(ntid, &ret);
 #endif
       state(THREAD_INVALID);
@@ -164,18 +205,24 @@ namespace inspire {
          while (THREAD_RUNNING == thd->state())
          {
             thdTask* task = thd->fetch();
-            INSPIRE_ASSERT(NULL != task, "fetch a task point to NULL");
-            // keep task to the entity
-            // so that we can catch information when handling task
-            task->attach(thd);
-            rc = task->run();
-            if (rc)
+            if (NULL == task)
             {
-               thd->error(rc);
+               inSleep(100);
             }
-            // now we clean task assigned to entity
-            task->detach();
-            mgr->deactive(thd);
+            else
+            {
+               // keep task to the entity
+               // so that we can catch information when handling task
+               task->attach(thd);
+               rc = task->run();
+               if (rc)
+               {
+                  thd->error(rc);
+               }
+               // now we clean task assigned to entity
+               task->detach();
+               mgr->deactive(thd);
+            }
          }
       }
       LogEvent("Thread endding");
@@ -204,7 +251,11 @@ namespace inspire {
                }
             }
             thdTask* task = thd->fetch();
-            if (NULL != task)
+            if (NULL == task)
+            {
+               inSleep(100);
+            }
+            else
             {
                // keep task to the thd
                // so that we can catch information when handling task

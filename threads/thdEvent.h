@@ -12,8 +12,7 @@ namespace inspire {
       EVENT_THREAD_SUSPEND = 1,
       EVENT_THREAD_RUNNING = 2,
       EVENT_THREAD_RESUME  = 3,
-      EVENT_THREAD_STOP    = 4,
-      EVENT_THREAD_RECYCLE = 5,
+      EVENT_THREAD_RELEASE = 4,
       EVENT_THREAD_UPBOUND,
    };
 
@@ -32,6 +31,7 @@ namespace inspire {
       {
          evType = rhs.evType;
          evObject = rhs.evObject;
+         return *this;
       }
    };
 }

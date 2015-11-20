@@ -30,7 +30,7 @@ inline void yeild(int seconds)
 #endif
 }
 
-inline unsigned long long CurrentPid()
+inline unsigned long long utilGetCurrentPid()
 {
 #ifdef _WIN32
    return (unsigned long long)::GetCurrentProcessId();
@@ -39,7 +39,7 @@ inline unsigned long long CurrentPid()
 #endif
 }
 
-inline unsigned long long CurrentThreadId()
+inline unsigned long long utilGetCurrentThreadId()
 {
 #ifdef _WIN32
    return (unsigned long long)::GetCurrentThreadId();

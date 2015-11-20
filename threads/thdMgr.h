@@ -52,9 +52,13 @@ namespace inspire {
       */
       void enIdle(thread* thd);
       /*
-      * recycle a thread, it determines a thread is to be idle or destroyed
+      * recycle a thread, it determines a thread is to be suspended or release
       */
       void recycle(thread* thd);
+      /*
+      * release a thread
+      */
+      void release(thread* thd);
       /*
       * before create a thread, we should get a thread entity pooled in thread queue
       * if a thread exit, the thread entity will be restored for next request
