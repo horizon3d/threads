@@ -2,6 +2,7 @@
 #define _INSPIRE_THREAD_MANAGER_H_
 
 #include "util/deque.h"
+#include "util/map.h"
 #include "thread.h"
 #include "thdEvent.h"
 
@@ -31,15 +32,15 @@ namespace inspire {
       */
       thread* create();
       /*
-      * deactive a thread, the thread may be recycled if idle queue not full
-      */
-      void deactive(thread* thd);
-      /*
       * notify thread manager to handle a event
       * return false if program is going exiting
       * more event detail, defined in thdEvent.h
       */
       bool notify(const char st, void* pObj);
+      /*
+      * recycle a thread, it determines a thread is to be suspended or release
+      */
+      void recycle(thread* thd);
 
    protected:
       /*
@@ -51,10 +52,6 @@ namespace inspire {
       * push a thread into idle queue for reusing
       */
       void enIdle(thread* thd);
-      /*
-      * recycle a thread, it determines a thread is to be suspended or release
-      */
-      void recycle(thread* thd);
       /*
       * release a thread
       */
@@ -69,6 +66,11 @@ namespace inspire {
       * dispatch a task to a thread which is ready
       */
       void dispatch(thdTask* task);
+      /*
+      * detach thread from thread map, so that the manager won't manager it
+      * user should join, free the thread any more
+      */
+      void detach(thread* thd);
 
    private:
       thdMgr();
@@ -77,12 +79,13 @@ namespace inspire {
       virtual ~thdMgr();
 
    private:
-      uint              _maxIdleCount = 10;
-      thread*           _mThd;           // special thread for handling event
-      thdTaskMgr*       _taskMgr;
-      deque<thread*>    _idleQueue;
-      deque<thread*>    _thdQueue;
-      deque<thdEvent>   _eventQueue;
+      uint                _maxIdleCount = 10;
+      thread*             _mThd;           // special thread for handling event
+      thdTaskMgr*         _taskMgr;
+      deque<thread*>      _idleQueue;
+      deque<thread*>      _thdQueue;
+      map<int64, thread*> _thdMap;
+      deque<thdEvent>     _eventQueue;
    };
 }
 #endif

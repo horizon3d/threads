@@ -54,7 +54,7 @@ int main(int argc, char** argv)
    mgr->reverseIdleCount(3);
    for (int idx = 0; idx < 20; ++idx)
    {
-      int tt = inc();
+      int64 tt = inc();
       inspire::thdTask* t = new taskA(tt);
       mgr->notify(inspire::EVENT_DISPATCH_TASK, t);
    }

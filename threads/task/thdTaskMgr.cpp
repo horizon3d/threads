@@ -32,7 +32,6 @@ namespace inspire {
 
    void thdTaskMgr::over(thdTask* task)
    {
-      LogEvent("handled a task, id:%lld", task->id());
       thdTask* t = NULL;
       if (_taskMap.fetch(task->id(), t) && t == task)
       {

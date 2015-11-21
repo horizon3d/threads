@@ -13,6 +13,8 @@ namespace inspire {
 
    thread::~thread()
    {
+      join();
+
       _errno  = 0;
       _state  = THREAD_INVALID;
       _task   = NULL;
@@ -59,11 +61,12 @@ namespace inspire {
       pthread_cond_signal(&_cond);
       pthread_mutex_unlock(&_mtx);
 #endif
-      LogEvent("resume thread");
+      LogEvent("active thread: %lld", _tid);
    }
 
    void thread::suspend()
    {
+      LogEvent("suspend thread: %lld", _tid);
       state(THREAD_IDLE);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
@@ -71,20 +74,16 @@ namespace inspire {
          ::SuspendThread(_hThread);
       }
 #endif
-      LogEvent("suspend thread");
    }
 
    void thread::resume()
    {
       active();
-      LogEvent("resume thread");
+      LogEvent("resume thread: %lld", _tid);
    }
 
-   void thread::stop()
+/*   void thread::stop()
    {
-      // in order to exit thread safety, we should state thread STOPPED
-      // and then wake up thread to continue
-      // thread will exit if it fetch NULL task
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
@@ -116,76 +115,55 @@ namespace inspire {
       int ntid = (pthread_t)_tid;
       pthread_join(ntid, &ret);
 #endif
-      LogEvent("stop thread");
-   }
-
-   void thread::join()
-   {
-#ifdef _WINDOWS
-      if (INVALID_HANDLE_VALUE != _hThread)
-      {
-         if (running())
-         {
-            state(THREAD_STOPPED);
-         }
-         else
-         {
-            state(THREAD_STOPPED);
-            ::ResumeThread(_hThread);
-         }
-         DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
-         if (WAIT_OBJECT_0 == dw || WAIT_ABANDONED == dw)
-         {
-            ::CloseHandle(_hThread);
-            _hThread = NULL;
-         }
-         else
-         {
-            _errno = utilGetLastError();
-            LogError("thread ending with error, errno: %d", _errno);
-         }
-      }
-#else
-      if (running())
-      {
-         state(THREAD_STOPPED);
-      }
-      else
-      {
-         state(THREAD_STOPPED);
-         pthread_mutex_lock(&_mtx);
-         pthread_cond_signal(&_cond);
-         pthread_mutex_unlock(&_mtx);
-      }
-      int ret = &_errno;
-      int ntid = (pthread_t)_tid;
-      pthread_join(ntid, &ret);
-#endif
       state(THREAD_INVALID);
    }
-
-   void thread::waitExit()
+*/
+   void thread::join()
    {
-#ifdef _WINDOWS
-      if (INVALID_HANDLE_VALUE != _hThread)
+      if (running())
       {
+         LogEvent("join thread: %lld to exit", _tid);
+         state(THREAD_STOPPED);
+      }
+
+      if (valid())
+      {
+         // in order to exit thread safety, we should state thread STOPPED if it is idle
+         // and then wake up thread to continue
+         // thread under Linux will exit after it fetch a NULL task
+#ifdef _WINDOWS
+         if (THREAD_IDLE == state())
+         {
+            state(THREAD_STOPPED);
+            LogEvent("awake thread: %lld to exit", _tid);
+            ::ResumeThread(_hThread);
+         }
+
          DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
          if (WAIT_OBJECT_0 == dw || WAIT_ABANDONED == dw)
          {
             ::CloseHandle(_hThread);
-            _hThread = NULL;
+            _hThread = INVALID_HANDLE_VALUE;
          }
          else
          {
             _errno = utilGetLastError();
             LogError("thread ending with error, errno: %d", _errno);
          }
-      }
 #else
-      int ret = &_errno;
-      int ntid = (pthread_t)_tid;
-      pthread_join(ntid, &ret);
+         if (THREAD_IDLE == state())
+         {
+            state(THREAD_STOPPED);
+            pthread_mutex_lock(&_mtx);
+            pthread_cond_signal(&_cond);
+            pthread_mutex_unlock(&_mtx);
+         }
+         int ret = &_errno;
+         int ntid = (pthread_t)_tid;
+         pthread_join(ntid, &ret);
+         _tid = -1;
 #endif
+      }
       state(THREAD_INVALID);
    }
 
@@ -214,6 +192,11 @@ namespace inspire {
       return true;
    }
 #endif
+
+   void thread::deactive()
+   {
+      _thdMgr->recycle(this);
+   }
 
 #ifdef _WINDOWS
    unsigned __stdcall thread::ENTRY_POINT(void* arg)
@@ -246,7 +229,7 @@ namespace inspire {
                }
                // now we clean task assigned to entity
                task->detach();
-               mgr->deactive(thd);
+               thd->deactive();
             }
          }
       }
@@ -292,7 +275,7 @@ namespace inspire {
                }
                // now we clean task assigned to thread
                task->detach();
-               mgr->deactive(thd);
+               thd->deactive();
             }
          }
       }

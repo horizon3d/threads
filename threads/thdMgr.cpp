@@ -20,26 +20,26 @@ namespace inspire {
       _taskMgr = NULL;
       _mThd = NULL;
 
-      {
-         std::deque<thread*>& rqueue = _idleQueue.raw();
-         std::deque<thread*>::iterator it = rqueue.begin();
-         for (; rqueue.end() != it; ++it)
-         {
-            thread* thd = *it;
-            thd->join();
-            delete thd;
-         }
-      }
-
-      {
-         std::deque<thread*>& rqueue = _thdQueue.raw();
-         std::deque<thread*>::iterator it = rqueue.begin();
-         for (; rqueue.end() != it; ++it)
-         {
-            thread* thd = *it;
-            delete thd;
-         }
-      }
+//       {
+//          std::deque<thread*>& rqueue = _idleQueue.raw();
+//          std::deque<thread*>::iterator it = rqueue.begin();
+//          for (; rqueue.end() != it; ++it)
+//          {
+//             thread* thd = *it;
+//             thd->join();
+//             delete thd;
+//          }
+//       }
+// 
+//       {
+//          std::deque<thread*>& rqueue = _thdQueue.raw();
+//          std::deque<thread*>::iterator it = rqueue.begin();
+//          for (; rqueue.end() != it; ++it)
+//          {
+//             thread* thd = *it;
+//             delete thd;
+//          }
+//       }
    }
 
    void thdMgr::initialize()
@@ -49,6 +49,8 @@ namespace inspire {
 
       thread* thd = create();
       STRONG_ASSERT(NULL != thd, "cannot start event processing thread, exit");
+
+      detach(thd);
       _mThd = thd;
       _mThd->assigned(t);
    }
@@ -61,13 +63,27 @@ namespace inspire {
 
    void thdMgr::destroy()
    {
+      LogEvent("signal to exit, program is going stopping");
       _mThd->join();
 
       while (!_eventQueue.empty())
       {
          process();
       }
-      LogEvent("event loop exit, program is going stopping");
+
+      {
+         std::map<int64, thread*>& rmap = _thdMap.raw();
+         std::map<int64, thread*>::iterator it = rmap.begin();
+         for (; rmap.end() != it; ++it)
+         {
+            thread* thd = it->second;
+            thd->join();
+            delete thd;
+         }
+      }
+
+      delete _mThd;
+      _mThd = NULL;
    }
 
    void thdMgr::process()
@@ -80,7 +96,6 @@ namespace inspire {
          case EVENT_DISPATCH_TASK:
          {
             thdTask* task = (thdTask*)ev.evObject;
-            LogEvent("dispatch a task, id:%lld", task->id());
             dispatch(task);
          }
          break;
@@ -139,6 +154,7 @@ namespace inspire {
          }
          else
          {
+            LogEvent("fetch a idle thread from idle queue, thread id: %lld", thd->tid());
             return thd;
          }
       }
@@ -151,55 +167,27 @@ namespace inspire {
       thread* thd = acquire();
       if (NULL == thd)
       {
-         thd =  new thread(this);
+         thd = new thread(this);
          if (NULL == thd)
          {
-            LogError("Failed to create thread thd, out of memory");
+            LogError("failed to create thread, out of memory");
+            // if hit there, log had been written
             return NULL;
          }
+         LogEvent("allocate a thread object");
+         // we should remove it from thdMap
+         _thdMap.erase(thd->tid());
       }
 
       rc = thd->create();
       if (rc)
       {
+         LogError("create thread failed in start thread");
          return NULL;
       }
-
+      // let's record it
+      _thdMap.insert(thd->tid(), thd);
       return thd;
-   }
-
-   void thdMgr::deactive(thread* thd)
-   {
-      INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
-      recycle(thd);
-   }
-
-   bool thdMgr::notify(const char t, void* pObj)
-   {
-      INSPIRE_ASSERT(EVENT_DUMMY < t && t < EVENT_THREAD_UPBOUND,
-                     "notify with an dummy or unknown type: %d", t);
-      INSPIRE_ASSERT(NULL != pObj, "notify with invalid object");
-      thdEvent ev(t, pObj);
-      if (_mThd->running())
-      {
-         _eventQueue.push_back(ev);
-         return true;
-      }
-      else
-      {
-         if (EVENT_DISPATCH_TASK == t)
-         {
-            thdTask* task = (thdTask*)pObj;
-            LogError("a exit signal received, do not accept task dispatch event"
-                     " any more, task id: %lld, name:[%s]", task->id(), task->name());
-         }
-      }
-      return false;
-   }
-
-   void thdMgr::enIdle(thread* thd)
-   {
-      _idleQueue.push_back(thd);
    }
 
    void thdMgr::recycle(thread* thd)
@@ -214,7 +202,7 @@ namespace inspire {
          _taskMgr->over(task);
       }
 
-      if (_mThd != thd/* && !_mThd->running()*/)
+      if (!thd->detached())
       {
          // signal to manager to destroy the thread
          notify(EVENT_THREAD_RELEASE, thd);
@@ -223,20 +211,48 @@ namespace inspire {
       }
    }
 
+   bool thdMgr::notify(const char t, void* pObj)
+   {
+      INSPIRE_ASSERT(EVENT_DUMMY < t && t < EVENT_THREAD_UPBOUND,
+                     "notify with an dummy or unknown type: %d", t);
+      INSPIRE_ASSERT(NULL != pObj, "notify with invalid object");
+      if (!_mThd->running() && EVENT_DISPATCH_TASK == t)
+      {
+         thdTask* task = (thdTask*)pObj;
+         LogError("a exit signal received, do not accept task dispatch event "
+                  "any more, task id: %lld, name:[%s]", task->id(), task->name());
+      }
+      else
+      {
+         thdEvent ev(t, pObj);
+         _eventQueue.push_back(ev);
+         return true;
+      }
+
+      return false;
+   }
+
+   void thdMgr::enIdle(thread* thd)
+   {
+      _idleQueue.push_back(thd);
+   }
+
    void thdMgr::release(thread* thd)
    {
       INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
       if (_mThd->running() && _idleQueue.size() < _maxIdleCount)
       {
          // push the thread to idle
+         LogEvent("recycle a thread into idle queue, thread id: %lld", thd->tid());
          enIdle(thd);
       }
       else
       {
          // join thread until it exit
-         thd->stop();
+         thd->join();
          // now the thread object didn't contains real thread process function
-         // we store the thread into thread queue for next use
+         // we store it into thread queue
+         // until it acquired and start new thread process for next use
          _thdQueue.push_back(thd);
       }
    }
@@ -246,10 +262,10 @@ namespace inspire {
       thread* thd = NULL;
       if (_thdQueue.pop_front(thd))
       {
-         thd->join();
-         thd->state(THREAD_INVALID);
+         LogEvent("fetch a thread object from thread queue");
          return thd;
       }
+
       return NULL;
    }
 
@@ -276,4 +292,12 @@ namespace inspire {
          thd->active();
       }
    }
+
+   void thdMgr::detach(thread* thd)
+   {
+      LogEvent("detach thread: %lld from manager map", thd->tid());
+      _thdMap.erase(thd->tid());
+      thd->detach();
+   }
+
 }
