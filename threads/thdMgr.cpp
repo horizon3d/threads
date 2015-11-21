@@ -162,10 +162,8 @@ namespace inspire {
          return NULL;
       }
       // let's record it
-      if (!_totalSet.find(thd))
-      {
-         _totalSet.insert(thd);
-      }
+      // if object is existed already, it cannot be inserted
+      _totalSet.insert(thd);
       return thd;
    }
 
