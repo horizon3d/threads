@@ -18,28 +18,6 @@ namespace inspire {
    thdMgr::~thdMgr()
    {
       _taskMgr = NULL;
-      _mThd = NULL;
-
-//       {
-//          std::deque<thread*>& rqueue = _idleQueue.raw();
-//          std::deque<thread*>::iterator it = rqueue.begin();
-//          for (; rqueue.end() != it; ++it)
-//          {
-//             thread* thd = *it;
-//             thd->join();
-//             delete thd;
-//          }
-//       }
-// 
-//       {
-//          std::deque<thread*>& rqueue = _thdQueue.raw();
-//          std::deque<thread*>::iterator it = rqueue.begin();
-//          for (; rqueue.end() != it; ++it)
-//          {
-//             thread* thd = *it;
-//             delete thd;
-//          }
-//       }
    }
 
    void thdMgr::initialize()
@@ -72,11 +50,11 @@ namespace inspire {
       }
 
       {
-         std::map<int64, thread*>& rmap = _thdMap.raw();
-         std::map<int64, thread*>::iterator it = rmap.begin();
-         for (; rmap.end() != it; ++it)
+         std::set<thread*>& rset = _totalSet.raw();
+         std::set<thread*>::iterator it = rset.begin();
+         for (; rset.end() != it; ++it)
          {
-            thread* thd = it->second;
+            thread* thd = (*it);
             thd->join();
             delete thd;
          }
@@ -175,8 +153,6 @@ namespace inspire {
             return NULL;
          }
          LogEvent("allocate a thread object");
-         // we should remove it from thdMap
-         _thdMap.erase(thd->tid());
       }
 
       rc = thd->create();
@@ -186,7 +162,10 @@ namespace inspire {
          return NULL;
       }
       // let's record it
-      _thdMap.insert(thd->tid(), thd);
+      if (!_totalSet.find(thd))
+      {
+         _totalSet.insert(thd);
+      }
       return thd;
    }
 
@@ -296,7 +275,7 @@ namespace inspire {
    void thdMgr::detach(thread* thd)
    {
       LogEvent("detach thread: %lld from manager map", thd->tid());
-      _thdMap.erase(thd->tid());
+      _totalSet.erase(thd);
       thd->detach();
    }
 

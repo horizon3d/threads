@@ -2,8 +2,8 @@
 #define _INSPIRE_UTIL_DEQUEUE_H_
 
 #include <deque>
-#include "threads.h"
 #include "mutex.h"
+#include "condition.h"
 
 namespace inspire {
 
@@ -34,7 +34,7 @@ namespace inspire {
 
       bool empty() const { return _deque.empty(); }
 
-      uint size() const { return (uint)_deque.size(); }
+      unsigned size() const { return (unsigned)_deque.size(); }
 
       std::deque<T>& raw() { return _deque; }
 

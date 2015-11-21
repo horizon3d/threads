@@ -176,6 +176,7 @@
     <ClInclude Include="..\threads\util\map.h" />
     <ClInclude Include="..\threads\util\mutex.h" />
     <ClInclude Include="..\threads\util\ossFile.h" />
+    <ClInclude Include="..\threads\util\set.h" />
     <ClInclude Include="..\threads\util\spinlock.h" />
     <ClInclude Include="..\threads\util\util.hpp" />
   </ItemGroup>

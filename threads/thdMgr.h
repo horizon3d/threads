@@ -2,7 +2,7 @@
 #define _INSPIRE_THREAD_MANAGER_H_
 
 #include "util/deque.h"
-#include "util/map.h"
+#include "util/set.h"
 #include "thread.h"
 #include "thdEvent.h"
 
@@ -79,13 +79,13 @@ namespace inspire {
       virtual ~thdMgr();
 
    private:
-      uint                _maxIdleCount = 10;
-      thread*             _mThd;           // special thread for handling event
-      thdTaskMgr*         _taskMgr;
-      deque<thread*>      _idleQueue;
-      deque<thread*>      _thdQueue;
-      map<int64, thread*> _thdMap;
-      deque<thdEvent>     _eventQueue;
+      uint            _maxIdleCount = 10;
+      thread*         _mThd;       ///< special thread for handling event
+      thdTaskMgr*     _taskMgr;
+      deque<thread*>  _idleQueue;  ///< the queue contains thread entity
+      deque<thread*>  _thdQueue;   ///< the queue don't contains thread entity
+      set<thread*>    _totalSet;   ///< all thread objects, used for resource management
+      deque<thdEvent> _eventQueue;
    };
 }
 #endif

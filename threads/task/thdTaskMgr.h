@@ -1,6 +1,7 @@
 #ifndef _INSPIRE_THREAD_TASK_MANAGER_H_
 #define _INSPIRE_THREAD_TASK_MANAGER_H_
 
+#include "threads.h"
 #include "util/map.h"
 #include "util/deque.h"
 

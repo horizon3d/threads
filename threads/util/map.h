@@ -2,9 +2,8 @@
 #define _INSPIRE_UTIL_MAP_H_
 
 #include <map>
-#include "threads.h"
-#include "condition.h"
 #include "mutex.h"
+#include "condition.h"
 
 namespace inspire {
 
@@ -43,7 +42,7 @@ namespace inspire {
 
       bool empty() const { return _map.empty(); }
 
-      uint size() const { return (uint)_map.size(); }
+      unsigned size() const { return (unsigned)_map.size(); }
 
       bool find(const K& key)
       {
