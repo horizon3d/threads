@@ -7,6 +7,7 @@
 #include "thdMgr.h"
 #include <iostream>
 #include "thdEvent.h"
+#include "util/map.h"
 
 struct mtxnumber
 {

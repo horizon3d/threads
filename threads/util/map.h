@@ -10,28 +10,31 @@ namespace inspire {
    template<typename K, typename V>
    class map
    {
+      typedef K key_type;
+      typedef V value_type;
+      typedef V& value_reference;
    public:
       map()  {}
       ~map() {}
 
    public:
 
-      void insert(K key, V value)
+      void insert(const key_type key, value_type value)
       {
          condition_t cond(&_mtx);
          _map.insert(std::make_pair(key, value));
       }
 
-      void erase(const K& key)
+      void erase(const key_type& key)
       {
          condition_t cond(&_mtx);
          _map.erase(key);
       }
 
-      bool fetch(const K& key, V& v)
+      bool fetch(const key_type& key, value_reference v)
       {
          condition_t cond(&_mtx);
-         std::map<K, V>::iterator it = _map.find(key);
+         std::map<key_type, value_type>::iterator it = _map.find(key);
          if (_map.end() != it)
          {
             v = it->second;
@@ -44,9 +47,9 @@ namespace inspire {
 
       unsigned size() const { return (unsigned)_map.size(); }
 
-      bool find(const K& key)
+      bool find(const key_type& key)
       {
-         std::map<K, V>::iterator it = _map.find(key);
+         std::map<key_type, value_type>::iterator it = _map.find(key);
          if (_map.end() != it)
          {
             return true;
@@ -54,11 +57,11 @@ namespace inspire {
          return false;
       }
 
-      std::map<K, V>& raw() { return _map; }
+      std::map<key_type, value_type>& raw() { return _map; }
 
    private:
       mutex_t _mtx;
-      std::map<K, V> _map;
+      std::map<key_type, value_type> _map;
    };
 }
 #endif
