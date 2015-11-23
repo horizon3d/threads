@@ -1,8 +1,8 @@
 #ifndef _INSPIRE_UTIL_SPIN_LOCK_H_
 #define _INSPIRE_UTIL_SPIN_LOCK_H_
 
-#include "inspire.h"
 #include "lock.h"
+#include "atomic.h"
 
 namespace inspire {
 
@@ -20,7 +20,7 @@ namespace inspire {
          do 
          {
             --times;
-         } while (InterlockedCompareExchange(&_spin, LOCK, UNLOCK) && times > 0);
+         } while (sysCompareAndSwap32(&_spin, LOCK, UNLOCK) && times > 0);
          if (times > 0)
             return true;
          return false;
@@ -32,16 +32,16 @@ namespace inspire {
          do 
          {
             ++pin;
-         } while (InterlockedCompareExchange(&_spin, LOCK, UNLOCK));
+         } while (sysCompareAndSwap32(&_spin, LOCK, UNLOCK));
       }
 
       virtual void unlock()
       {
-         InterlockedExchange(&_spin, UNLOCK);
+         sysAtomicExchange32(&_spin, UNLOCK);
       }
 
    private:
-      unsigned volatile _spin;
+      int volatile _spin;
    };
 }
 #endif

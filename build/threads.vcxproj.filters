@@ -115,5 +115,8 @@
     <ClInclude Include="..\threads\inspire.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\threads\util\atomic.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,13 +1,6 @@
 #ifndef _INSPIRE_THREAD_BASE_H_
 #define _INSPIRE_THREAD_BASE_H_
 
-#ifdef _WINDOWS
-#include <windows.h>
-#include <process.h>
-#else
-#include <pthread.h>
-#endif
-
 #include "thread.h"
 #include "thdMgr.h"
 #include "thdEvent.h"

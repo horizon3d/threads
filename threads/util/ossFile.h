@@ -2,6 +2,9 @@
 #define _INSPIRE_UTIL_FILE_H_
 
 #include "inspire.h"
+#ifdef _WINDOWS
+#include <windows.h>
+#endif
 
 namespace inspire {
 

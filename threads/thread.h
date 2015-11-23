@@ -2,6 +2,7 @@
 #define _INSPIRE_THREAD_ENTITY_H_
 
 #include "inspire.h"
+#include "util/assert.h"
 
 namespace inspire {
 

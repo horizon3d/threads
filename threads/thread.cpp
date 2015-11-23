@@ -1,7 +1,12 @@
 #include "thread.h"
 #include "thdMgr.h"
 #include "task/thdTask.h"
-#include "util/assert.h"
+
+#ifdef _WINDOWS
+#include <process.h>
+#else
+#include <pthread.h>
+#endif // _WINDOWS
 
 namespace inspire {
 
@@ -216,7 +221,7 @@ namespace inspire {
             thdTask* task = thd->fetch();
             if (NULL == task)
             {
-               inSleep(100);
+               utilSleep(100);
             }
             else
             {
@@ -262,7 +267,7 @@ namespace inspire {
             thdTask* task = thd->fetch();
             if (NULL == task)
             {
-               inSleep(100);
+               utilSleep(100);
             }
             else
             {

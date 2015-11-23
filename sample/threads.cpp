@@ -15,10 +15,7 @@ struct mtxnumber
 };
 
 mtxnumber no;
-no.index = 0;
-
 mtxnumber taskId;
-taskId.index = 0;
 
 int64 inc()
 {
@@ -49,6 +46,9 @@ private:
 
 int main(int argc, char** argv)
 {
+   no.index = 0;
+   taskId.index = 0;
+
    inspire::thdMgr* mgr = inspire::thdMgr::instance();
    mgr->initialize();
    mgr->active();

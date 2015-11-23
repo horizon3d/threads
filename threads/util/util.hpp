@@ -9,7 +9,9 @@
 #include <sys/syacall.h>
 #endif
 
-inline void inSleep(int ms)
+#include "inspire.h"
+
+inline void utilSleep(int ms)
 {
 #ifdef _WINDOWS
    ::Sleep(ms);
@@ -33,21 +35,21 @@ inline void yeild(int seconds)
 #endif
 }
 
-inline unsigned long long utilGetCurrentPid()
+inline uint64 utilGetCurrentPid()
 {
 #ifdef _WIN32
-   return (unsigned long long)::GetCurrentProcessId();
+   return (uint64)::GetCurrentProcessId();
 #else
-   retun (unsigned long long)getpid();
+   retun (uint64)getpid();
 #endif
 }
 
-inline unsigned long long utilGetCurrentThreadId()
+inline uint64 utilGetCurrentThreadId()
 {
 #ifdef _WIN32
-   return (unsigned long long)::GetCurrentThreadId();
+   return (uint64)::GetCurrentThreadId();
 #else
-   retun (unsigned long long)syscall(SYS_gettid);
+   retun (uint64)syscall(SYS_gettid);
 #endif
 }
 

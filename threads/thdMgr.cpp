@@ -109,7 +109,7 @@ namespace inspire {
       }
       else
       {
-         inSleep(100);
+         utilSleep(100);
       }
    }
 

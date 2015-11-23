@@ -169,6 +169,7 @@
     <ClInclude Include="..\threads\thread.h" />
     <ClInclude Include="..\threads\threads.h" />
     <ClInclude Include="..\threads\util\assert.h" />
+    <ClInclude Include="..\threads\util\atomic.h" />
     <ClInclude Include="..\threads\util\charConvertor.h" />
     <ClInclude Include="..\threads\util\condition.h" />
     <ClInclude Include="..\threads\util\deque.h" />
