@@ -15,8 +15,16 @@ namespace inspire {
 #ifdef _WINDOWS
       mutex_t(const char* name = NULL)
       {
-         CharConvertor uname(name);
-         _hMutex = CreateEvent(NULL, FALSE, TRUE, uname.toString());
+         if (NULL == name)
+         {
+            _hMutex = CreateEvent(NULL, FALSE, TRUE, NULL);
+         }
+         else
+         {
+            CharConvertor uname(name);
+            _hMutex = CreateEvent(NULL, FALSE, TRUE, uname.toString());
+         }
+
          if (INVALID_HANDLE_VALUE == _hMutex)
 #else
       mutex_t()
@@ -121,4 +129,4 @@ namespace inspire {
 #endif
    };
 }
-#endif
+#endif // _INSPIRE_UTIL_MUTEX_H_

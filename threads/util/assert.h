@@ -1,8 +1,8 @@
 #ifndef _INSPIRE_UTIL_ASSERT_H_
 #define _INSPIRE_UTIL_ASSERT_H_
 
-#include "util.hpp"
 #include "logger/logger.h"
+#include "util.hpp"
 
 #ifdef _DEBUG
 #define INSPIRE_ASSERT(cond, fmt, ...) \

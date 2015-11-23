@@ -48,4 +48,4 @@ namespace inspire {
       std::set<T> _set;
    };
 }
-#endif // !_INSPIRE_UTIL_SET_H_
+#endif // _INSPIRE_UTIL_SET_H_
