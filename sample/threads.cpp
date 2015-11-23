@@ -11,11 +11,14 @@ struct mtxnumber
 {
    inspire::mutex_t _spin;
    //inspire::spinlock_t _spin;
-   int index = 0;
+   int index;
 };
 
-static mtxnumber no;
-static mtxnumber taskId;
+mtxnumber no;
+no.index = 0;
+
+mtxnumber taskId;
+taskId.index = 0;
 
 int64 inc()
 {

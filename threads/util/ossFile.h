@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_FILE_H_
 #define _INSPIRE_UTIL_FILE_H_
 
-#include "threads.h"
+#include "inspire.h"
 
 namespace inspire {
 

@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_THREAD_EVENT_H_
 #define _INSPIRE_THREAD_EVENT_H_
 
-#include "threads.h"
+#include "inspire.h"
 
 namespace inspire {
 

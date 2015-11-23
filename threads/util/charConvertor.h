@@ -1,7 +1,6 @@
 #ifndef _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 #define _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 
-#include <windows.h>
 #include "util.hpp"
 
 namespace inspire {

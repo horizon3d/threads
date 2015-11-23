@@ -1,7 +1,7 @@
-#ifndef _INSPIRE_THREAD_H_
-#define _INSPIRE_THREAD_H_
+#ifndef _INSPIRE_THREAD_ENTITY_H_
+#define _INSPIRE_THREAD_ENTITY_H_
 
-#include "threads.h"
+#include "inspire.h"
 
 namespace inspire {
 
@@ -116,4 +116,4 @@ namespace inspire {
 #endif
    };
 }
-#endif
+#endif // _INSPIRE_THREAD_ENTITY_H_

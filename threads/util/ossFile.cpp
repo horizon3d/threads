@@ -46,14 +46,6 @@ namespace inspire {
       if (INVALID_HANDLE_VALUE == _handle)
       {
          rc = utilGetLastError();
-//          if (ERROR_SHARING_VIOLATION == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, no permission", _filename);
-//          }
-//          else
-//          {
-//             LogError("Failed to open file, filename = %s, I/O exception", _filename);
-//          }
       }
 #else
       int iMode = _matchMode(mode);

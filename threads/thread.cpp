@@ -1,6 +1,7 @@
 #include "thread.h"
 #include "thdMgr.h"
 #include "task/thdTask.h"
+#include "util/assert.h"
 
 namespace inspire {
 

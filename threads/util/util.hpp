@@ -1,7 +1,13 @@
 #ifndef _INSPIRE_LOGGER_UTIL_H_
 #define _INSPIRE_LOGGER_UTIL_H_
 
-#include "threads.h"
+#ifdef _WINDOWS
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <errno.h>
+#include <sys/syacall.h>
+#endif
 
 inline void inSleep(int ms)
 {
@@ -15,7 +21,7 @@ inline void inSleep(int ms)
 inline void yeild(int seconds)
 {
 #ifdef _WINDOWS
-   YieldProcessor();
+   ::Sleep(seconds * 1000);
 #elif _LINUX
 #if defined(_AIX)
    __asm__ __volatile__("pause": : : "memory");

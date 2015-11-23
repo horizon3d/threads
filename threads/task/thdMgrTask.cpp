@@ -11,7 +11,7 @@ namespace inspire {
          _thdMgr->process();
       }
 
-      return _thd->error();
       LogEvent("ending MAIN PROCESS LOOP: %s", name());
+      return _thd->error();
    }
 }
