@@ -74,12 +74,12 @@ namespace inspire {
 
    private:
       thdMgr();
-      thdMgr(const thdMgr& rhs) = delete;
-      thdMgr& operator=(const thdMgr& rhs) = delete;
+      thdMgr(const thdMgr& rhs);
+      thdMgr& operator=(const thdMgr& rhs);
       virtual ~thdMgr();
 
    private:
-      uint            _maxIdleCount = 10;
+      uint            _maxIdleCount;
       thread*         _mThd;       ///< special thread for handling event
       thdTaskMgr*     _taskMgr;
       deque<thread*>  _idleQueue;  ///< the queue contains thread entity

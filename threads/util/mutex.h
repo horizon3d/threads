@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_MUTEX_H_
 #define _INSPIRE_UTIL_MUTEX_H_
 
-#include <windows.h>
+#include "threads.h"
 #include "lock.h"
 #include "util.hpp"
 #include "charConvertor.h"

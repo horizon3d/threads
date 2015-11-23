@@ -10,7 +10,7 @@ namespace inspire {
       return &mgr;
    }
 
-   thdMgr::thdMgr()
+   thdMgr::thdMgr() : _maxIdleCount(10)
    {
       _taskMgr = thdTaskMgr::instance();
    }

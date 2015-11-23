@@ -12,8 +12,8 @@ namespace inspire {
       ~condition_t() { _locker->unlock(); }
 
    private:
-      condition_t(const condition_t& rhs) = delete;
-      condition_t& operator= (const condition_t& rhs) = delete;
+      condition_t(const condition_t& rhs);
+      condition_t& operator= (const condition_t& rhs);
 
    private:
       ILock* _locker;

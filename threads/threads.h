@@ -1,12 +1,14 @@
 #ifndef _INSPIRE_THREAD_BASE_H_
 #define _INSPIRE_THREAD_BASE_H_
 
-#include "util/assert.h"
-#ifdef _WIN32
+#ifdef _WINDOWS
+#include <winnt.h>
 #include <windows.h>
 #include <process.h>
 #else
 #include <pthread.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 #endif
 
 typedef long long int64;
@@ -18,5 +20,7 @@ typedef unsigned long long uint64;
 #else
 #define THREADS_EXPORT_API __declspec(dllexport)
 #endif
+
+#include "util/assert.h"
 
 #endif

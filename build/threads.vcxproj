@@ -147,7 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\sample\log.cpp" />
     <ClCompile Include="..\sample\threads.cpp" />
     <ClCompile Include="..\threads\logger\base.cpp" />
     <ClCompile Include="..\threads\logger\writer.cpp" />

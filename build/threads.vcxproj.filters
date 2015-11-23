@@ -35,9 +35,6 @@
     <ClCompile Include="..\threads\util\ossFile.cpp">
       <Filter>threads\util</Filter>
     </ClCompile>
-    <ClCompile Include="..\sample\log.cpp">
-      <Filter>sample</Filter>
-    </ClCompile>
     <ClCompile Include="..\sample\threads.cpp">
       <Filter>sample</Filter>
     </ClCompile>

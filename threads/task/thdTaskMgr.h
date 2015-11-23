@@ -22,8 +22,8 @@ namespace inspire {
 
    private:
       thdTaskMgr() {};
-      thdTaskMgr(const thdTaskMgr& rhs) = delete;
-      thdTaskMgr& operator= (const thdTaskMgr& rhs) = delete;
+      thdTaskMgr(const thdTaskMgr& rhs);
+      thdTaskMgr& operator= (const thdTaskMgr& rhs);
       ~thdTaskMgr() { clean(); }
 
    private:

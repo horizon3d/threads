@@ -1,10 +1,7 @@
 #ifndef _INSPIRE_LOGGER_UTIL_H_
 #define _INSPIRE_LOGGER_UTIL_H_
 
-#ifdef _WINDOWS
-#include <windows.h>
-#else
-#endif
+#include "threads.h"
 
 inline void inSleep(int ms)
 {

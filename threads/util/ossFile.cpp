@@ -1,7 +1,6 @@
 #include "ossFile.h"
 #include "util.hpp"
 #include "charConvertor.h"
-#include "spinlock.h"
 
 namespace inspire {
 
@@ -53,7 +52,7 @@ namespace inspire {
 //          }
 //          else
 //          {
-//             LogError("Failed to open file, filename = %s, io exception", _filename);
+//             LogError("Failed to open file, filename = %s, I/O exception", _filename);
 //          }
       }
 #else

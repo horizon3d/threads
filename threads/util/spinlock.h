@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_SPIN_LOCK_H_
 #define _INSPIRE_UTIL_SPIN_LOCK_H_
 
-#include <windows.h>
+#include "threads.h"
 #include "lock.h"
 
 namespace inspire {

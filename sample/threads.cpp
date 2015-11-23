@@ -1,13 +1,11 @@
 #include "logger/logger.h"
 #include "task/thdTask.h"
 #include "util/mutex.h"
-#include "util/spinlock.h"
 #include "util/condition.h"
 #include "logger/logger.h"
 #include "thdMgr.h"
 #include <iostream>
 #include "thdEvent.h"
-#include "util/map.h"
 
 struct mtxnumber
 {
