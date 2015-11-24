@@ -13,7 +13,7 @@ CFLAGS = -O -ggdb -Wall -D_LINUX -D_DEBUG -I$(INCLUDE) -lpthread -lm -ldl
 threads: threads.o thdMgr.o thdMgrTask.o thdTaskMgr.o base.o writer.o thread.o \
 ossFile.o
 	$(CC) -o threads threads.o thdMgr.o thdMgrTask.o thdTaskMgr.o base.o \
-	writer.o thread.o ossFile.o ) $(CFLAGS)
+	writer.o thread.o ossFile.o $(CFLAGS)
 
 threads.o: ../sample/threads.cpp
 	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../sample/threads.cpp
