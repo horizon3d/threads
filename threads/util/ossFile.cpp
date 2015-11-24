@@ -50,7 +50,7 @@ namespace inspire {
 #else
       int iMode = 0;
       _matchMode(mode, iMode);
-      _fd = open(filename, iMode, iPermission);
+      _fd = ::open(filename, iMode, iPermission);
       if (-1 == _fd)
       {
          return utilGetLastError();

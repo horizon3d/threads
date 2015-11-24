@@ -128,7 +128,7 @@ namespace inspire {
          pthread_mutex_unlock(&_mtx);
       }
       //int ret = &_errno;
-      int ntid = (pthread_t)_tid;
+      pthread_t ntid = (pthread_t)_tid;
       //pthread_join(ntid, &ret);
       pthread_join(ntid, NULL);
 #endif
@@ -176,7 +176,7 @@ namespace inspire {
             pthread_mutex_unlock(&_mtx);
          }
          //int ret = &_errno;
-         int ntid = (pthread_t)_tid;
+         pthread_t ntid = (pthread_t)_tid;
          //pthread_join(ntid, &ret);
          pthread_join(ntid, NULL);
          _tid = -1;
