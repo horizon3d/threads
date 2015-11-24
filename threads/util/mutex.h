@@ -29,7 +29,7 @@ namespace inspire {
 #else
       mutex_t()
       {
-         int res = pthread_mutex_init(&m, NULL);
+         int res = pthread_mutex_init(&_mtx, NULL);
          if (res)
 #endif
          {

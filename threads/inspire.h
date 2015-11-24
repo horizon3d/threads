@@ -8,6 +8,7 @@
 #include <deque>
 #include <map>
 #include <iterator>
+#include <cstring>
 
 typedef long long int64;
 typedef unsigned long long uint64;

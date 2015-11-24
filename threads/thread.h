@@ -108,7 +108,7 @@ namespace inspire {
       char     _state;
       bool     _detach;
       int      _errno;
-      uint64   _tid;
+      int64    _tid;
       thdMgr*  _thdMgr;
       thdTask* _task;
 #ifdef _WINDOWS
