@@ -19,7 +19,7 @@ namespace inspire {
    public:
       
 #ifdef _WINDOWS
-      mutex_t(const char* name = NULL)
+      mutex_t(const char* name = NULL) : _hMutex(INVALID_HANDLE_VALUE)
       {
          if (NULL == name)
          {
@@ -128,8 +128,7 @@ namespace inspire {
 
    private:
 #ifdef _WINDOWS
-      const char* name = NULL;
-      HANDLE _hMutex = INVALID_HANDLE_VALUE;
+      HANDLE _hMutex;
 #else
       pthread_mutex_t _mtx;
 #endif

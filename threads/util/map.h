@@ -34,7 +34,7 @@ namespace inspire {
       bool fetch(const key_type& key, value_reference v)
       {
          condition_t cond(&_mtx);
-         std::map<key_type, value_type>::const_iterator it = _map.find(key);
+         typename std::map<key_type, value_type>::const_iterator it = _map.find(key);
          if (_map.end() != it)
          {
             v = it->second;
@@ -49,7 +49,7 @@ namespace inspire {
 
       bool find(const key_type& key)
       {
-         std::map<key_type, value_type>::const_iterator it = _map.find(key);
+         typename std::map<key_type, value_type>::const_iterator it = _map.find(key);
          if (_map.end() != it)
          {
             return true;

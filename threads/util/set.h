@@ -33,7 +33,7 @@ namespace inspire {
 
       bool find(const T& t)
       {
-         std::set<T>::const_iterator it = _set.find(t);
+         typename std::set<T>::const_iterator it = _set.find(t);
          if (_set.end() != it)
          {
             return true;
