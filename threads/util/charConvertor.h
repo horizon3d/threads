@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 #define _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 
-#include "util.hpp"
+#include "inspire.h"
 
 namespace inspire {
 
@@ -46,7 +46,7 @@ namespace inspire {
 #else
       CharConvertor(const char* pstr) : _str(pstr)
       {
-         size_t len = strlen(pstr);
+         unsigned len = strlen(pstr);
          _str = new char[len + 1];
          if (NULL != _str)
          {

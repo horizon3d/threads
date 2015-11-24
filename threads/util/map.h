@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_MAP_H_
 #define _INSPIRE_UTIL_MAP_H_
 
-#include <map>
+#include "inspire.h"
 #include "mutex.h"
 #include "condition.h"
 

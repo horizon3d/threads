@@ -1,7 +1,7 @@
 #ifndef _INSPIRE_UTIL_DEQUEUE_H_
 #define _INSPIRE_UTIL_DEQUEUE_H_
 
-#include <deque>
+#include "inspire.h"
 #include "mutex.h"
 #include "condition.h"
 

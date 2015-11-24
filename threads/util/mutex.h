@@ -46,7 +46,7 @@ namespace inspire {
          int res;
          do 
          {
-            res = pthread_mutex_destroy(&m);
+            res = pthread_mutex_destroy(&_mtx);
          } while (EINTR == res);
 #endif
       }

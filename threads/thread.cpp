@@ -11,20 +11,30 @@
 namespace inspire {
 
    thread::thread(thdMgr* mgr)
-      : _state(THREAD_INVALID), _errno(0), _thdMgr(mgr), _task(NULL)
+      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(-1), _thdMgr(mgr), _task(NULL)
    {
+#ifdef _WINDOWS
+      _hThread = INVALID_HANDLE_VALUE;
+#else
+      pthread_mutex_init(&_mtx, NULL);
+      pthread_cond_init(&_cond, NULL);
+#endif
       STRONG_ASSERT(NULL != mgr, "thdMgr cannot be NULL");
-      state(THREAD_IDLE);
    }
 
    thread::~thread()
    {
       join();
-
-      _errno  = 0;
-      _state  = THREAD_INVALID;
-      _task   = NULL;
-      _thdMgr = NULL;
+#ifdef _WINDOWS
+      if (INVALID_HANDLE_VALUE != _hThread)
+      {
+         LogError("HANDLE of thread didn't release safety");
+      }
+      _hThread = INVALID_HANDLE_VALUE;
+#else
+      pthread_mutex_destroy(&_mtx);
+      pthread_cond_destroy(&_cond);
+#endif
    }
 
    int thread::create()
@@ -170,7 +180,7 @@ namespace inspire {
          _tid = -1;
 #endif
       }
-      state(THREAD_INVALID);
+      reset();
    }
 
 #ifndef _WINDOWS
@@ -202,6 +212,14 @@ namespace inspire {
    void thread::deactive()
    {
       _thdMgr->recycle(this);
+   }
+
+   void thread::reset()
+   {
+      state(THREAD_INVALID);
+      _detach = false;
+      _tid    = -1;
+      _task   = NULL;
    }
 
 #ifdef _WINDOWS

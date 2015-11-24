@@ -6,7 +6,7 @@
 #else
 #include <unistd.h>
 #include <errno.h>
-#include <sys/syacall.h>
+#include <sys/syscall.h>
 #endif
 
 #include "inspire.h"
@@ -40,7 +40,7 @@ inline uint64 utilGetCurrentPid()
 #ifdef _WIN32
    return (uint64)::GetCurrentProcessId();
 #else
-   retun (uint64)getpid();
+   return (uint64)getpid();
 #endif
 }
 
@@ -49,7 +49,7 @@ inline uint64 utilGetCurrentThreadId()
 #ifdef _WIN32
    return (uint64)::GetCurrentThreadId();
 #else
-   retun (uint64)syscall(SYS_gettid);
+   return (uint64)syscall(SYS_gettid);
 #endif
 }
 
@@ -58,7 +58,7 @@ inline int utilGetLastError()
 #ifdef _WIN32
    return (int)::GetLastError();
 #else
-   retun errno;
+   return errno;
 #endif
 }
 

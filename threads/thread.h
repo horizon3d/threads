@@ -98,6 +98,8 @@ namespace inspire {
       */
       void deactive();
 
+      void reset();
+
    private:
       thread(const thread& rhs);
       thread& operator= (const thread& rhs);
@@ -107,13 +109,13 @@ namespace inspire {
       bool     _detach;
       int      _errno;
       uint64   _tid;
-      thdTask* _task;
       thdMgr*  _thdMgr;
+      thdTask* _task;
 #ifdef _WINDOWS
-      HANDLE _hThread = INVALID_HANDLE_VALUE;
+      HANDLE _hThread;
 #else
-      pthread_mutex_t _mtx  = PTHREAD_MUTEX_INITIALIZER;
-      pthread_cond_t  _cond = PTHREAD_COND_INITIALIZER;
+      pthread_mutex_t _mtx;
+      pthread_cond_t  _cond;
 #endif
    };
 }
