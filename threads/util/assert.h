@@ -10,7 +10,7 @@ do                                     \
 {                                      \
    if (!(cond))                        \
    {                                   \
-      LogError(fmt, __VA_ARGS__);      \
+      LogError(fmt, ##__VA_ARGS__);    \
       Panic();                         \
    }                                   \
 } while (false);
@@ -28,7 +28,7 @@ do                                     \
 {                                      \
    if (!(cond))                        \
    {                                   \
-      LogError(fmt, __VA_ARGS__);      \
+      LogError(fmt, ##__VA_ARGS__);    \
       Panic();                         \
    }                                   \
 } while (false);

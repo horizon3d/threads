@@ -38,20 +38,23 @@ namespace inspire {
       {
          struct tm otm;
          time_t tt = time(NULL);
+#ifdef _WINDOWS
          ::localtime_s(&otm, &tt);
-
+#else
+         ::localtime_r(&tt, &otm);
+#endif
          char userInfo[LOG_BUFFER_SIZE] = { 0 };
          va_list ap;
          va_start(ap, fmt);
-         vsprintf_s(userInfo, LOG_BUFFER_SIZE, fmt, ap);
+         vsnprintf(userInfo, LOG_BUFFER_SIZE, fmt, ap);
          va_end(ap);
 
          char buffer[LOG_BUFFER_SIZE] = { 0 };
-         sprintf_s(buffer, LOG_BUFFER_SIZE, logFmt,
-                   otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
-                   otm.tm_hour, otm.tm_min, otm.tm_sec,
-                   toString(level), utilGetCurrentPid(), utilGetCurrentThreadId(),
-                   func, line, file, userInfo);
+         utilSnprintf(buffer, LOG_BUFFER_SIZE, logFmt,
+                      otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
+                      otm.tm_hour, otm.tm_min, otm.tm_sec, toString(level),
+                      utilGetCurrentPid(), utilGetCurrentThreadId(),
+                      func, line, file, userInfo);
          loggerWriter()->writeLog(level, buffer);
       }
    }
