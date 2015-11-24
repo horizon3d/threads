@@ -128,7 +128,7 @@ namespace inspire {
          pthread_mutex_unlock(&_mtx);
       }
       //int ret = &_errno;
-      //int ntid = (pthread_t)_tid;
+      int ntid = (pthread_t)_tid;
       //pthread_join(ntid, &ret);
       pthread_join(ntid, NULL);
 #endif
@@ -176,7 +176,7 @@ namespace inspire {
             pthread_mutex_unlock(&_mtx);
          }
          //int ret = &_errno;
-         //int ntid = (pthread_t)_tid;
+         int ntid = (pthread_t)_tid;
          //pthread_join(ntid, &ret);
          pthread_join(ntid, NULL);
          _tid = -1;
@@ -272,7 +272,7 @@ namespace inspire {
          thdMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
-         while (THREAD_RUNNING &= (int)thd->state())
+         while ((int)THREAD_RUNNING &= (int)thd->state())
          {
             // Linux do not support suspend
             // so we should wait until receive a signal

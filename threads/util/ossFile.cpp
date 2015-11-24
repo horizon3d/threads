@@ -48,7 +48,8 @@ namespace inspire {
          rc = utilGetLastError();
       }
 #else
-      int iMode = _matchMode(mode);
+      int iMode = 0;
+      _matchMode(mode, iMode);
       _fd = open(filename, iMode, iPermission);
       if (-1 == _fd)
       {
@@ -83,7 +84,7 @@ namespace inspire {
       return rc;
    }
 
-   int ossFile::read(const char* buffer, const unsigned bufferLen,
+   int ossFile::read(char* buffer, const unsigned bufferLen,
                      const unsigned toRead, unsigned& totalRead)
    {
       int rc = 0;
@@ -209,7 +210,6 @@ namespace inspire {
          rc = -1;
       }
 #else
-      INSPIRE_ASSERT(_fd, "File should be opened first");
       int64 seekoff = 0;
       seekoff = lseek(_fd, offset, whence);
       if (-1 == seekoff)

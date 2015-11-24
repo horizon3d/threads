@@ -1,6 +1,7 @@
 #ifndef _INSPIRE_UTIL_FILE_H_
 #define _INSPIRE_UTIL_FILE_H_
 
+#include <fcntl.h>
 #ifdef _WINDOWS
 #include <windows.h>
 #else
@@ -102,7 +103,7 @@ namespace inspire {
    public:
       bool isOpen() const;
       int open(const char* filename, const unsigned mode = 0, const unsigned permission = 0);
-      int read(const char* buffer, const unsigned bufferLen,
+      int read(char* buffer, const unsigned bufferLen,
                const unsigned toRead, unsigned& totalRead);
       int write(const char* buffer, const unsigned bufferLen,
                 const unsigned toWrite, unsigned& totalRead);

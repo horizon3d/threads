@@ -18,7 +18,7 @@ namespace inspire {
 
       const char* toString(const unsigned priority)
       {
-         static char* typeMap[] = {
+         static const char* typeMap[] = {
             "Always", "Emergency", "Fatal", "Critical", "Error",
             "Event", "Debug", "Warning", "Notice", "Info"
          };
