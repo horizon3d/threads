@@ -272,7 +272,7 @@ namespace inspire {
          thdMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
-         while ((int)THREAD_RUNNING &= (int)thd->state())
+         while (THREAD_RUNNING & thd->state())
          {
             // Linux do not support suspend
             // so we should wait until receive a signal

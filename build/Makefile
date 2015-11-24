@@ -16,28 +16,28 @@ ossFile.o
 	writer.o thread.o ossFile.o
 
 threads.o: ../sample/threads.cpp
-	$(CC) -I$(INCLUDE) -c ../sample/threads.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../sample/threads.cpp
 
 thread.o: ../threads/thread.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/thread.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/thread.cpp
 
 thdMgr.o: ../threads/thdMgr.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/thdMgr.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/thdMgr.cpp
 
 thdMgrTask.o: ../threads/task/thdMgrTask.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/task/thdMgrTask.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/task/thdMgrTask.cpp
 
 thdTaskMgr.o: ../threads/task/thdTaskMgr.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/task/thdTaskMgr.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/task/thdTaskMgr.cpp
 
 base.o: ../threads/logger/base.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/logger/base.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/logger/base.cpp
 
 writer.o: ../threads/logger/writer.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/logger/writer.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/logger/writer.cpp
 
 ossFile.o: ../threads/util/ossFile.cpp
-	$(CC) -I$(INCLUDE) -c ../threads/util/ossFile.cpp $(CFLAGS)
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/util/ossFile.cpp
 
 clean:
 	rm -f *.o

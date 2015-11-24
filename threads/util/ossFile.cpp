@@ -106,7 +106,7 @@ namespace inspire {
          return utilGetLastError();
       }
 #else
-      int bytes = read(_fd, buffer, toRead);
+      int bytes = ::read(_fd, buffer, toRead);
       if (-1 == bytes)
       {
          return utilGetLastError();
@@ -138,7 +138,7 @@ namespace inspire {
          return utilGetLastError();
       }
 #else
-      int bytes = write(_fd, buffer, toWrite);
+      int bytes = ::write(_fd, buffer, toWrite);
       if (-1 == bytes)
       {
          return utilGetLastError();
