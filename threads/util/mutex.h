@@ -70,7 +70,7 @@ namespace inspire {
          int res;
          do
          {
-            res = pthread_mutex_lock(&_hMutex);
+            res = pthread_mutex_lock(&_mtx);
          } while (EINTR == res);
          if (res)
          {
@@ -86,7 +86,7 @@ namespace inspire {
          int res;
          do
          {
-            res = pthread_mutex_unlock(&_hMutex);
+            res = pthread_mutex_unlock(&_mtx);
          } while (EINTR == res);
          if (res)
          {
@@ -116,7 +116,7 @@ namespace inspire {
          int res;
          do
          {
-            res = pthread_mutex_trylock(&_hMutex);
+            res = pthread_mutex_trylock(&_mtx);
          } while (EINTR == res);
          if (res && (EBUSY != res))
          {
@@ -131,7 +131,7 @@ namespace inspire {
       const char* name = NULL;
       HANDLE _hMutex = INVALID_HANDLE_VALUE;
 #else
-      pthread_mutex_t _hMutex;
+      pthread_mutex_t _mtx;
 #endif
    };
 }

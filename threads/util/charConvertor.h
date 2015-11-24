@@ -44,7 +44,7 @@ namespace inspire {
    private:
       wchar_t* _wstr;
 #else
-      CharConvertor(const char* pstr) : _str(pstr)
+      CharConvertor(const char* pstr) : _str(NULL)
       {
          unsigned len = strlen(pstr);
          _str = new char[len + 1];
