@@ -7,7 +7,7 @@ CC = g++
 INCLUDE = ../threads
 
 # compile flags
-CFLAGS = -O -ggdb -Wall
+CFLAGS = -O -ggdb -Wall -D_LINUX -D_DEBUG -I$(INCLUDE)
 
 # target
 threads: threads.o thdMgr.o thdMgrTask.o thdTaskMgr.o base.o writer.o thread.o \

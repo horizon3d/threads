@@ -65,7 +65,11 @@ inline int utilGetLastError()
 inline void Panic()
 {
 #ifdef _DEBUG
+#ifdef _WINDOWS
    __asm int 3;
+#else
+   __asm__ __volatile__ ("int 3":::);
+#endif
 #else
    int *p = NULL;
    *p = 1;

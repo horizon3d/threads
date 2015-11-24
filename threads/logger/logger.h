@@ -8,7 +8,7 @@
 do                                                                   \
 {                                                                    \
    inspire::logger::append(LEVEL, __FUNCTION__, __FILE__,            \
-                           __LINE__, fmt, __VA_ARGS__);              \
+                           __LINE__, fmt, ##__VA_ARGS__);            \
 } while (false);
 
 #define LogEmerg(fmt, ...) \
