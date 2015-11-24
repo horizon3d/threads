@@ -1,6 +1,12 @@
 #ifndef _INSPIRE_UTIL_MUTEX_H_
 #define _INSPIRE_UTIL_MUTEX_H_
 
+#ifdef _WINDOWS
+#include <windows.h>
+#else
+#include <pthread.h>
+#endif
+
 #include "inspire.h"
 #include "lock.h"
 #include "util.hpp"

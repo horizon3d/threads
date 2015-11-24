@@ -42,7 +42,7 @@ namespace inspire {
       }
 
    private:
-      const wchar_t* _wstr;
+      wchar_t* _wstr;
 #else
       CharConvertor(const char* pstr) : _str(pstr)
       {
@@ -75,7 +75,7 @@ namespace inspire {
       }
 
    private:
-      const char* _str;
+      char* _str;
 #endif
    };
 }
