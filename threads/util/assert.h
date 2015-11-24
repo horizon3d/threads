@@ -18,7 +18,7 @@ do                                     \
 #define INSPIRE_ASSERT(cond, fmt, ...) \
 do                                     \
 {                                      \
-   if (!cond)                          \
+   if (!(cond))                        \
    {}                                  \
 } while (false);
 #endif
