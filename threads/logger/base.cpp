@@ -1,7 +1,4 @@
 #include <ctime>
-#include <stdarg.h>
-#include <stdio.h>
-
 #include "base.h"
 #include "util/util.hpp"
 

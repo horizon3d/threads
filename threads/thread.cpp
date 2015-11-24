@@ -127,9 +127,10 @@ namespace inspire {
          pthread_cond_signal(&_cond);
          pthread_mutex_unlock(&_mtx);
       }
-      int ret = &_errno;
-      int ntid = (pthread_t)_tid;
-      pthread_join(ntid, &ret);
+      //int ret = &_errno;
+      //int ntid = (pthread_t)_tid;
+      //pthread_join(ntid, &ret);
+      pthread_join(ntid, NULL);
 #endif
       state(THREAD_INVALID);
    }
@@ -174,9 +175,10 @@ namespace inspire {
             pthread_cond_signal(&_cond);
             pthread_mutex_unlock(&_mtx);
          }
-         int ret = &_errno;
-         int ntid = (pthread_t)_tid;
-         pthread_join(ntid, &ret);
+         //int ret = &_errno;
+         //int ntid = (pthread_t)_tid;
+         //pthread_join(ntid, &ret);
+         pthread_join(ntid, NULL);
          _tid = -1;
 #endif
       }
@@ -186,7 +188,6 @@ namespace inspire {
 #ifndef _WINDOWS
    bool thread::wait(uint seconds)
    {
-      bool ok = false;
       // lock thread, and thread will wait for resume
       pthread_mutex_lock(&_mtx);
       if (seconds > 0)
@@ -268,10 +269,10 @@ namespace inspire {
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
-         thdMgr* mgr = thd->thdMgr();
+         thdMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
-         while (THREAD_RUNNING &= thd->state())
+         while (THREAD_RUNNING &= (int)thd->state())
          {
             // Linux do not support suspend
             // so we should wait until receive a signal

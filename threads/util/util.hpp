@@ -1,6 +1,9 @@
 #ifndef _INSPIRE_LOGGER_UTIL_H_
 #define _INSPIRE_LOGGER_UTIL_H_
 
+#include <stdarg.h>
+#include <stdio.h>
+
 #ifdef _WINDOWS
 #include <windows.h>
 #else
@@ -74,10 +77,10 @@ inline void Panic()
 #endif
 }
 
-inline int64 utilSnprintf(char* buffer, size_t bufferLen, const char* fmt, ...)
+inline size_t utilSnprintf(char* buffer, size_t bufferLen, const char* fmt, ...)
 {
    va_list ap;
-   int64 n;
+   size_t n;
    va_start(ap, fmt);
 #ifdef _WINDOWS
    n = _vsnprintf_s(buffer, bufferLen, _TRUNCATE, fmt, ap);

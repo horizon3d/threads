@@ -1,9 +1,12 @@
 #ifndef _INSPIRE_UTIL_FILE_H_
 #define _INSPIRE_UTIL_FILE_H_
 
-#include "inspire.h"
 #ifdef _WINDOWS
 #include <windows.h>
+#else
+#include <sys/types.h> 
+#include <sys/stat.h> 
+#include <unistd.h> 
 #endif
 
 namespace inspire {
