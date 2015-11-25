@@ -1,6 +1,6 @@
 #include "thdMgr.h"
 #include "task/thdTask.h"
-#include "task/thdMgrTask.h"
+#include "task/thdMainTask.h"
 
 namespace inspire {
 
@@ -22,7 +22,7 @@ namespace inspire {
 
    void thdMgr::initialize()
    {
-      thdTask* t = new thdMgrTask(this);
+      thdTask* t = new thdMainTask(this);
       STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
 
       thread* thd = create();
@@ -258,8 +258,6 @@ namespace inspire {
             if (NULL == thd)
             {
                LogError("cannot allocate a new thread object");
-               // Out of memory
-               // TODO:
                notify(EVENT_DISPATCH_TASK, task);
             }
          }

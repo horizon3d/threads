@@ -1,9 +1,9 @@
-#include "thdMgrTask.h"
+#include "thdMainTask.h"
 #include "thdMgr.h"
 
 namespace inspire {
 
-   const int thdMgrTask::run()
+   const int thdMainTask::run()
    {
       LogEvent("starting MAIN PROCESS LOOP: %s", name());
       while (_thd->running())

@@ -44,7 +44,7 @@
     <ClCompile Include="..\threads\task\thdTaskMgr.cpp">
       <Filter>threads\task</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\task\thdMgrTask.cpp">
+    <ClCompile Include="..\threads\task\thdMainTask.cpp">
       <Filter>threads\task</Filter>
     </ClCompile>
   </ItemGroup>
@@ -106,9 +106,6 @@
     <ClInclude Include="..\threads\task\thdTaskMgr.h">
       <Filter>threads\task</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\task\thdMgrTask.h">
-      <Filter>threads\task</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\util\set.h">
       <Filter>threads\util</Filter>
     </ClInclude>
@@ -117,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="..\threads\util\atomic.h">
       <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\task\thdMainTask.h">
+      <Filter>threads\task</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

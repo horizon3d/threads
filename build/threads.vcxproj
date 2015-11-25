@@ -150,7 +150,7 @@
     <ClCompile Include="..\sample\threads.cpp" />
     <ClCompile Include="..\threads\logger\base.cpp" />
     <ClCompile Include="..\threads\logger\writer.cpp" />
-    <ClCompile Include="..\threads\task\thdMgrTask.cpp" />
+    <ClCompile Include="..\threads\task\thdMainTask.cpp" />
     <ClCompile Include="..\threads\task\thdTaskMgr.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
     <ClCompile Include="..\threads\thread.cpp" />
@@ -161,7 +161,7 @@
     <ClInclude Include="..\threads\logger\writer.h" />
     <ClInclude Include="..\threads\logger\logger.h" />
     <ClInclude Include="..\threads\logger\base.h" />
-    <ClInclude Include="..\threads\task\thdMgrTask.h" />
+    <ClInclude Include="..\threads\task\thdMainTask.h" />
     <ClInclude Include="..\threads\task\thdTask.h" />
     <ClInclude Include="..\threads\task\thdTaskMgr.h" />
     <ClInclude Include="..\threads\thdEvent.h" />

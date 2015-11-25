@@ -7,18 +7,18 @@ namespace inspire {
 
    class thdMgr;
    class thread;
-   class thdMgrTask : public thdTask
+   class thdMainTask : public thdTask
    {
    public:
-      thdMgrTask(thdMgr* mgr)
+      thdMainTask(thdMgr* mgr)
          : thdTask(0, "Event Process Task"), _thdMgr(mgr) {}
-      ~thdMgrTask() { _thdMgr = NULL; }
+      ~thdMainTask() { _thdMgr = NULL; }
 
       virtual const int run();
 
    private:
-      thdMgrTask(const thdMgrTask& rhs);
-      thdMgrTask& operator= (const thdMgrTask& rhs);
+      thdMainTask(const thdMainTask& rhs);
+      thdMainTask& operator= (const thdMainTask& rhs);
 
    private:
       thdMgr* _thdMgr;
