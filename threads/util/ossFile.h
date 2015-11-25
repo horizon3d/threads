@@ -23,10 +23,10 @@ namespace inspire {
 
    enum RW_MOD
    {
-      MODE_DEFAULT = 0,
+      MODE_DEFAULT    = 0,
       MODE_CREATEONLY = 1 << 0,
-      MODE_REPLACE = 1 << 1,
-      MODE_CREATE = MODE_CREATEONLY | MODE_REPLACE,
+      MODE_REPLACE    = 1 << 1,
+      MODE_CREATE     = MODE_CREATEONLY | MODE_REPLACE,
    };
 
    enum ACCESS_MODE

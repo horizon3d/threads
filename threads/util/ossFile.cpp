@@ -57,7 +57,7 @@ namespace inspire {
 //          uint rc = errno;
 //          if (EINVAL == rc)
 //          {
-//             LogError("Failed to open file, filename = %s, direct io exist", _filename);
+//             LogError("Failed to open file, filename = %s, direct I/O exist", _filename);
 //          }
 //          else if (ETXTBSY == rc)
 //          {
@@ -323,6 +323,7 @@ namespace inspire {
          break;
       case MODE_CREATE:
          iMode = O_CREAT;
+         break;
       default:
          break;
       }
@@ -339,6 +340,7 @@ namespace inspire {
          {
             iMode |= O_WRONLY;
          }
+         break;
       case ACCESS_READONLY:
          if ((mode | SHAREDREAD) == EXCLUSIVE)
          {
@@ -348,6 +350,7 @@ namespace inspire {
          {
             iMode |= O_RDONLY;
          }
+         break;
       case ACCESS_READWRITE:
          iMode |= O_RDWR;
          break;
