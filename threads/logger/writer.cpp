@@ -2,7 +2,7 @@
 #include "util/util.hpp"
 #include "writer.h"
 #include "util/condition.h"
-#include "util/ossFile.h"
+#include "util/utilFile.h"
 
 namespace inspire {
 
@@ -51,7 +51,7 @@ namespace inspire {
          utilSnprintf(_filename, MAX_LOG_FILE_NAME, "%04d-%02d-%02d-%02d.%02d.%02d.log",
                       otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
                       otm.tm_hour, otm.tm_min, otm.tm_sec);
-         _logger = new ossFile();
+         _logger = new utilFile();
          rc = _logger->open(_filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
          if (rc)
          {

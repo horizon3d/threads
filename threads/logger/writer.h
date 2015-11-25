@@ -6,7 +6,7 @@
 
 namespace inspire {
 
-   class ossFile;
+   class utilFile;
    namespace logger {
 
       class writerImpl : public logWriter
@@ -27,7 +27,7 @@ namespace inspire {
       protected:
          unsigned _priority;
          mutex_t   _mtx;
-         ossFile* _logger;
+         utilFile* _logger;
          char     _filename[MAX_LOG_FILE_NAME + 1];
       };
    }

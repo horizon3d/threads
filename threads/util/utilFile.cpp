@@ -1,23 +1,23 @@
-#include "ossFile.h"
+#include "utilFile.h"
 #include "util.hpp"
 #include "charConvertor.h"
 
 namespace inspire {
 
 #ifdef _WIN32
-   ossFile::ossFile() : _handle(NULL)
+   utilFile::utilFile() : _handle(NULL)
 #else
-   ossFile::ossFile() : _fd(0)
+   utilFile::utilFile() : _fd(0)
 #endif
    {
    }
 
-   ossFile::~ossFile()
+   utilFile::~utilFile()
    {
       close();
    }
 
-   bool ossFile::isOpen() const
+   bool utilFile::isOpen() const
    {
 #ifdef _WIN32
       return INVALID_HANDLE_VALUE != _handle;
@@ -26,7 +26,7 @@ namespace inspire {
 #endif
    }
 
-   int ossFile::open(const char* filename, const unsigned mode, const unsigned permission)
+   int utilFile::open(const char* filename, const unsigned mode, const unsigned permission)
    {
       int rc = 0;
       if (NULL == filename)
@@ -54,37 +54,12 @@ namespace inspire {
       if (-1 == _fd)
       {
          return utilGetLastError();
-//          uint rc = errno;
-//          if (EINVAL == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, direct I/O exist", _filename);
-//          }
-//          else if (ETXTBSY == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, system busy", _filename);
-//          }
-//          else if (ENOENT == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, file not exist", _filename);
-//          }
-//          else if (EEXIST == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, file existed", _filename);
-//          }
-//          else if (EACCES == rc)
-//          {
-//             LogError("Failed to open file, filename = %s, no permission", _filename);
-//          }
-//          else
-//          {
-//             LogError("Failed to open file, filename = %s, I/O exception", _filename);
-//          }
       }
 #endif
       return rc;
    }
 
-   int ossFile::read(char* buffer, const unsigned bufferLen,
+   int utilFile::read(char* buffer, const unsigned bufferLen,
                      const unsigned toRead, unsigned& totalRead)
    {
       int rc = 0;
@@ -116,7 +91,7 @@ namespace inspire {
       return rc;
    }
 
-   int ossFile::write(const char* buffer, const unsigned bufferLen,
+   int utilFile::write(const char* buffer, const unsigned bufferLen,
                       const unsigned toWrite, unsigned& totalWrite)
    {
       int rc = 0;
@@ -148,7 +123,7 @@ namespace inspire {
       return rc;
    }
 
-   void ossFile::close()
+   void utilFile::close()
    {
       if (isOpen())
       {
@@ -162,7 +137,7 @@ namespace inspire {
       }
    }
 
-   const unsigned long long ossFile::filesize()
+   const unsigned long long utilFile::filesize()
    {
       int64 totalSize = 0;
 #ifdef _WIN32
@@ -197,7 +172,7 @@ namespace inspire {
       return totalSize;
    }
 
-   int ossFile::seek( const unsigned long long offset, SEEK_MOD whence )
+   int utilFile::seek( const unsigned long long offset, SEEK_MOD whence )
    {
       int rc = 0;
 #ifdef _WIN32
@@ -220,13 +195,13 @@ namespace inspire {
       return rc;
    }
 
-   int ossFile::seekToEnd()
+   int utilFile::seekToEnd()
    {
      return seek(0, INSPIRE_SEEK_END);
    }
 
 #ifdef _WIN32
-   void ossFile::_matchMode( const int mode, int& crMode, int& rwMode, int& sharedMode, int& attri)
+   void utilFile::_matchMode( const int mode, int& crMode, int& rwMode, int& sharedMode, int& attri)
    {
       // create/open mode
       switch (mode & MODE_CREATE)
@@ -306,7 +281,7 @@ namespace inspire {
       }
    }
 #else
-   void ossFile::_matchMode(const int mode, int& iMode)
+   void utilFile::_matchMode(const int mode, int& iMode)
    {
       iMode = 0;
       // create/open mode
@@ -369,7 +344,7 @@ namespace inspire {
    }
 #endif
 
-   const int ossFile::_matchPermission( const int perm )
+   const int utilFile::_matchPermission( const int perm )
    {
       if ( 0 == perm )
       {

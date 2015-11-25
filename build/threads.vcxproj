@@ -154,7 +154,7 @@
     <ClCompile Include="..\threads\task\thdTaskMgr.cpp" />
     <ClCompile Include="..\threads\thdMgr.cpp" />
     <ClCompile Include="..\threads\thread.cpp" />
-    <ClCompile Include="..\threads\util\ossFile.cpp" />
+    <ClCompile Include="..\threads\util\utilFile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\threads\inspire.h" />
@@ -176,7 +176,7 @@
     <ClInclude Include="..\threads\util\lock.h" />
     <ClInclude Include="..\threads\util\map.h" />
     <ClInclude Include="..\threads\util\mutex.h" />
-    <ClInclude Include="..\threads\util\ossFile.h" />
+    <ClInclude Include="..\threads\util\utilFile.h" />
     <ClInclude Include="..\threads\util\set.h" />
     <ClInclude Include="..\threads\util\spinlock.h" />
     <ClInclude Include="..\threads\util\util.hpp" />

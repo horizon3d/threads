@@ -32,9 +32,6 @@
     <ClCompile Include="..\threads\logger\writer.cpp">
       <Filter>threads\logger</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\util\ossFile.cpp">
-      <Filter>threads\util</Filter>
-    </ClCompile>
     <ClCompile Include="..\sample\threads.cpp">
       <Filter>sample</Filter>
     </ClCompile>
@@ -46,6 +43,9 @@
     </ClCompile>
     <ClCompile Include="..\threads\task\thdMainTask.cpp">
       <Filter>threads\task</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\util\utilFile.cpp">
+      <Filter>threads\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +75,6 @@
     </ClInclude>
     <ClInclude Include="..\threads\logger\writer.h">
       <Filter>threads\logger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\ossFile.h">
-      <Filter>threads\util</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\charConvertor.h">
       <Filter>threads\util</Filter>
@@ -117,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="..\threads\task\thdMainTask.h">
       <Filter>threads\task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\utilFile.h">
+      <Filter>threads\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

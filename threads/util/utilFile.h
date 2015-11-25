@@ -94,11 +94,11 @@ namespace inspire {
    };
 #endif
 
-   class ossFile
+   class utilFile
    {
    public:
-      ossFile();
-      virtual ~ossFile();
+      utilFile();
+      virtual ~utilFile();
 
    public:
       bool isOpen() const;
