@@ -127,7 +127,7 @@ namespace inspire {
          pthread_mutex_unlock(&_mtx);
       }
       pthread_join(_ntid, NULL);
-      _tid = -1;
+      _ntid = -1;
 #endif
       state(THREAD_INVALID);
    }
@@ -173,7 +173,7 @@ namespace inspire {
             pthread_mutex_unlock(&_mtx);
          }
          pthread_join(_ntid, NULL);
-         _tid = 0;
+         _ntid = -1;
 #endif
       }
       reset();
