@@ -59,6 +59,7 @@ namespace inspire {
          LogError("Failed to start a thread, error: %d", rc);
          return rc;
       }
+      _tid = (int64)_ntid;
 #endif
       return rc;
    }
@@ -263,7 +264,6 @@ namespace inspire {
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
-         thd->_tid = utilGetCurrentThreadId();
          thdMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
