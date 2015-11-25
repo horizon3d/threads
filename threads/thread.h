@@ -88,7 +88,7 @@ namespace inspire {
 #endif
       }
 
-      void  state(char st) { _state = st; }
+      void state(char st) { _state = st; }
 #ifndef _WINDOWS
       bool wait(uint seconds = 0);
 #endif

@@ -34,7 +34,6 @@ namespace inspire {
          return -1;
       }
 
-      int iPermission = _matchPermission(permission);
 #ifdef _WIN32
       CharConvertor fname(filename);
       int crMode = 0;
@@ -48,6 +47,7 @@ namespace inspire {
          rc = utilGetLastError();
       }
 #else
+      int iPermission = _matchPermission(permission);
       int iMode = 0;
       _matchMode(mode, iMode);
       _fd = ::open(filename, iMode, iPermission);
@@ -77,7 +77,7 @@ namespace inspire {
 //          }
 //          else
 //          {
-//             LogError("Failed to open file, filename = %s, io exception", _filename);
+//             LogError("Failed to open file, filename = %s, I/O exception", _filename);
 //          }
       }
 #endif
@@ -203,7 +203,7 @@ namespace inspire {
 #ifdef _WIN32
       LARGE_INTEGER li;
       li.QuadPart = offset;
-      li.LowPart = SetFilePointer( _handle, li.LowPart, &li.HighPart, (DWORD)whence );
+      li.LowPart = ::SetFilePointer( _handle, li.LowPart, &li.HighPart, (DWORD)whence );
       if (INVALID_SET_FILE_POINTER == li.LowPart && NO_ERROR == utilGetLastError())
       {
          // I/O exception occurred when seek
@@ -342,7 +342,7 @@ namespace inspire {
          }
          break;
       case ACCESS_READONLY:
-         if ((mode | SHAREDREAD) == EXCLUSIVE)
+         if ((mode & SHAREDREAD) == EXCLUSIVE)
          {
             iMode |= O_RDWR;
          }
@@ -357,24 +357,24 @@ namespace inspire {
       }
 
       // I/O
-      if (mode | DIRECTIO)
+      if (mode & DIRECTIO)
       {
          iMode = O_DIRECT;
       }
 
-      if (mode | WRITETHROUGH)
+      if (mode & WRITETHROUGH)
       {
          iMode |= O_SYNC;
       }
    }
 #endif
 
-   const int ossFile::_matchPermission( const int permission )
+   const int ossFile::_matchPermission( const int perm )
    {
-      if ( 0 == permission )
+      if ( 0 == perm )
       {
          return DEFAULT_FILE_ACCESS;
       }
-      return permission;
+      return perm;
    }
 }
