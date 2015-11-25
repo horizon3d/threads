@@ -11,11 +11,12 @@
 namespace inspire {
 
    thread::thread(thdMgr* mgr)
-      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(-1), _thdMgr(mgr), _task(NULL)
+      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(0), _thdMgr(mgr), _task(NULL)
    {
 #ifdef _WINDOWS
       _hThread = INVALID_HANDLE_VALUE;
 #else
+      _ntid = -1;
       pthread_mutex_init(&_mtx, NULL);
       pthread_cond_init(&_cond, NULL);
 #endif
@@ -52,14 +53,12 @@ namespace inspire {
       }
       _tid = threadId;
 #else
-      pthread_t ntid;
-      rc = pthread_create(&ntid, NULL, thread::ENTRY_POINT, this);
+      rc = pthread_create(&_ntid, NULL, thread::ENTRY_POINT, this);
       if (rc)
       {
          LogError("Failed to start a thread, error: %d", rc);
          return rc;
       }
-      _tid = (int64)ntid;
 #endif
       return rc;
    }
@@ -127,10 +126,8 @@ namespace inspire {
          pthread_cond_signal(&_cond);
          pthread_mutex_unlock(&_mtx);
       }
-      //int ret = &_errno;
-      pthread_t ntid = (pthread_t)_tid;
-      //pthread_join(ntid, &ret);
-      pthread_join(ntid, NULL);
+      pthread_join(_ntid, NULL);
+      _tid = -1;
 #endif
       state(THREAD_INVALID);
    }
@@ -175,11 +172,8 @@ namespace inspire {
             pthread_cond_signal(&_cond);
             pthread_mutex_unlock(&_mtx);
          }
-         //int ret = &_errno;
-         pthread_t ntid = (pthread_t)_tid;
-         //pthread_join(ntid, &ret);
-         pthread_join(ntid, NULL);
-         _tid = -1;
+         pthread_join(_ntid, NULL);
+         _tid = 0;
 #endif
       }
       reset();
@@ -219,7 +213,7 @@ namespace inspire {
    {
       state(THREAD_INVALID);
       _detach = false;
-      _tid    = -1;
+      _tid    = 0;
       _task   = NULL;
    }
 
@@ -269,6 +263,7 @@ namespace inspire {
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
+         thd->_tid = utilGetCurrentThreadId();
          thdMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 

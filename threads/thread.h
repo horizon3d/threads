@@ -84,7 +84,7 @@ namespace inspire {
 #ifdef _WINDOWS
          return INVALID_HANDLE_VALUE != _hThread;
 #else
-         return _tid != -1;
+         return _ntid != -1;
 #endif
       }
 
@@ -114,6 +114,7 @@ namespace inspire {
 #ifdef _WINDOWS
       HANDLE _hThread;
 #else
+      pthread_t _ntid;
       pthread_mutex_t _mtx;
       pthread_cond_t  _cond;
 #endif
