@@ -7,7 +7,7 @@ namespace inspire {
 
    class CharConvertor
    {
-#ifdef _WIN32
+#ifdef _WINDOWS
    public:
       CharConvertor(const char* pstr) : _wstr(NULL)
       {

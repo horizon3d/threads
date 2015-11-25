@@ -12,8 +12,6 @@
 
 namespace inspire {
 
-#define MAX_FILE_NAME_SIZE 255
-
    enum SEEK_MOD
    {
       INSPIRE_SEEK_SET = 0,
@@ -45,8 +43,7 @@ namespace inspire {
       DIRECTIO     = 1 << 7,
    };
 
-
-#ifdef _WIN32
+#ifdef _WINDOWS
    enum ACCESS_PERMITION
    {
       ACCESS_STICKY = 0,
@@ -113,7 +110,7 @@ namespace inspire {
       int seekToEnd();
 
    protected:
-#ifdef _WIN32
+#ifdef _WINDOWS
       void _matchMode(const int mode, int& crMode, int& rwMode, int& sharedMode, int& attri);
 #else
       void _matchMode(const int mode, int& iMode);
@@ -121,7 +118,7 @@ namespace inspire {
       const int _matchPermission(const int permission);
 
    private:
-#ifdef _WIN32
+#ifdef _WINDOWS
       HANDLE _handle;
 #else
       int _fd;

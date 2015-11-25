@@ -1,6 +1,9 @@
 #ifndef _INSPIRE_DEFINITION_H_
 #define _INSPIRE_DEFINITION_H_
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 // include STL
 #include <iostream>
 #include <vector>
@@ -8,7 +11,6 @@
 #include <deque>
 #include <map>
 #include <iterator>
-#include <cstring>
 
 typedef long long int64;
 typedef unsigned long long uint64;

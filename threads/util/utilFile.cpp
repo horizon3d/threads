@@ -4,7 +4,7 @@
 
 namespace inspire {
 
-#ifdef _WIN32
+#ifdef _WINDOWS
    utilFile::utilFile() : _handle(NULL)
 #else
    utilFile::utilFile() : _fd(0)
@@ -19,7 +19,7 @@ namespace inspire {
 
    bool utilFile::isOpen() const
    {
-#ifdef _WIN32
+#ifdef _WINDOWS
       return INVALID_HANDLE_VALUE != _handle;
 #else
       return (0 != _fd) && (-1 != _fd);
@@ -34,7 +34,7 @@ namespace inspire {
          return -1;
       }
 
-#ifdef _WIN32
+#ifdef _WINDOWS
       CharConvertor fname(filename);
       int crMode = 0;
       int rwMode = 0;
@@ -73,7 +73,7 @@ namespace inspire {
          return -1;
       }
 
-#ifdef _WIN32
+#ifdef _WINDOWS
       DWORD bytes = 0;
       BOOL bSuccess = ::ReadFile(_handle, (LPVOID)buffer, toRead, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
@@ -105,7 +105,7 @@ namespace inspire {
          return 0;
       }
 
-#ifdef _WIN32
+#ifdef _WINDOWS
       DWORD bytes = 0;
       BOOL bSuccess = ::WriteFile(_handle, buffer, toWrite, (LPDWORD)&bytes, NULL);
       if (!bSuccess)
@@ -127,7 +127,7 @@ namespace inspire {
    {
       if (isOpen())
       {
-#ifdef _WIN32
+#ifdef _WINDOWS
          ::CloseHandle(_handle);
          _handle = INVALID_HANDLE_VALUE;
 #else
@@ -140,7 +140,7 @@ namespace inspire {
    const unsigned long long utilFile::filesize()
    {
       int64 totalSize = 0;
-#ifdef _WIN32
+#ifdef _WINDOWS
       LARGE_INTEGER li;
       if (!GetFileSizeEx(_handle, &li))
       {
@@ -175,7 +175,7 @@ namespace inspire {
    int utilFile::seek( const unsigned long long offset, SEEK_MOD whence )
    {
       int rc = 0;
-#ifdef _WIN32
+#ifdef _WINDOWS
       LARGE_INTEGER li;
       li.QuadPart = offset;
       li.LowPart = ::SetFilePointer( _handle, li.LowPart, &li.HighPart, (DWORD)whence );
@@ -200,7 +200,7 @@ namespace inspire {
      return seek(0, INSPIRE_SEEK_END);
    }
 
-#ifdef _WIN32
+#ifdef _WINDOWS
    void utilFile::_matchMode( const int mode, int& crMode, int& rwMode, int& sharedMode, int& attri)
    {
       // create/open mode

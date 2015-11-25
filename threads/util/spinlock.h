@@ -16,12 +16,12 @@ namespace inspire {
 
       virtual bool tryLock()
       {
-         int times = 11;
+         int tryn = 11;
          do 
          {
-            --times;
-         } while (utilCompareAndSwap32(&_spin, LOCK, UNLOCK) && times > 0);
-         if (times > 0)
+            --tryn;
+         } while (utilCompareAndSwap32(&_spin, LOCK, UNLOCK) && tryn > 0);
+         if (tryn > 0)
             return true;
          return false;
       }

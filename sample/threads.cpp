@@ -61,8 +61,7 @@ int main(int argc, char** argv)
       mgr->notify(inspire::EVENT_DISPATCH_TASK, t);
    }
 
-   //inSleep(20 * 1000);
    mgr->destroy();
-   //inSleep(2000);
+
    return 0;
 }

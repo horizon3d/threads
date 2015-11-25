@@ -30,7 +30,7 @@ public:
 //////////////////////////////////////////////////////////////////////////
 inline int utilFetchAndAdd32(volatile int* pVal, int addVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedExchangeAdd((long*)pVal, (long)addVal);
 #else
    return __sync_fetch_and_add((volatile int*)pVal, addVal);
@@ -39,7 +39,7 @@ inline int utilFetchAndAdd32(volatile int* pVal, int addVal)
 
 inline int utilFetchAndAND32(volatile int* pVal, int andVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return _InterlockedAnd((long*)pVal, (long)andVal);
 #else
    return __sync_fetch_and_and((volatile int*)pVal, andVal);
@@ -48,7 +48,7 @@ inline int utilFetchAndAND32(volatile int* pVal, int andVal)
 
 inline int utilFetchAndOR32(volatile int* pVal, int orVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return _InterlockedOr((long*)pVal, (long)orVal);
 #else
    return __sync_fetch_and_or((volatile int*)pVal, orVal);
@@ -57,7 +57,7 @@ inline int utilFetchAndOR32(volatile int* pVal, int orVal)
 
 inline int utilFetchAndXOR32(volatile int* pVal, int xorVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return _InterlockedXor((long*)pVal, (long)xorVal);
 #else
    return __sync_fetch_and_xor((volatile int*)pVal, xorVal);
@@ -66,7 +66,7 @@ inline int utilFetchAndXOR32(volatile int* pVal, int xorVal)
 
 inline int utilCompareAndSwap32(volatile int* pVal, int comVal, int newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return (uint)comVal == InterlockedCompareExchange((long*)pVal, (long)newVal, (long)comVal);
 #else
    return comVal == __sync_val_compare_and_swap((volatile int*)pVal, comVal, newVal);
@@ -75,7 +75,7 @@ inline int utilCompareAndSwap32(volatile int* pVal, int comVal, int newVal)
 
 inline int utilCompareAndSwap32WithReturn(volatile int* pVal, int comVal, int newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedCompareExchange((long*)pVal, (long)newVal, (long)comVal);
 #else
    return __sync_val_compare_and_swap((volatile int*)pVal, comVal, newVal);
@@ -84,7 +84,7 @@ inline int utilCompareAndSwap32WithReturn(volatile int* pVal, int comVal, int ne
 
 inline int utilAtomicExchange32(volatile int* pVal, int newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedExchange((long*)pVal, (long)newVal);
 #else
    return __sync_lock_test_and_set((volatile int64*)pVal, comVal, newVal);
@@ -108,7 +108,7 @@ inline int utilAtomicPeek32(volatile int* pVal)
 //////////////////////////////////////////////////////////////////////////
 inline int64 utilFetchAndAdd64(volatile int64* pVal, int64 addVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedExchangeAdd64((int64*)pVal, addVal);
 #else
    return __sync_fetch_and_add((volatile int64*)pVal, addVal);
@@ -117,7 +117,7 @@ inline int64 utilFetchAndAdd64(volatile int64* pVal, int64 addVal)
 
 inline int64 utilFetchAndAND64(volatile int64* pVal, int64 andVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedAnd64((int64*)pVal, (int64)andVal);
 #else
    return __sync_fetch_and_and((volatile int64*)pVal, andVal);
@@ -126,7 +126,7 @@ inline int64 utilFetchAndAND64(volatile int64* pVal, int64 andVal)
 
 inline int64 utilFetchAndOR64(volatile int64* pVal, int64 orVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedOr64((int64*)pVal, orVal);
 #else
    return __sync_fetch_and_or((volatile int64*)pVal, orVal);
@@ -135,7 +135,7 @@ inline int64 utilFetchAndOR64(volatile int64* pVal, int64 orVal)
 
 inline int64 utilFetchAndXOR64(volatile int64* pVal, int64 xorVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedXor64((int64*)pVal, (int64)xorVal);
 #else
    return __sync_fetch_and_xor((volatile int64*)pVal, xorVal);
@@ -144,7 +144,7 @@ inline int64 utilFetchAndXOR64(volatile int64* pVal, int64 xorVal)
 
 inline int64 utilCompareAndSwap64(volatile int64* pVal, int64 comVal, int64 newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return (uint)comVal == InterlockedCompareExchange64((int64*)pVal, newVal, comVal);
 #else
    return comVal == __sync_val_compare_and_swap((volatile int64*)pVal, comVal, newVal);
@@ -153,7 +153,7 @@ inline int64 utilCompareAndSwap64(volatile int64* pVal, int64 comVal, int64 newV
 
 inline int64 utilCompareAndSwap64WithReturn(volatile int64* pVal, int64 comVal, int64 newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedCompareExchange64((int64*)pVal, newVal, comVal);
 #else
    return __sync_val_compare_and_swap((volatile int64*)pVal, comVal, newVal);
@@ -162,7 +162,7 @@ inline int64 utilCompareAndSwap64WithReturn(volatile int64* pVal, int64 comVal, 
 
 inline int64 utilAtomicExchange64(volatile int64* pVal, int64 newVal)
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return InterlockedExchange64((int64*)pVal, newVal);
 #else
    return __sync_lock_test_and_set((volatile int64*)pVal, comVal, newVal);

@@ -38,7 +38,7 @@ inline void yeild(int seconds)
 
 inline uint64 utilGetCurrentPid()
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return (uint64)::GetCurrentProcessId();
 #else
    return (uint64)getpid();
@@ -47,7 +47,7 @@ inline uint64 utilGetCurrentPid()
 
 inline uint64 utilGetCurrentThreadId()
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return (uint64)::GetCurrentThreadId();
 #else
    return (uint64)syscall(SYS_gettid);
@@ -56,7 +56,7 @@ inline uint64 utilGetCurrentThreadId()
 
 inline int utilGetLastError()
 {
-#ifdef _WIN32
+#ifdef _WINDOWS
    return (int)::GetLastError();
 #else
    return errno;

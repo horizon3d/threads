@@ -6,7 +6,7 @@ namespace inspire {
 
    namespace logger {
 
-#ifdef _WIN32
+#ifdef _WINDOWS
       const static char *logFmt = \
          "%04d-%02d-%02d-%02d.%02d.%-25dLevel: %s\r\nPID: %-37lldTID:   %lld" \
          "\r\nFunction: %-32sLine:  %d\r\nFile: %s\r\nMessage:\r\n%s\r\n\r\n";
