@@ -20,7 +20,7 @@ namespace inspire {
          do 
          {
             --times;
-         } while (sysCompareAndSwap32(&_spin, LOCK, UNLOCK) && times > 0);
+         } while (utilCompareAndSwap32(&_spin, LOCK, UNLOCK) && times > 0);
          if (times > 0)
             return true;
          return false;
@@ -32,12 +32,12 @@ namespace inspire {
          do 
          {
             ++pin;
-         } while (sysCompareAndSwap32(&_spin, LOCK, UNLOCK));
+         } while (utilCompareAndSwap32(&_spin, LOCK, UNLOCK));
       }
 
       virtual void unlock()
       {
-         sysAtomicExchange32(&_spin, UNLOCK);
+         utilAtomicExchange32(&_spin, UNLOCK);
       }
 
    private:

@@ -11,6 +11,5 @@ namespace inspire {
       virtual void unlock() = 0;
       virtual bool tryLock() = 0;
    };
-
 }
 #endif
