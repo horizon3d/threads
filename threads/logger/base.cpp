@@ -20,7 +20,7 @@ namespace inspire {
       {
          static const char* typeMap[] = {
             "Always", "Emergency", "Fatal", "Critical", "Error",
-            "Event", "Debug", "Warning", "Notice", "Info"
+            "Event", "Warning", "Debug", "Notice", "Info"
          };
 
          if (priority < 0 || priority > 900)
