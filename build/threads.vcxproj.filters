@@ -44,7 +44,7 @@
     <ClCompile Include="..\threads\task\thdMainTask.cpp">
       <Filter>threads\task</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\util\utilFile.cpp">
+    <ClCompile Include="..\threads\util\IO.cpp">
       <Filter>threads\util</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,9 +77,6 @@
       <Filter>threads\logger</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\charConvertor.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\util.hpp">
       <Filter>threads\util</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\mutex.h">
@@ -115,7 +112,10 @@
     <ClInclude Include="..\threads\task\thdMainTask.h">
       <Filter>threads\task</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\utilFile.h">
+    <ClInclude Include="..\threads\util\IO.h">
+      <Filter>threads\util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\util.h">
       <Filter>threads\util</Filter>
     </ClInclude>
   </ItemGroup>

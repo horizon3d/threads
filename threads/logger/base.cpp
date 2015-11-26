@@ -1,6 +1,6 @@
 #include <ctime>
 #include "base.h"
-#include "util/util.hpp"
+#include "util/util.h"
 
 namespace inspire {
 

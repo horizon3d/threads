@@ -2,7 +2,7 @@
 #define _INSPIRE_UTIL_ASSERT_H_
 
 #include "logger/logger.h"
-#include "util.hpp"
+#include "util.h"
 
 #ifdef _DEBUG
 #define INSPIRE_ASSERT(cond, fmt, ...) \

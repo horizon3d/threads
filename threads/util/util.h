@@ -1,5 +1,5 @@
-#ifndef _INSPIRE_LOGGER_UTIL_H_
-#define _INSPIRE_LOGGER_UTIL_H_
+#ifndef _INSPIRE_UTIL_H_
+#define _INSPIRE_UTIL_H_
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -12,7 +12,7 @@
 #include <sys/syscall.h>
 #endif
 
-#include "inspire.h"
+#include "util/inspire.h"
 
 inline void utilSleep(int ms)
 {
@@ -96,4 +96,15 @@ inline size_t utilSnprintf(char* buffer, size_t bufferLen, const char* fmt, ...)
    buffer[n] = '\0';
    return n;
 }
+
+inline const uint roundUp(const uint original, const uint bytes = 4)
+{
+   return ((original + (bytes - 1)) - ((original + (bytes - 1)) % bytes));
+}
+
+inline const uint roundDown(const uint original, const uint bytes = 4)
+{
+   return (original / bytes) * bytes;
+}
+
 #endif

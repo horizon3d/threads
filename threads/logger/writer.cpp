@@ -1,8 +1,8 @@
 #include <ctime>
-#include "util/util.hpp"
+#include "util/util.h"
 #include "writer.h"
 #include "util/condition.h"
-#include "util/utilFile.h"
+#include "util/assert.h"
 
 namespace inspire {
 
@@ -15,16 +15,15 @@ namespace inspire {
 
       writerImpl::~writerImpl()
       {
-         if (_logger)
+         if (HandleValid(_handle))
          {
-            delete _logger;
-            _logger = NULL;
+            cpsClose(_handle);
          }
       }
 
       void writerImpl::writeLog(const unsigned priority, const char* data)
       {
-         if (_priority <= priority)
+         if (_priority < priority)
          {
             return;
          }
@@ -32,15 +31,18 @@ namespace inspire {
          unsigned len = strlen(data);
          unsigned written = 0;
          condition_t cond(&_mtx);
-         _logger->open(_filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
-         _logger->seekToEnd();
-         _logger->write(data, len + 1, len, written);
-         _logger->close();
+         int rc = cpsOpen(_handle, _filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
+         STRONG_ASSERT(-1 != rc, "Failed to open log file: %s", _filename);
+         rc = cpsSeek(_handle, 0, INSPIRE_SEEK_END);
+         STRONG_ASSERT(-1 != rc, "Failed to seek to the end of file: %s", _filename);
+         rc = cpsWrite(_handle, data, len);
+         STRONG_ASSERT(-1 != rc, "Failed to write log to file: %s", _filename);
+         rc = cpsClose(_handle);
+         STRONG_ASSERT(-1 != rc, "Failed to close file: %s", _filename);
       }
 
       void writerImpl::initialize()
       {
-         int rc = 0;
          struct tm otm;
          time_t tt = time(NULL);
 #ifdef _WINDOWS
@@ -51,13 +53,10 @@ namespace inspire {
          utilSnprintf(_filename, MAX_LOG_FILE_NAME, "%04d-%02d-%02d-%02d.%02d.%02d.log",
                       otm.tm_year + 1900, otm.tm_mon + 1, otm.tm_mday,
                       otm.tm_hour, otm.tm_min, otm.tm_sec);
-         _logger = new utilFile();
-         rc = _logger->open(_filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
-         if (rc)
-         {
-            // TODO:
-         }
-         _logger->close();
+         int rc = cpsOpen(_handle, _filename, MODE_CREATE | ACCESS_READWRITE, DEFAULT_FILE_ACCESS);
+         STRONG_ASSERT(-1 != rc, "Failed to open log file: %s", _filename);
+         rc = cpsClose(_handle);
+         STRONG_ASSERT(-1 != rc, "Failed to close file: %s", _filename);
       }
 
       static writerImpl writer;

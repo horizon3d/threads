@@ -3,10 +3,10 @@
 
 #include "base.h"
 #include "util/mutex.h"
+#include "util/IO.h"
 
 namespace inspire {
 
-   class utilFile;
    namespace logger {
 
       class writerImpl : public logWriter
@@ -25,10 +25,10 @@ namespace inspire {
          void initialize();
 
       protected:
-         unsigned _priority;
+         unsigned  _priority;
          mutex_t   _mtx;
-         utilFile* _logger;
-         char     _filename[MAX_LOG_FILE_NAME + 1];
+         cpsHandle _handle;
+         char      _filename[MAX_LOG_FILE_NAME + 1];
       };
    }
 }
