@@ -12,7 +12,7 @@ do                                                                   \
 } while (false);
 
 #define LogEmerg(fmt, ...) \
-__LOG_WRAPPER(inspire::LOG_EMERG, fmt, ##__VA_AGRS__)
+__LOG_WRAPPER(inspire::LOG_EMERG, fmt, ##__VA_ARGS__)
 
 #define LogFatal(fmt, ...) \
 __LOG_WRAPPER(inspire::LOG_FATAL, fmt, ##__VA_ARGS__)
