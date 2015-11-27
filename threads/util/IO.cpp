@@ -395,14 +395,14 @@ int cpsClose(cpsHandle& h)
 #else
    if (-1 != h.hHandle)
    {
-      if (0 != ::close(_fd))
+      if (0 != ::close(h.hHandle))
       {
          LogError("I/O error occurs when closing handle: %x", h.hHandle);
          rc = -1;
       }
       else
       {
-         _fd = -1;
+         h.hHandle = -1;
       }
    }
 #endif
@@ -424,7 +424,7 @@ int cpsSeek(cpsHandle& h, int64 offset, SEEK_MOD whence)
    }
 #else
    int64 seekoff = 0;
-   seekoff = lseek(_fd, offset, whence);
+   seekoff = lseek(h.hHandle, offset, whence);
    if (-1 == seekoff)
    {
       int err = utilGetLastError();
@@ -464,8 +464,7 @@ int cpsGetFileSize(cpsHandle& h, int64& totalSize)
    totalSize = li.QuadPart;
 #else
    struct stat sb;
-   int rc = 0;
-   rc = fstat(_fd, &sb);
+   rc = fstat(h.hHandle, &sb);
    if (-1 == rc)
    {
       int err = utilGetLastError();
