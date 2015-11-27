@@ -14,9 +14,9 @@ LFLAGS = -lpthread -lm -ldl
 
 # target
 threads: threads.o thdMgr.o thdMainTask.o thdTaskMgr.o base.o writer.o thread.o \
-utilFile.o
+IO.o
 	$(CC) -o threads threads.o thdMgr.o thdMainTask.o thdTaskMgr.o base.o \
-	writer.o thread.o utilFile.o $(LFLAGS)
+	writer.o thread.o IO.o $(LFLAGS)
 
 threads.o: ../sample/threads.cpp
 	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../sample/threads.cpp
@@ -39,8 +39,8 @@ base.o: ../threads/logger/base.cpp
 writer.o: ../threads/logger/writer.cpp
 	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/logger/writer.cpp
 
-utilFile.o: ../threads/util/utilFile.cpp
-	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/util/utilFile.cpp
+IO.o: ../threads/util/IO.cpp
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/util/IO.cpp
 
 clean:
 	rm -f *.o
