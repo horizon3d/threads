@@ -40,7 +40,7 @@ writer.o: ../threads/logger/writer.cpp
 	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/logger/writer.cpp
 
 IO.o: ../threads/util/file/IO.cpp
-	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/util/system/IO.cpp
+	$(CC) -I$(INCLUDE) $(CFLAGS) -c ../threads/util/file/IO.cpp
 
 clean:
 	rm -f *.o
