@@ -2,8 +2,8 @@
 #define _INSPIRE_LOGGER_WRITER_H_
 
 #include "base.h"
-#include "util/mutex.h"
-#include "util/IO.h"
+#include "util/system/mutex.h"
+#include "util/file/IO.h"
 
 namespace inspire {
 

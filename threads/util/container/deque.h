@@ -1,9 +1,9 @@
 #ifndef _INSPIRE_UTIL_DEQUEUE_H_
 #define _INSPIRE_UTIL_DEQUEUE_H_
 
-#include "inspire.h"
-#include "mutex.h"
-#include "condition.h"
+#include "util/inspire.h"
+#include "util/system/mutex.h"
+#include "util/system/condition.h"
 
 namespace inspire {
 

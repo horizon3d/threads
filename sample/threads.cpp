@@ -1,7 +1,7 @@
 #include "logger/logger.h"
 #include "task/thdTask.h"
-#include "util/mutex.h"
-#include "util/condition.h"
+#include "util/system/mutex.h"
+#include "util/system/condition.h"
 #include "logger/logger.h"
 #include "thdMgr.h"
 #include <iostream>

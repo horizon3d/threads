@@ -21,6 +21,15 @@
     <Filter Include="threads\task">
       <UniqueIdentifier>{0bae6811-96c6-4c23-9c77-53b6a7cfb492}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\util\container">
+      <UniqueIdentifier>{e8274952-1aa5-4595-bd0c-e14325a218d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\util\system">
+      <UniqueIdentifier>{a2034c64-afdc-4e2c-a588-b43acfccc6b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\util\file">
+      <UniqueIdentifier>{138f359c-aad5-4aa6-9955-dd3940cc93ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\threads\thdMgr.cpp">
@@ -44,23 +53,11 @@
     <ClCompile Include="..\threads\task\thdMainTask.cpp">
       <Filter>threads\task</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\util\IO.cpp">
-      <Filter>threads\util</Filter>
+    <ClCompile Include="..\threads\util\file\IO.cpp">
+      <Filter>threads\util\file</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\threads\util\condition.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\deque.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\map.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\spinlock.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\thdMgr.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -79,12 +76,6 @@
     <ClInclude Include="..\threads\util\charConvertor.h">
       <Filter>threads\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\mutex.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\lock.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\thread.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -100,23 +91,38 @@
     <ClInclude Include="..\threads\task\thdTaskMgr.h">
       <Filter>threads\task</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\set.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\inspire.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\util\atomic.h">
-      <Filter>threads\util</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\task\thdMainTask.h">
       <Filter>threads\task</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\IO.h">
-      <Filter>threads\util</Filter>
+    <ClInclude Include="..\threads\util\container\deque.h">
+      <Filter>threads\util\container</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\util\util.h">
-      <Filter>threads\util</Filter>
+    <ClInclude Include="..\threads\util\container\map.h">
+      <Filter>threads\util\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\container\set.h">
+      <Filter>threads\util\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\atomic.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\condition.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\lock.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\mutex.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\spinlock.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\system\util.h">
+      <Filter>threads\util\system</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\file\IO.h">
+      <Filter>threads\util\file</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

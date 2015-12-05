@@ -2,6 +2,7 @@
 #define _INSPIRE_UTIL_IO_H_
 
 #include <fcntl.h>
+#include <new>
 #ifdef _WINDOWS
 #include <windows.h>
 #else
@@ -9,7 +10,7 @@
 #include <sys/stat.h> 
 #include <unistd.h> 
 #endif
-#include "inspire.h"
+#include "util/inspire.h"
 
 enum SEEK_MOD
 {

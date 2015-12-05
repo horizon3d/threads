@@ -7,10 +7,10 @@
 #include <pthread.h>
 #endif
 
-#include "inspire.h"
+#include "util/inspire.h"
 #include "lock.h"
-#include "util.h"
-#include "charConvertor.h"
+#include "util/system/util.h"
+#include "util/charConvertor.h"
 
 namespace inspire {
 

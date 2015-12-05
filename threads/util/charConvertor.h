@@ -1,8 +1,8 @@
 #ifndef _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 #define _INSPIRE_UTIL_CHAR_CONVERTOR_H_
 
-#include "inspire.h"
-#include "util.h"
+#include "util/inspire.h"
+#include "util/system/util.h"
 
 namespace inspire {
 

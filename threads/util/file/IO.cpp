@@ -1,14 +1,8 @@
 #include <iostream>
 #include "IO.h"
-#include "charConvertor.h"
-#include "util.h"
-#include "assert.h"
-
-#ifdef _WINDOWS
-int interpretMask(const uint mask);
-#else
-int interpretMask(const uint mask);
-#endif
+#include "util/charConvertor.h"
+#include "util/system/util.h"
+#include "logger/logger.h"
 
 #define MAX_OPEN_RETRY 5
 

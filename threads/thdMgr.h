@@ -1,8 +1,8 @@
 #ifndef _INSPIRE_THREAD_MANAGER_H_
 #define _INSPIRE_THREAD_MANAGER_H_
 
-#include "util/deque.h"
-#include "util/set.h"
+#include "util/container/deque.h"
+#include "util/container/set.h"
 #include "thread.h"
 #include "thdEvent.h"
 
