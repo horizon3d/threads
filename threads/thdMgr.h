@@ -23,14 +23,18 @@ namespace inspire {
       */
       void process();
       /*
-      * set max count of idle thread to be stored
+      * set max count of idle thread to be stored(pooled)
       */
       void reverseIdleCount(const uint maxCount = 10);
-
       /*
       * create a thread
       */
       thread* create();
+      /*
+      * detach thread from thread map, so that the manager won't manager it
+      * user should join, free the thread any more
+      */
+      void detach(thread* thd);
       /*
       * notify thread manager to handle a event
       * return false if program is going exiting
@@ -66,11 +70,9 @@ namespace inspire {
       * dispatch a task to a thread which is ready
       */
       void dispatch(thdTask* task);
-      /*
-      * detach thread from thread map, so that the manager won't manager it
-      * user should join, free the thread any more
-      */
-      void detach(thread* thd);
+      
+
+   private:
 
    private:
       thdMgr();

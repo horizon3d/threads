@@ -9,10 +9,11 @@ namespace inspire {
    enum
    {
       TASK_UNHANDLED = 0,
-      TASK_HANDLEING = 1,
-      TASK_HANDLED = 2,
+      TASK_RUNNING   = 1,
+      TASK_HANDLED   = 2,
    };
-   typedef void (*ON_TASK_END)(void* result);
+
+   typedef void (*TASK_END_FUNC)(void* result);
    class thdTask
    {
    public:
@@ -39,7 +40,7 @@ namespace inspire {
          {
             _thd = thd;
          }
-         status(TASK_HANDLEING);
+         status(TASK_RUNNING);
          LogEvent("Task: %lld begin handling", _taskId, _thd->tid());
       }
 
@@ -55,19 +56,19 @@ namespace inspire {
          _thd = NULL;
       }
 
-      ON_TASK_END setTaskCallBack(ON_TASK_END cb)
+      TASK_END_FUNC OnTaskEnd(TASK_END_FUNC cb)
       {
-         ON_TASK_END old = _cb;
+         TASK_END_FUNC old = _cb;
          _cb = cb;
          return old;
       }
 
    protected:
-      uint        _status;
-      int64       _taskId;
-      const char* _name;
-      thread*     _thd;
-      ON_TASK_END _cb;
+      uint          _status;
+      int64         _taskId;
+      const char*   _name;
+      thread*       _thd;
+      TASK_END_FUNC _cb;
    };
 }
 #endif

@@ -30,7 +30,12 @@ namespace inspire {
       int64 tid() { return _tid; }
       
       thdMgr* threadMgr() const { return _thdMgr; }
-
+      /*
+      * notify thread manager to handle a event
+      * return false if program is going exiting
+      * more event detail, defined in thdEvent.h
+      */
+      //bool notify(const char st, void* pObj);
       /*
       * get the state of thread
       */

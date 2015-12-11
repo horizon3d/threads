@@ -258,6 +258,8 @@ namespace inspire {
             if (NULL == thd)
             {
                LogError("cannot allocate a new thread object");
+               // we failed to allocate a thread object,
+               // now we should push the task into task queue
                notify(EVENT_DISPATCH_TASK, task);
             }
          }

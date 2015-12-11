@@ -10,7 +10,6 @@
 struct mtxnumber
 {
    inspire::mutex_t _spin;
-   //inspire::spinlock_t _spin;
    int index;
 };
 
