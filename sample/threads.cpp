@@ -1,11 +1,8 @@
+#include "threads.h"
 #include "logger/logger.h"
-#include "task/thdTask.h"
 #include "util/system/mutex.h"
 #include "util/system/condition.h"
-#include "logger/logger.h"
-#include "thdMgr.h"
 #include <iostream>
-#include "thdEvent.h"
 
 struct mtxnumber
 {
@@ -57,7 +54,7 @@ int main(int argc, char** argv)
    {
       int64 tt = inc();
       inspire::thdTask* t = new taskA(tt);
-      mgr->notify(inspire::EVENT_DISPATCH_TASK, t);
+      mgr->postEvent(inspire::EVENT_DISPATCH_TASK, t);
    }
 
    mgr->destroy();

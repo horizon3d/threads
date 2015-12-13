@@ -45,31 +45,37 @@ namespace inspire {
       * recycle a thread, it determines a thread is to be suspended or release
       */
       void recycle(thread* thd);
+      /*
+      * notify thread manager to handle a event
+      * return false if program is going exiting
+      * more event detail, defined in thdEvent.h
+      */
+      bool postEvent(const char st, void* pObj);
 
    protected:
       /*
       * peek a thread from idle queue
       * create a new thread if idle queue is empty
       */
-      thread* fetchIdle();
+      thread* _fetchIdle();
       /*
       * push a thread into idle queue for reusing
       */
-      void enIdle(thread* thd);
+      void _enIdle(thread* thd);
       /*
       * release a thread
       */
-      void release(thread* thd);
+      void _release(thread* thd);
       /*
       * before create a thread, we should get a thread entity pooled in thread queue
       * if a thread exit, the thread entity will be restored for next request
       * this strategy aims at decreasing use of new and delete
       */
-      thread* acquire();
+      thread* _acquire();
       /*
       * dispatch a task to a thread which is ready
       */
-      void dispatch(thdTask* task);
+      void _dispatch(thdTask* task);
       
 
    private:

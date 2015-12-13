@@ -38,6 +38,11 @@ namespace inspire {
 #endif
    }
 
+   bool thread::notify(const char st)
+   {
+      _thdMgr->postEvent(st, this);
+   }
+
    int thread::create()
    {
       int rc = 0;
