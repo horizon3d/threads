@@ -32,12 +32,6 @@ namespace inspire {
       
       thdMgr* threadMgr() const { return _thdMgr; }
       /*
-      * notify the thread manager to handle a event
-      * return false if program is going exiting
-      * more event detail, defined in thdEvent.h
-      */
-      bool notify(const char st);
-      /*
       * get the state of thread
       */
       const char state() const { return _state; }
@@ -87,7 +81,8 @@ namespace inspire {
       void join();
       /*
       * deactive the thread, the manager will decide it pooled or free
-      * if the thread is detached, you still need to manage it
+      * and the status of the thread will be changed to IDLE, if the thread
+      * is not detached, or you still need to manage it
       */
       void deactive();
 

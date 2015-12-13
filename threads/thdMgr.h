@@ -95,9 +95,12 @@ namespace inspire {
       /*
       * notify thread manager to handle a event
       * return false if program is going exiting
-      * more event detail, defined in thdEvent.h
       */
       bool postEvent(const char st, void* pObj);
+      /*
+      * post a task event to the thread mgr
+      */
+      bool postEvent(thdTask* task);
 
    protected:
       /*

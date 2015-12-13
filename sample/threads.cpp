@@ -54,7 +54,7 @@ int main(int argc, char** argv)
    {
       int64 tt = inc();
       inspire::thdTask* t = new taskA(tt);
-      mgr->postEvent(inspire::EVENT_DISPATCH_TASK, t);
+      mgr->postEvent(t);
    }
 
    mgr->destroy();

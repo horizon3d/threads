@@ -38,11 +38,6 @@ namespace inspire {
 #endif
    }
 
-   bool thread::notify(const char st)
-   {
-      return _thdMgr->postEvent(st, this);
-   }
-
    int thread::create()
    {
       int rc = 0;
@@ -103,6 +98,31 @@ namespace inspire {
       LogEvent("resume thread: %lld", _tid);
    }
 
+#ifndef _WINDOWS
+   bool thread::wait(uint seconds)
+   {
+      // lock thread, and thread will wait for resume
+      pthread_mutex_lock(&_mtx);
+      if (seconds > 0)
+      {
+         struct timespec ts;
+         ts.tv_sec = time(NULL) + seconds;
+         ts.tv_nsec = 0;
+         int rc = pthread_cond_timedwait(&_cond, &_mtx, &ts);
+         if (ETIMEDOUT == rc)
+         {
+            return false;
+         }
+      }
+      else
+      {
+         pthread_cond_wait(&_cond, &_mtx);
+      }
+      pthread_mutex_unlock(&_mtx);
+      return true;
+   }
+#endif
+
    void thread::join()
    {
       if (running())
@@ -149,31 +169,6 @@ namespace inspire {
       }
       _reset();
    }
-
-#ifndef _WINDOWS
-   bool thread::wait(uint seconds)
-   {
-      // lock thread, and thread will wait for resume
-      pthread_mutex_lock(&_mtx);
-      if (seconds > 0)
-      {
-         struct timespec ts;
-         ts.tv_sec = time(NULL) + seconds;
-         ts.tv_nsec = 0;
-         int rc = pthread_cond_timedwait(&_cond, &_mtx, &ts);
-         if (ETIMEDOUT == rc)
-         {
-            return false;
-         }
-      }
-      else
-      {
-         pthread_cond_wait(&_cond, &_mtx);
-      }
-      pthread_mutex_unlock(&_mtx);
-      return true;
-   }
-#endif
 
    void thread::deactive()
    {

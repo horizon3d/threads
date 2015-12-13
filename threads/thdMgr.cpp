@@ -219,6 +219,11 @@ namespace inspire {
       return false;
    }
 
+   bool thdMgr::postEvent(thdTask* task)
+   {
+      return postEvent(EVENT_DISPATCH_TASK, task);
+   }
+
    void thdMgr::_enIdle(thread* thd)
    {
       _idleQueue.push_back(thd);
