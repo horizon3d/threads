@@ -17,16 +17,18 @@ The duty of the thead mgr also contains dispatching tasks to thread.
 
 ---
 # Build:
-Linux:
-   '''cd threads/build
+>Linux:
+   ```
+   cd threads/build
    make && make clean
-   '''
+   ```
    
-Windows:
-   '''Open the sulotion using visual studio(2015) and build it.
-   Ps: The library is developed based on C++(98), You can also NEW a visual studio project and ADD files into, and build it.
-   '''
-
+>Windows:
+   ```
+   Open the sulotion using visual studio(2015) and build it.
+   ```
+   >> Ps: The library is developed based on C++(98), You can also NEW a visual studio project and ADD files into, and build it.
+   
 ---   
 # Structure
 ## threadMgr
