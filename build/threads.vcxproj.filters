@@ -50,9 +50,6 @@
     <ClCompile Include="..\threads\task\thdTaskMgr.cpp">
       <Filter>threads\task</Filter>
     </ClCompile>
-    <ClCompile Include="..\threads\task\thdMainTask.cpp">
-      <Filter>threads\task</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\util\file\IO.cpp">
       <Filter>threads\util\file</Filter>
     </ClCompile>
@@ -82,16 +79,10 @@
     <ClInclude Include="..\threads\util\assert.h">
       <Filter>threads\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\thdEvent.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\task\thdTask.h">
       <Filter>threads\task</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\task\thdTaskMgr.h">
-      <Filter>threads\task</Filter>
-    </ClInclude>
-    <ClInclude Include="..\threads\task\thdMainTask.h">
       <Filter>threads\task</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\util\container\deque.h">

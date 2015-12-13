@@ -2,6 +2,7 @@
 #define _INSPIRE_THREAD_ENTITY_H_
 
 #include "inspire.h"
+#include "util/system/condition.h"
 #include "util/assert.h"
 
 namespace inspire {
@@ -76,15 +77,22 @@ namespace inspire {
       void active();
       void suspend();
       void resume();
-      /*void stop();*/
+#ifndef _WINDOWS
+      bool wait(uint seconds = 0);
+#endif
       /*
       * join thread and let operation system recycle the kernel resource
       * every thread need to call join before free
       */
       void join();
+      /*
+      * deactive the thread, the manager will decide it pooled or free
+      * if the thread is detached, you still need to manage it
+      */
+      void deactive();
 
    protected:
-      bool valid() const
+      bool _valid() const
       {
 #ifdef _WINDOWS
          return INVALID_HANDLE_VALUE != _hThread;
@@ -93,17 +101,10 @@ namespace inspire {
 #endif
       }
 
-      void state(char st) { _state = st; }
-#ifndef _WINDOWS
-      bool wait(uint seconds = 0);
-#endif
-      /*
-      * deactive the thread, the manager will decide it pooled or free
-      * if the thread is detached, you still need to manage it
-      */
-      void deactive();
+      void _setstate(char st) { _state = st; }
+      
 
-      void reset();
+      void _reset();
 
    private:
       thread(const thread& rhs);

@@ -40,13 +40,13 @@ namespace inspire {
 
    bool thread::notify(const char st)
    {
-      _thdMgr->postEvent(st, this);
+      return _thdMgr->postEvent(st, this);
    }
 
    int thread::create()
    {
       int rc = 0;
-      state(THREAD_IDLE);
+      _setstate(THREAD_IDLE);
 #ifdef _WINDOWS
       unsigned threadId = 0;
       _hThread = (HANDLE)_beginthreadex(NULL, 0, thread::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
@@ -71,7 +71,7 @@ namespace inspire {
 
    void thread::active()
    {
-      state(THREAD_RUNNING);
+      _setstate(THREAD_RUNNING);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
@@ -88,7 +88,7 @@ namespace inspire {
    void thread::suspend()
    {
       LogEvent("suspend thread: %lld", _tid);
-      state(THREAD_IDLE);
+      _setstate(THREAD_IDLE);
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
@@ -103,50 +103,15 @@ namespace inspire {
       LogEvent("resume thread: %lld", _tid);
    }
 
-/*   void thread::stop()
-   {
-#ifdef _WINDOWS
-      if (INVALID_HANDLE_VALUE != _hThread)
-      {
-         if (running())
-         {
-            state(THREAD_STOPPED);
-         }
-         else
-         {
-            state(THREAD_STOPPED);
-            ::ResumeThread(_hThread);
-         }
-         ::CloseHandle(_hThread);
-         _hThread = INVALID_HANDLE_VALUE;
-      }
-#else
-      if (running())
-      {
-         state(THREAD_STOPPED);
-      }
-      else
-      {
-         state(THREAD_STOPPED);
-         pthread_mutex_lock(&_mtx);
-         pthread_cond_signal(&_cond);
-         pthread_mutex_unlock(&_mtx);
-      }
-      pthread_join(_ntid, NULL);
-      _ntid = -1;
-#endif
-      state(THREAD_INVALID);
-   }
-*/
    void thread::join()
    {
       if (running())
       {
          LogEvent("join thread: %lld to exit", _tid);
-         state(THREAD_STOPPED);
+         _setstate(THREAD_STOPPED);
       }
 
-      if (valid())
+      if (_valid())
       {
          // in order to exit thread safety, we should state thread STOPPED if it is idle
          // and then wake up thread to continue
@@ -154,7 +119,7 @@ namespace inspire {
 #ifdef _WINDOWS
          if (THREAD_IDLE == state())
          {
-            state(THREAD_STOPPED);
+            _setstate(THREAD_STOPPED);
             LogEvent("awake thread: %lld to exit", _tid);
             ::ResumeThread(_hThread);
          }
@@ -173,7 +138,7 @@ namespace inspire {
 #else
          if (THREAD_IDLE == state())
          {
-            state(THREAD_STOPPED);
+            _setstate(THREAD_STOPPED);
             pthread_mutex_lock(&_mtx);
             pthread_cond_signal(&_cond);
             pthread_mutex_unlock(&_mtx);
@@ -182,7 +147,7 @@ namespace inspire {
          _ntid = -1;
 #endif
       }
-      reset();
+      _reset();
    }
 
 #ifndef _WINDOWS
@@ -215,9 +180,9 @@ namespace inspire {
       _thdMgr->recycle(this);
    }
 
-   void thread::reset()
+   void thread::_reset()
    {
-      state(THREAD_INVALID);
+      _setstate(THREAD_INVALID);
       _detach = false;
       _tid    = 0;
       _task   = NULL;

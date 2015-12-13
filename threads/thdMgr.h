@@ -4,7 +4,7 @@
 #include "util/container/deque.h"
 #include "util/container/set.h"
 #include "thread.h"
-#include "thdEvent.h"
+#include "task/thdTask.h"
 
 namespace inspire {
 
@@ -12,6 +12,59 @@ namespace inspire {
    class thdTaskMgr;
    class thdMgr
    {
+   private:
+      // the event definition
+      // the event can be accepted by the thread mgr
+      enum EVENT
+      {
+         EVENT_DUMMY = -1,
+         EVENT_DISPATCH_TASK = 0,
+         EVENT_THREAD_SUSPEND = 1,
+         EVENT_THREAD_RUNNING = 2,
+         EVENT_THREAD_RESUME = 3,
+         EVENT_THREAD_RELEASE = 4,
+         EVENT_THREAD_UPBOUND,
+      };
+
+      class thdEvent
+      {
+      public:
+         char  evType;
+         void* evObject;
+
+         thdEvent() : evType(EVENT_DUMMY), evObject(NULL) {}
+         thdEvent(const char t, void* obj) : evType(t), evObject(obj) {}
+         virtual ~thdEvent() {}
+         thdEvent(const thdEvent& rhs) : evType(rhs.evType), evObject(rhs.evObject) {}
+         thdEvent& operator= (const thdEvent& rhs)
+         {
+            evType = rhs.evType;
+            evObject = rhs.evObject;
+            return *this;
+         }
+      };
+
+      // the main task of thread mgr
+      // all event is handle by the task
+      // the task id is solid and assigned with 0
+      // the id of user-defined tasks should start with 1
+      class thdInnerTask : public thdTask
+      {
+      public:
+         thdInnerTask(thdMgr* mgr)
+            : thdTask(0, "Event Process Task"), _thdMgr(mgr) {}
+         ~thdInnerTask() { _thdMgr = NULL; }
+
+         virtual const int run();
+
+      private:
+         thdInnerTask(const thdInnerTask& rhs);
+         thdInnerTask& operator= (const thdInnerTask& rhs);
+
+      private:
+         thdMgr* _thdMgr;
+      };
+
    public:
       void initialize();
       void active();
@@ -35,12 +88,6 @@ namespace inspire {
       * user should join, free the thread any more
       */
       void detach(thread* thd);
-      /*
-      * notify thread manager to handle a event
-      * return false if program is going exiting
-      * more event detail, defined in thdEvent.h
-      */
-      bool notify(const char st, void* pObj);
       /*
       * recycle a thread, it determines a thread is to be suspended or release
       */
@@ -88,7 +135,7 @@ namespace inspire {
 
    private:
       uint            _maxIdleCount;
-      thread*         _mThd;       ///< special thread for handling event
+      thread*         _thdMain;    ///< special thread for handling event
       thdTaskMgr*     _taskMgr;
       deque<thread*>  _idleQueue;  ///< the queue contains thread entity
       deque<thread*>  _thdQueue;   ///< the queue don't contains thread entity
