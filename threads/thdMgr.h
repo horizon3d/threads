@@ -72,10 +72,6 @@ namespace inspire {
 
       static thdMgr* instance();
       /*
-      * receive event and handle event
-      */
-      void process();
-      /*
       * set max count of idle thread to be stored(pooled)
       */
       void reverseIdleCount(const uint maxCount = 10);
@@ -103,6 +99,10 @@ namespace inspire {
       bool postEvent(thdTask* task);
 
    protected:
+      /*
+      * handle event
+      */
+      void _process();
       /*
       * peek a thread from idle queue
       * create a new thread if idle queue is empty
