@@ -4,20 +4,20 @@
 #include "util/system/condition.h"
 #include <iostream>
 
-struct mtxnumber
+struct unit
 {
-   inspire::mutex_t _spin;
-   int index;
+   inspire::mutex_t _mtx;
+   int id;
 };
 
-mtxnumber no;
-mtxnumber taskId;
+unit ticket;
+unit taskId;
 
-int64 inc()
+int64 inc(unit& u)
 {
-   inspire::condition_t cond(&taskId._spin);
-   ++taskId.index;
-   return taskId.index;
+   inspire::condition_t cond(&u._mtx);
+   ++u.id;
+   return u.id;
 }
 
 class taskA : public inspire::thdTask
@@ -28,22 +28,19 @@ public:
 
    virtual const int run()
    {
-      inspire::condition_t cond(&no._spin);
-      int tmp = no.index;
-      ++no.index;
-      LogEvent("from %d ---> %d", tmp, no.index);
-      std::cout << " ---> " << no.index << std::endl;
+      inspire::condition_t cond(&ticket._mtx);
+      int tmp = ticket.id;
+      ++ticket.id;
+      LogEvent("from %d ---> %d", tmp, ticket.id);
+      std::cout << " ---> " << ticket.id << std::endl;
       return 0;
    }
-
-private:
-   const char* _name;
 };
 
 int main(int argc, char** argv)
 {
-   no.index = 0;
-   taskId.index = 0;
+   ticket.id = 0;
+   taskId.id = 0;
 
    inspire::thdMgr* mgr = inspire::thdMgr::instance();
    mgr->initialize();
@@ -52,7 +49,7 @@ int main(int argc, char** argv)
    mgr->reverseIdleCount(3);
    for (int idx = 0; idx < 20; ++idx)
    {
-      int64 tt = inc();
+      int64 tt = inc(taskId);
       inspire::thdTask* t = new taskA(tt);
       mgr->postEvent(t);
    }
