@@ -1,4 +1,4 @@
-# threads
+# [threads](https://github.com/tynia/threads)
 THREADS is a simple, tiny and platform-crossing thread library implement using C++.  
 It is aim at developing multi-threading program faster and safe.  
 It is also an exercise to improve myself.  
@@ -31,10 +31,10 @@ More detail, please see logger/logger.h
 **[util]**
 
 It contains some useful tools, which are wrappered to crossing different platform(but now the AIX and Mac OS X is not supported).
-- *spinlock*  is a spinlock based on atomic number. It can be used when accessing to a shared member.
-- *mutex*     is a mutex varible, and it is used widely between threads.
-- *container* is a series of container that defined in STL. I wrapped them using mutex to make sure thread safe when used.
-- *file*      is a wrapped of I/O operation between different operating system.
+- ***spinlock***  is a spinlock based on atomic number. It can be used when accessing to a shared member.  
+- ***mutex***     is a mutex varible, and it is used widely between threads.  
+- ***container*** is a series of container that defined in STL. I wrapped them using mutex to make sure thread safe when used.  
+- ***file***      is a wrapped of I/O operation between different operating system.  
 - ... more module(s) is completing.
 
 **[thread]**
