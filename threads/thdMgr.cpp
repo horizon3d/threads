@@ -7,7 +7,7 @@ namespace inspire {
       LogEvent("starting MAIN PROCESS LOOP: %s", name());
       while (_thd->running())
       {
-         _thdMgr->process();
+         _thdMgr->_process();
       }
 
       LogEvent("ending MAIN PROCESS LOOP: %s", name());
@@ -56,7 +56,7 @@ namespace inspire {
 
       while (!_eventQueue.empty())
       {
-         process();
+         _process();
       }
 
       {
@@ -74,7 +74,7 @@ namespace inspire {
       _thdMain = NULL;
    }
 
-   void thdMgr::process()
+   void thdMgr::_process()
    {
       thdEvent ev;
       if (_eventQueue.pop_front(ev))
