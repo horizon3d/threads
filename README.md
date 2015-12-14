@@ -85,7 +85,7 @@ Open the sulotion using visual studio(2015) and build it.
 > Ps: The library is developed based on C++(98), You can also NEW a visual studio(2008-2015) project and ADD files into, and build it.
    
 ---------------------------
-### Fork me at GITBUH
+### Fork me at GITHUB
 There are more features, and shall we add them one by one?
 
 ```At last, Happy your coding.```

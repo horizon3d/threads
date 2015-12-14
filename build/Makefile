@@ -13,7 +13,7 @@ CFLAGS = -O -ggdb -Wall -D_LINUX -D_DEBUG -I$(INCLUDE)
 LFLAGS = -lpthread -lm -ldl
 
 # target
-threads: threads.o thdMgr.o thdMainTask.o thdTaskMgr.o base.o writer.o thread.o \
+threads: threads.o thdMgr.o thdTaskMgr.o base.o writer.o thread.o \
 IO.o
 	$(CC) -o threads threads.o thdMgr.o thdTaskMgr.o base.o \
 	writer.o thread.o IO.o $(LFLAGS)
