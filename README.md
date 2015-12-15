@@ -1,5 +1,5 @@
 # [threads](https://github.com/tynia/threads)
-THREADS is a simple, tiny and platform-crossing thread library implement using C++.  
+THREADS is a tiny and platform-crossing thread library implement using C++.  
 It is aim at developing multi-threading program faster and safe.  
 It is also an exercise to improve myself.  
 
@@ -70,7 +70,7 @@ And you can also set a callback typed as TASK_END_FUNC to the task, the callback
  
 ---
 # Sample Build:
-The sample is a simple example of thread-synchronization.
+The code located in sample/threads.cpp is a simple example of thread-synchronization.
 
 Linux:
 ```
