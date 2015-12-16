@@ -5,7 +5,7 @@ It is also an exercise to improve myself.
 
 The library is published with The MIT License (MIT).  
 you can use it without any copyright about it.  
-I'd like you will leave my name(tynia) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.
+I'd like you will leave my name(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.
 
 ---
 The threads library contains several modules includeing:
