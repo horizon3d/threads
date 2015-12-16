@@ -3,8 +3,15 @@ THREADS is a tiny and platform-crossing thread library implement using C++.
 It is aim at developing multi-threading program faster and safe.  
 It is also an exercise to improve myself.  
 
-The library is published with The MIT License (MIT).  
+# Author
+**name**  :**tynia Liu**
+**email** : [ekesi@live.com](ekesi@live.com)
+
+# LICENSE
+The **threads** library is released under the [**MIT LICENSE**](http://opensource.org/licenses/mit-license.php).  
 you can use it without any copyright about it.  
+
+# Besides
 I'd like you will leave my name(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.
 
 ---
