@@ -69,7 +69,7 @@ And you can also set a callback typed as TASK_END_FUNC to the task, the callback
 
  
 ---
-# Sample Build:
+# Sample Building:
 The code located in sample/threads.cpp is a simple example of thread-synchronization.
 
 Linux:
