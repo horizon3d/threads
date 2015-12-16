@@ -4,7 +4,7 @@ It is aim at developing multi-threading program faster and safe.
 It is also an exercise to improve myself.  
 
 # Author
-**name**  :**tynia Liu**
+**name**  :**tynia Liu**  
 **email** : [ekesi@live.com](ekesi@live.com)
 
 # LICENSE
@@ -12,7 +12,9 @@ The **threads** library is released under the [**MIT LICENSE**](http://opensourc
 you can use it without any copyright about it.  
 
 # Besides
-I'd like you will leave my name(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.
+I'd like you will leave my name(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
+  
+  
 
 ---
 The threads library contains several modules includeing:
