@@ -66,6 +66,8 @@ thd->active();                 // start the thread and handle the task assigned
 ...
 thd->join();                   // task handle over, you need to join the thread to return resource to os
                                // if you never detached the thread, never call join yourself
+delete thd;
+thd = NULL;                    // if you detached the thread, delete it when ending  
 ```
 
 
