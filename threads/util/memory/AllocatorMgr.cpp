@@ -6,7 +6,7 @@ namespace inspire {
 
    AllocatorMgr::AllocatorMgr()
    {
-      for (int idx = 0, size = 8; idx < MAX_ALLOCATOR_COUNT; ++idx, size *= 2)
+      for (int idx = 0, size = 8; idx < MAX_ALLOCATOR_COUNT; ++idx, size += MEMORY_SIZE_INCREMENT)
       {
          _fls[idx].size = size;
          _fls[idx].hdr  = NULL;
@@ -77,7 +77,7 @@ namespace inspire {
       // the reason for it to to ensure that every memory block in free list can be used
       // thus we can keep balance of recycling
       condition_t cond(&fl->mtx);
-      header* fhdr = fl->hdr;
+      header* &fhdr = fl->hdr;
       if (NULL != fhdr)
       {
          while (NULL != fhdr->next)
@@ -163,25 +163,34 @@ namespace inspire {
       // we need find which allocator should allocate the size
       // and we use binary search
       // TODO: bug in the code block
+      INSPIRE_ASSERT(0 != size, "Try to locate 0 byte free list")
       uint high = MAX_ALLOCATOR_COUNT - 1;
       uint low = 0;
       uint locate = 0;
+      if (size > MAX_LIMITED_MEMORY_SIZE)
+      {
+         return high;
+      }
+
+      high = high - 1;
       while (true)
       {
          locate = (high + low) / 2;
-         if (size >= 2 * _fls[locate].size)
+         if (size <= _fls[locate].size - MEMORY_SIZE_INCREMENT)
          {
-            low = locate;
+            high = locate - 1;
          }
-         else if (size < _fls[locate].size)
+         else if (size > _fls[locate].size)
          {
-            high = locate;
+            low = locate + 1;
          }
          else
          {
-            return locate;
+            break;
          }
       }
+
+      return locate;
    }
 
    void AllocatorMgr::_setSanity(void* ptr, const uint size)
@@ -199,7 +208,7 @@ namespace inspire {
       header* hdr = (header*)((char*)ptr - sizeof(header));
       bool eq1 = (0 == ::memcmp(hdr->eyecatcher, "inspire", 8));
       bool eq2 = (magic == hdr->magic);
-      return !(eq1 && eq2);
+      return (eq1 && eq2);
    }
 
 #ifdef _DEBUG

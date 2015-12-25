@@ -15,7 +15,7 @@ namespace inspire {
       THREAD_IDLE    = 1 | THREAD_RUNNING, // it means thread is suspended
    };
 
-   class thdMgr;
+   class threadMgr;
    class thdTask;
    class thread
    {
@@ -25,12 +25,12 @@ namespace inspire {
       static void* ENTRY_POINT(void* arg);
 #endif
    public:
-      thread(thdMgr* mgr);
+      thread(threadMgr* mgr);
       virtual ~thread();
 
       int64 tid() { return _tid; }
       
-      thdMgr* threadMgr() const { return _thdMgr; }
+      threadMgr* thdMgr() const { return _threadMgr; }
       /*
       * get the state of thread
       */
@@ -110,7 +110,7 @@ namespace inspire {
       bool     _detach;
       int      _errno;
       int64    _tid;
-      thdMgr*  _thdMgr;
+      threadMgr*  _threadMgr;
       thdTask* _task;
 #ifdef _WINDOWS
       HANDLE _hThread;

@@ -10,7 +10,7 @@ namespace inspire {
 
    class thdTask;
    class thdTaskMgr;
-   class thdMgr
+   class threadMgr
    {
    private:
       // the event definition
@@ -51,9 +51,9 @@ namespace inspire {
       class thdInnerTask : public thdTask
       {
       public:
-         thdInnerTask(thdMgr* mgr)
-            : thdTask(0, "Event Process Task"), _thdMgr(mgr) {}
-         ~thdInnerTask() { _thdMgr = NULL; }
+         thdInnerTask(threadMgr* mgr)
+            : thdTask(0, "Event Process Task"), _threadMgr(mgr) {}
+         ~thdInnerTask() { _threadMgr = NULL; }
 
          virtual const int run();
 
@@ -62,7 +62,7 @@ namespace inspire {
          thdInnerTask& operator= (const thdInnerTask& rhs);
 
       private:
-         thdMgr* _thdMgr;
+         threadMgr* _threadMgr;
       };
 
    public:
@@ -70,7 +70,7 @@ namespace inspire {
       void active();
       void destroy();
 
-      static thdMgr* instance();
+      static threadMgr* instance();
       /*
       * set max count of idle thread to be stored(pooled)
       */
@@ -131,10 +131,10 @@ namespace inspire {
    private:
 
    private:
-      thdMgr();
-      thdMgr(const thdMgr& rhs);
-      thdMgr& operator=(const thdMgr& rhs);
-      virtual ~thdMgr();
+      threadMgr();
+      threadMgr(const threadMgr& rhs);
+      threadMgr& operator=(const threadMgr& rhs);
+      virtual ~threadMgr();
 
    private:
       uint            _maxIdleCount;

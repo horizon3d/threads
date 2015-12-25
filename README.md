@@ -54,7 +54,7 @@ It also contains a simple manager. In order to control and manage thread object 
 However, the thread manager may be not satisfied all your need, you also can use *detach* to own a thread. In that time, you need invoke *active* to start the thread, and *join* to return resource to os.  
 sample:
 ```
-threadMgr* mgr = inspire::thdMgr::instance();
+threadMgr* mgr = inspire::threadMgr::instance();
 INSPIRE_ASSERT(NULL != mgr, "Failed to get thread manager");
 mgr->initialize();
 mgr->active();

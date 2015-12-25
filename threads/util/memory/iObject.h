@@ -6,6 +6,8 @@
 
 namespace inspire {
 
+   #define INSPIRE_INNER_MALLOC(x, y, z) AllocatorMgr::instance()->alloc(x, y, z)
+   #define INSPIRE_MALLOC(x) INSPIRE_INNER_MALLOC(x, __FILE__, __LINE__)
    #define INSPIRE_NEW new(__FILE__, __LINE__, std::nothrow)
    #define INSPIRE_DEL delete
    #define INSPIRE_SAFE_DEL(p) \
@@ -17,7 +19,7 @@ namespace inspire {
          p = NULL;             \
       }                        \
    } while (0);
-   #define INSPIRE_MALLOC(x) INSPIRE_INNER_MALLOC(x, __FILE__, __LINE__)
+
    #define INSPIRE_FREE(x)   AllocatorMgr::instance()->dealloc(p)
    #define INSPIRE_SAFE_FREE(p)  \
    do                            \
@@ -31,9 +33,6 @@ namespace inspire {
 
    class iObject
    {
-      #define INSPIRE_INNER_MALLOC(x, y, z) AllocatorMgr::instance()->alloc(x, y, z)
-      #define INSPIRE_MALLOC(x) INSPIRE_INNER_MALLOC(x, __FILE__, __LINE__)
-      #define INSPIRE_FREE(p)   AllocatorMgr::instance()->dealloc(p)
    protected:
       iObject() {}
       virtual ~iObject() {}

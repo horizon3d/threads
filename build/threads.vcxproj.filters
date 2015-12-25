@@ -30,11 +30,11 @@
     <Filter Include="threads\util\file">
       <UniqueIdentifier>{138f359c-aad5-4aa6-9955-dd3940cc93ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\util\memory">
+      <UniqueIdentifier>{cec0306d-6513-41f3-a0c0-ac3d1360e968}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\threads\thdMgr.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\logger\base.cpp">
       <Filter>threads\logger</Filter>
     </ClCompile>
@@ -53,11 +53,14 @@
     <ClCompile Include="..\threads\util\file\IO.cpp">
       <Filter>threads\util\file</Filter>
     </ClCompile>
+    <ClCompile Include="..\threads\threadMgr.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\threads\util\memory\AllocatorMgr.cpp">
+      <Filter>threads\util\memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\threads\thdMgr.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\threads.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -114,6 +117,15 @@
     </ClInclude>
     <ClInclude Include="..\threads\util\file\IO.h">
       <Filter>threads\util\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\memory\iObject.h">
+      <Filter>threads\util\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\threadMgr.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\util\memory\AllocatorMgr.h">
+      <Filter>threads\util\memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

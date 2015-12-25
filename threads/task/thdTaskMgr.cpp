@@ -45,7 +45,7 @@ namespace inspire {
       // we never stored the task
       // or the task is not the one we've stored
       // free it
-      delete task;
+      INSPIRE_DEL task;
       task = NULL;
    }
 
@@ -66,7 +66,7 @@ namespace inspire {
       std::map<int64, thdTask*>::iterator it = rmap.begin();
       for (; rmap.end() != it; ++it)
       {
-         delete it->second;
+         INSPIRE_DEL it->second;
          it->second = NULL;
       }
    }

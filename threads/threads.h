@@ -28,7 +28,7 @@
 #define _INSPIRE_THREAD_BASE_H_
 
 #include "thread.h"
-#include "thdMgr.h"
+#include "threadMgr.h"
 #include "task/thdTask.h"
 #include "task/thdTaskMgr.h"
 

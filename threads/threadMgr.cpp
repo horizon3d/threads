@@ -1,38 +1,38 @@
-#include "thdMgr.h"
+#include "threadMgr.h"
 
 namespace inspire {
 
-   const int thdMgr::thdInnerTask::run()
+   const int threadMgr::thdInnerTask::run()
    {
       LogEvent("starting MAIN PROCESS LOOP: %s", name());
       while (_thd->running())
       {
-         _thdMgr->_process();
+         _threadMgr->_process();
       }
 
       LogEvent("ending MAIN PROCESS LOOP: %s", name());
       return _thd->error();
    }
 
-   thdMgr* thdMgr::instance()
+   threadMgr* threadMgr::instance()
    {
-      static thdMgr mgr;
+      static threadMgr mgr;
       return &mgr;
    }
 
-   thdMgr::thdMgr() : _maxIdleCount(10)
+   threadMgr::threadMgr() : _maxIdleCount(10)
    {
       _taskMgr = thdTaskMgr::instance();
    }
 
-   thdMgr::~thdMgr()
+   threadMgr::~threadMgr()
    {
       _taskMgr = NULL;
    }
 
-   void thdMgr::initialize()
+   void threadMgr::initialize()
    {
-      thdTask* t = new thdInnerTask(this);
+      thdTask* t = INSPIRE_NEW thdInnerTask(this);
       STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
 
       thread* thd = create();
@@ -43,13 +43,13 @@ namespace inspire {
       _thdMain->assigned(t);
    }
 
-   void thdMgr::active()
+   void threadMgr::active()
    {
       STRONG_ASSERT(NULL != _thdMain, "event processing thread is NULL");
       _thdMain->active();
    }
 
-   void thdMgr::destroy()
+   void threadMgr::destroy()
    {
       LogEvent("signal to exit, program is going stopping");
       _thdMain->join();
@@ -74,7 +74,7 @@ namespace inspire {
       _thdMain = NULL;
    }
 
-   void thdMgr::_process()
+   void threadMgr::_process()
    {
       thdEvent ev;
       if (_eventQueue.pop_front(ev))
@@ -123,12 +123,12 @@ namespace inspire {
       }
    }
 
-   void thdMgr::reverseIdleCount(const uint maxCount)
+   void threadMgr::reverseIdleCount(const uint maxCount)
    {
       _maxIdleCount = maxCount;
    }
 
-   thread* thdMgr::_fetchIdle()
+   thread* threadMgr::_fetchIdle()
    {
       thread* thd = NULL;
       if (_idleQueue.pop_front(thd))
@@ -149,7 +149,7 @@ namespace inspire {
       return thd;
    }
 
-   thread* thdMgr::create()
+   thread* threadMgr::create()
    {
       int rc = 0;
       thread* thd = _acquire();
@@ -177,7 +177,7 @@ namespace inspire {
       return thd;
    }
 
-   void thdMgr::recycle(thread* thd)
+   void threadMgr::recycle(thread* thd)
    {
       INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
       thdTask* task = thd->fetch();
@@ -198,7 +198,7 @@ namespace inspire {
       }
    }
 
-   bool thdMgr::postEvent(const char t, void* pObj)
+   bool threadMgr::postEvent(const char t, void* pObj)
    {
       INSPIRE_ASSERT(EVENT_DUMMY < t && t < EVENT_THREAD_UPBOUND,
                      "notify with an dummy or unknown type: %d", t);
@@ -219,17 +219,17 @@ namespace inspire {
       return false;
    }
 
-   bool thdMgr::postEvent(thdTask* task)
+   bool threadMgr::postEvent(thdTask* task)
    {
       return postEvent(EVENT_DISPATCH_TASK, task);
    }
 
-   void thdMgr::_enIdle(thread* thd)
+   void threadMgr::_enIdle(thread* thd)
    {
       _idleQueue.push_back(thd);
    }
 
-   void thdMgr::_release(thread* thd)
+   void threadMgr::_release(thread* thd)
    {
       INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
       if (_thdMain->running() && _idleQueue.size() < _maxIdleCount)
@@ -249,7 +249,7 @@ namespace inspire {
       }
    }
 
-   thread* thdMgr::_acquire()
+   thread* threadMgr::_acquire()
    {
       thread* thd = NULL;
       if (_thdQueue.pop_front(thd))
@@ -261,7 +261,7 @@ namespace inspire {
       return NULL;
    }
 
-   void thdMgr::_dispatch(thdTask* task)
+   void threadMgr::_dispatch(thdTask* task)
    {
       INSPIRE_ASSERT(NULL != task, "try to despatch a NULL task");
       if (task)
@@ -285,7 +285,7 @@ namespace inspire {
       }
    }
 
-   void thdMgr::detach(thread* thd)
+   void threadMgr::detach(thread* thd)
    {
       LogEvent("detach thread: %lld from manager map", thd->tid());
       _totalSet.erase(thd);

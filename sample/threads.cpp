@@ -42,7 +42,7 @@ int main(int argc, char** argv)
    ticket.id = 0;
    taskId.id = 0;
 
-   inspire::thdMgr* mgr = inspire::thdMgr::instance();
+   inspire::threadMgr* mgr = inspire::threadMgr::instance();
    mgr->initialize();
    mgr->active();
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
    for (int idx = 0; idx < 20; ++idx)
    {
       int64 tt = inc(taskId);
-      inspire::thdTask* t = new taskA(tt);
+      inspire::thdTask* t = INSPIRE_NEW taskA(tt);
       mgr->postEvent(t);
    }
 

@@ -7,7 +7,7 @@
 
 namespace inspire {
 
-   class thdMgr;
+   class threadMgr;
    class thdTask;
    class thdTaskMgr
    {

@@ -3,6 +3,7 @@
 
 #include "thread.h"
 #include "thdTaskMgr.h"
+#include "util/memory/iObject.h"
 
 namespace inspire {
 
@@ -14,7 +15,7 @@ namespace inspire {
    };
 
    typedef void (*TASK_END_FUNC)(void* result);
-   class thdTask
+   class thdTask : public iObject
    {
    public:
       thdTask(const int64& id, const char* name)

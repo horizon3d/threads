@@ -1,5 +1,5 @@
 #include "thread.h"
-#include "thdMgr.h"
+#include "threadMgr.h"
 #include "task/thdTask.h"
 
 #ifdef _WINDOWS
@@ -10,8 +10,8 @@
 
 namespace inspire {
 
-   thread::thread(thdMgr* mgr)
-      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(0), _thdMgr(mgr), _task(NULL)
+   thread::thread(threadMgr* mgr)
+      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(0), _threadMgr(mgr), _task(NULL)
    {
 #ifdef _WINDOWS
       _hThread = INVALID_HANDLE_VALUE;
@@ -20,7 +20,7 @@ namespace inspire {
       pthread_mutex_init(&_mtx, NULL);
       pthread_cond_init(&_cond, NULL);
 #endif
-      STRONG_ASSERT(NULL != mgr, "thdMgr cannot be NULL");
+      STRONG_ASSERT(NULL != mgr, "threadMgr cannot be NULL");
    }
 
    thread::~thread()
@@ -172,7 +172,7 @@ namespace inspire {
 
    void thread::deactive()
    {
-      _thdMgr->recycle(this);
+      _threadMgr->recycle(this);
    }
 
    void thread::_reset()
@@ -193,7 +193,7 @@ namespace inspire {
       if (thd)
       {
          int rc = 0;
-         thdMgr* mgr = thd->threadMgr();
+         threadMgr* mgr = thd->thdMgr();
          INSPIRE_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
          while (THREAD_RUNNING == thd->state())
          {
@@ -229,7 +229,7 @@ namespace inspire {
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
-         thdMgr* mgr = thd->threadMgr();
+         threadMgr* mgr = thd->threadMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
          while (THREAD_RUNNING & thd->state())
