@@ -53,7 +53,7 @@ namespace inspire {
       public:
          thdInnerTask(threadMgr* mgr)
             : thdTask(0, "Event Process Task"), _threadMgr(mgr) {}
-         ~thdInnerTask() { _threadMgr = NULL; }
+         virtual ~thdInnerTask() { _threadMgr = NULL; }
 
          virtual const int run();
 

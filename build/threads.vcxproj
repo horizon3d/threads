@@ -155,7 +155,6 @@
     <ClCompile Include="..\threads\threadMgr.cpp" />
     <ClCompile Include="..\threads\thread.cpp" />
     <ClCompile Include="..\threads\util\file\IO.cpp" />
-    <ClCompile Include="..\threads\util\memory\AllocatorMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\threads\logger\writer.h" />
@@ -163,6 +162,7 @@
     <ClInclude Include="..\threads\logger\base.h" />
     <ClInclude Include="..\threads\task\thdTask.h" />
     <ClInclude Include="..\threads\task\thdTaskMgr.h" />
+    <ClInclude Include="..\threads\threadExt.h" />
     <ClInclude Include="..\threads\threadMgr.h" />
     <ClInclude Include="..\threads\thread.h" />
     <ClInclude Include="..\threads\threads.h" />
@@ -172,8 +172,6 @@
     <ClInclude Include="..\threads\util\container\map.h" />
     <ClInclude Include="..\threads\util\container\set.h" />
     <ClInclude Include="..\threads\util\file\IO.h" />
-    <ClInclude Include="..\threads\util\memory\AllocatorMgr.h" />
-    <ClInclude Include="..\threads\util\memory\iObject.h" />
     <ClInclude Include="..\threads\util\system\atomic.h" />
     <ClInclude Include="..\threads\util\system\condition.h" />
     <ClInclude Include="..\threads\util\system\lock.h" />

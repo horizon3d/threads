@@ -70,14 +70,14 @@ namespace inspire {
 
       header* hdr = (header*)((char*)ptr - sizeof(header));
       uint locate = _locate(hdr->size);
-      freelist* fl = &_fls[locate];
+      freelist& fl = _fls[locate];
 
       // ensure the safety of multi-thread, we locked the free list
       // and we append the memory block at the end of free list
       // the reason for it to to ensure that every memory block in free list can be used
       // thus we can keep balance of recycling
-      condition_t cond(&fl->mtx);
-      header* &fhdr = fl->hdr;
+      condition_t cond(&fl.mtx);
+      header* &fhdr = fl.hdr;
       if (NULL != fhdr)
       {
          while (NULL != fhdr->next)
@@ -91,7 +91,7 @@ namespace inspire {
          fhdr = hdr;
       }
       // now we clear the expired data in memory block
-      ::memset((void*)ptr, 0x0, fl->size);
+      ::memset((void*)ptr, 0x0, fl.size);
    }
 
    void AllocatorMgr::pray()
@@ -113,10 +113,10 @@ namespace inspire {
       void* ptr = NULL;
       // first we pick memory block stored in free list
       uint locate = _locate(size);
-      freelist* fl = &_fls[locate];
+      freelist& fl = _fls[locate];
       {
-         condition_t cond(&fl->mtx);
-         header* hdr = fl->hdr;
+         condition_t cond(&fl.mtx);
+         header* hdr = fl.hdr;
          while (NULL != hdr)
          {
             header* toReturn = hdr;
@@ -138,15 +138,15 @@ namespace inspire {
       {
          // if we find no match block in free list
          // then we use malloc to alloc memory from system
-         ptr = ::malloc(fl->size + sizeof(header));
+         ptr = ::malloc(fl.size + sizeof(header));
          if (NULL == ptr)
          {
-            LogError("Failed to allocate memory, size :%d", fl->size);
+            LogError("Failed to allocate memory, size :%d", fl.size);
             return NULL;
          }
          // fill mete data recorded in header 
-         _setSanity(ptr, fl->size);
-         ::memset((char*)ptr + sizeof(header), 0, fl->size);
+         _setSanity(ptr, fl.size);
+         ::memset((char*)ptr + sizeof(header), 0, fl.size);
          return (char*)ptr + sizeof(header);
       }
 

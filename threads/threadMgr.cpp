@@ -32,7 +32,7 @@ namespace inspire {
 
    void threadMgr::initialize()
    {
-      thdTask* t = INSPIRE_NEW thdInnerTask(this);
+      thdTask* t = new thdInnerTask(this);
       STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
 
       thread* thd = create();

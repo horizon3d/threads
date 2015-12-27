@@ -50,7 +50,7 @@ int main(int argc, char** argv)
    for (int idx = 0; idx < 20; ++idx)
    {
       int64 tt = inc(taskId);
-      inspire::thdTask* t = INSPIRE_NEW taskA(tt);
+      inspire::thdTask* t = new taskA(tt);
       mgr->postEvent(t);
    }
 

@@ -19,6 +19,7 @@ namespace inspire {
    class thdTask;
    class thread
    {
+      friend class threadMgr;
 #ifdef _WINDOWS
       static unsigned __stdcall ENTRY_POINT(void* arg);
 #else
