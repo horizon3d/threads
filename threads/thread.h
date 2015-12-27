@@ -24,8 +24,9 @@ namespace inspire {
 #else
       static void* ENTRY_POINT(void* arg);
 #endif
-   public:
+   protected:
       thread(threadMgr* mgr);
+   public:
       virtual ~thread();
 
       int64 tid() { return _tid; }
