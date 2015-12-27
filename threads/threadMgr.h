@@ -53,7 +53,7 @@ namespace inspire {
       public:
          thdInnerTask(threadMgr* mgr)
             : thdTask(0, "Event Process Task"), _threadMgr(mgr) {}
-         virtual ~thdInnerTask() { _threadMgr = NULL; }
+         ~thdInnerTask() { _threadMgr = NULL; }
 
          virtual const int run();
 
@@ -79,6 +79,10 @@ namespace inspire {
       * create a thread
       */
       thread* create();
+      /*
+      * create a thread
+      */
+      thread* create(uint thdType);
       /*
       * detach thread from thread map, so that the manager won't manager it
       * user should join, free the thread any more

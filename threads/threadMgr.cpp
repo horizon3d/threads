@@ -1,4 +1,5 @@
 #include "threadMgr.h"
+#include "threadExt.h"
 
 namespace inspire {
 
@@ -175,6 +176,11 @@ namespace inspire {
       // if object is existed already, it cannot be inserted
       _totalSet.insert(thd);
       return thd;
+   }
+
+   thread* threadMgr::create(uint thdType)
+   {
+      return inspire::create(thdType);
    }
 
    void threadMgr::recycle(thread* thd)

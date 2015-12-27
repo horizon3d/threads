@@ -116,7 +116,7 @@
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\threads\threadExt.h">
-      <Filter>threads\util</Filter>
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

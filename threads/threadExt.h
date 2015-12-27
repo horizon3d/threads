@@ -2,6 +2,7 @@
 #define _INSPIRE_THREAD_EXTENSION_H_
 
 #include "thread.h"
+#include "util/system/util.h"
 
 namespace inspire {
 
@@ -21,6 +22,8 @@ namespace inspire {
       default:
          break;
       }
+
+      INSPIRE_ASSERT(NULL != thd, "Failed to create a thread object, type: %d", thdType);
       return thd;
    }
 }
