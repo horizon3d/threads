@@ -34,8 +34,9 @@ namespace inspire {
    void thdTaskMgr::over(thdTask* task)
    {
       thdTask* t = NULL;
-      if (_taskMap.fetch(task->id(), t) && t == task)
+      if (_taskMap.fetch(task->id(), t))
       {
+         // TODO: we do not need to fetch a task from the map
          // we have stored the task
          // and the task is the same one we stored
          // let's delete it
