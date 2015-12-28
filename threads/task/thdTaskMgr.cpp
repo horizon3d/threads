@@ -1,5 +1,6 @@
 #include "thdTaskMgr.h"
 #include "thdTask.h"
+#include "taskExt.h"
 
 namespace inspire {
 
@@ -37,16 +38,17 @@ namespace inspire {
       {
          // we have stored the task
          // and the task is the same one we stored
-         // let's change the task status
-         // or we delete it
-         task->status(TASK_UNHANDLED);
-         return;
+         // let's delete it
+         delete task;
+         task = NULL;
       }
-      // we never stored the task
-      // or the task is not the one we've stored
-      // free it
-      delete task;
-      task = NULL;
+      else
+      {
+         // we never stored the task
+         // let's mark it unhandled and store it for next use
+         task->status(TASK_UNHANDLED);
+         _taskMap.insert(task->id(), task);
+      }
    }
 
    thdTask* thdTaskMgr::get(const int64& id)
@@ -57,7 +59,11 @@ namespace inspire {
          // the task is idle, we use it
          return t;
       }
-      return NULL;
+      else
+      {
+         t = inspire::createTask(id);
+      }
+      return t;
    }
 
    void thdTaskMgr::clean()
