@@ -14,7 +14,7 @@ namespace inspire {
    };
 
    typedef void (*TASK_END_FUNC)(void* result);
-   class thdTask// : public iObject
+   class thdTask
    {
    public:
       thdTask(const int64& id, const char* name)
