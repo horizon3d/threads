@@ -118,5 +118,8 @@
     <ClInclude Include="..\threads\threadExt.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\threads\task\taskExt.h">
+      <Filter>threads\task</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
