@@ -26,7 +26,8 @@ namespace inspire {
       static void* ENTRY_POINT(void* arg);
 #endif
    protected:
-      thread(threadMgr* mgr);
+      thread(threadMgr* mgr, bool detach = true);
+
    public:
       virtual ~thread();
 
@@ -53,12 +54,6 @@ namespace inspire {
       * get the error code
       */
       const int error() const { return _errno; }
-      /*
-      * break the relation of thread manager
-      * it means the thread manager don't manager it any more
-      * you should free it when its work over
-      */
-      void detach() { _detach = true; }
       /*
       * check the thread is detached or not
       */
@@ -99,28 +94,35 @@ namespace inspire {
       }
 
       void _setstate(char st) { _state = st; }
-      
 
       void _reset();
+
+      /*
+      * break the relation of thread manager
+      * it may make the thread to be a user defined thread
+      * it means the thread manager don't manager it any more
+      * you should free it when its work over
+      */
+      void detach() { _detach = true; }
 
    private:
       thread(const thread& rhs);
       thread& operator= (const thread& rhs);
 
    protected:
-      char     _state;
-      bool     _detach;
-      int      _errno;
-      int64    _tid;
+      char        _state;
+      bool        _detach;
+      int         _errno;
       threadMgr*  _threadMgr;
-      thdTask* _task;
+      thdTask*    _task;
 #ifdef _WINDOWS
-      HANDLE _hThread;
+      HANDLE      _hThread;
 #else
-      pthread_t _ntid;
+      pthread_t       _ntid;
       pthread_mutex_t _mtx;
       pthread_cond_t  _cond;
 #endif
+      int64       _tid;
    };
 }
 #endif // _INSPIRE_THREAD_ENTITY_H_

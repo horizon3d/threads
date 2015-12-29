@@ -46,7 +46,7 @@ int main(int argc, char** argv)
    mgr->initialize();
    mgr->active();
 
-   mgr->reverseIdleCount(3);
+   mgr->idleCount(20);
    for (int idx = 0; idx < 20; ++idx)
    {
       int64 tt = inc(taskId);

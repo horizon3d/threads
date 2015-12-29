@@ -15,12 +15,6 @@ namespace inspire {
       return _thd->error();
    }
 
-   threadMgr* threadMgr::instance()
-   {
-      static threadMgr mgr;
-      return &mgr;
-   }
-
    threadMgr::threadMgr() : _maxIdleCount(10)
    {
       _taskMgr = thdTaskMgr::instance();
@@ -36,7 +30,7 @@ namespace inspire {
       thdTask* t = new thdInnerTask(this);
       STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
 
-      thread* thd = create();
+      thread* thd = _create();
       STRONG_ASSERT(NULL != thd, "cannot start event processing thread, exit");
 
       detach(thd);
@@ -73,6 +67,104 @@ namespace inspire {
 
       delete _thdMain;
       _thdMain = NULL;
+   }
+
+   threadMgr* threadMgr::instance()
+   {
+      static threadMgr mgr;
+      return &mgr;
+   }
+
+   void threadMgr::idleCount(const uint maxCount)
+   {
+      _maxIdleCount = maxCount;
+   }
+
+   thread* threadMgr::create(const uint thdType)
+   {
+      return inspire::create(this, thdType);
+   }
+
+   void threadMgr::detach(thread* thd)
+   {
+      LogEvent("detach thread: %lld from manager map", thd->tid());
+      _totalSet.erase(thd);
+      thd->detach();
+   }
+
+   void threadMgr::recycle(thread* thd)
+   {
+      INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
+      thdTask* task = thd->fetch();
+      if (NULL != task)
+      {
+         // clean task attached in thread
+         thd->assigned(NULL);
+         // we should notify task manager to release task
+         _taskMgr->over(task);
+      }
+
+      if (!thd->detached())
+      {
+         // signal to manager to destroy the thread
+         postEvent(EVENT_THREAD_RELEASE, thd);
+         // suspend the thread
+         thd->suspend();
+      }
+   }
+
+   bool threadMgr::postEvent(const char t, void* pObj)
+   {
+      INSPIRE_ASSERT(EVENT_DUMMY < t && t < EVENT_THREAD_UPBOUND,
+                     "notify with an dummy or unknown type: %d", t);
+      INSPIRE_ASSERT(NULL != pObj, "notify with invalid object");
+      if (!_thdMain->running() && EVENT_DISPATCH_TASK == t)
+      {
+         thdTask* task = (thdTask*)pObj;
+         LogError("a exit signal received, do not accept task dispatch event "
+                  "any more, task id: %lld, name:[%s]", task->id(), task->name());
+      }
+      else
+      {
+         thdEvent ev(t, pObj);
+         _eventQueue.push_back(ev);
+         return true;
+      }
+
+      return false;
+   }
+
+   bool threadMgr::postEvent(thdTask* task)
+   {
+      return postEvent(EVENT_DISPATCH_TASK, task);
+   }
+
+   thread* threadMgr::_create()
+   {
+      int rc = 0;
+      thread* thd = _acquire();
+      if (NULL == thd)
+      {
+         thd = new thread(this, false);
+         if (NULL == thd)
+         {
+            LogError("failed to create thread, out of memory");
+            // if hit there, log had been written
+            return NULL;
+         }
+         LogEvent("allocate a thread object");
+      }
+
+      rc = thd->create();
+      if (rc)
+      {
+         LogError("create thread failed in start thread");
+         return NULL;
+      }
+      // let's record it
+      // if object is existed already, it cannot be inserted
+      _totalSet.insert(thd);
+      return thd;
    }
 
    void threadMgr::_process()
@@ -124,11 +216,6 @@ namespace inspire {
       }
    }
 
-   void threadMgr::reverseIdleCount(const uint maxCount)
-   {
-      _maxIdleCount = maxCount;
-   }
-
    thread* threadMgr::_fetchIdle()
    {
       thread* thd = NULL;
@@ -150,85 +237,7 @@ namespace inspire {
       return thd;
    }
 
-   thread* threadMgr::create()
-   {
-      int rc = 0;
-      thread* thd = _acquire();
-      if (NULL == thd)
-      {
-         thd = new thread(this);
-         if (NULL == thd)
-         {
-            LogError("failed to create thread, out of memory");
-            // if hit there, log had been written
-            return NULL;
-         }
-         LogEvent("allocate a thread object");
-      }
-
-      rc = thd->create();
-      if (rc)
-      {
-         LogError("create thread failed in start thread");
-         return NULL;
-      }
-      // let's record it
-      // if object is existed already, it cannot be inserted
-      _totalSet.insert(thd);
-      return thd;
-   }
-
-   thread* threadMgr::create(uint thdType)
-   {
-      return inspire::create(thdType);
-   }
-
-   void threadMgr::recycle(thread* thd)
-   {
-      INSPIRE_ASSERT(NULL != thd, "try to recycle a NULL thread");
-      thdTask* task = thd->fetch();
-      if (NULL != task)
-      {
-         // clean task attached in thread
-         thd->assigned(NULL);
-         // we should notify task manager to release task
-         _taskMgr->over(task);
-      }
-
-      if (!thd->detached())
-      {
-         // signal to manager to destroy the thread
-         postEvent(EVENT_THREAD_RELEASE, thd);
-         // suspend the thread
-         thd->suspend();
-      }
-   }
-
-   bool threadMgr::postEvent(const char t, void* pObj)
-   {
-      INSPIRE_ASSERT(EVENT_DUMMY < t && t < EVENT_THREAD_UPBOUND,
-                     "notify with an dummy or unknown type: %d", t);
-      INSPIRE_ASSERT(NULL != pObj, "notify with invalid object");
-      if (!_thdMain->running() && EVENT_DISPATCH_TASK == t)
-      {
-         thdTask* task = (thdTask*)pObj;
-         LogError("a exit signal received, do not accept task dispatch event "
-                  "any more, task id: %lld, name:[%s]", task->id(), task->name());
-      }
-      else
-      {
-         thdEvent ev(t, pObj);
-         _eventQueue.push_back(ev);
-         return true;
-      }
-
-      return false;
-   }
-
-   bool threadMgr::postEvent(thdTask* task)
-   {
-      return postEvent(EVENT_DISPATCH_TASK, task);
-   }
+   
 
    void threadMgr::_enIdle(thread* thd)
    {
@@ -291,11 +300,6 @@ namespace inspire {
       }
    }
 
-   void threadMgr::detach(thread* thd)
-   {
-      LogEvent("detach thread: %lld from manager map", thd->tid());
-      _totalSet.erase(thd);
-      thd->detach();
-   }
+   
 
 }

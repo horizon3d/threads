@@ -10,8 +10,8 @@
 
 namespace inspire {
 
-   thread::thread(threadMgr* mgr)
-      : _state(THREAD_INVALID), _detach(false), _errno(0), _tid(0), _threadMgr(mgr), _task(NULL)
+   thread::thread(threadMgr* mgr, bool detach)
+      : _state(THREAD_INVALID), _detach(detach), _errno(0), _threadMgr(mgr), _task(NULL), _tid(0)
    {
 #ifdef _WINDOWS
       _hThread = INVALID_HANDLE_VALUE;
@@ -187,7 +187,7 @@ namespace inspire {
    unsigned __stdcall thread::ENTRY_POINT(void* arg)
    {
       INSPIRE_ASSERT(NULL != arg, "Thread addition parameter cannot be NULL");
-      LogEvent("Thread starting");
+      LogDebug("Thread starting");
 
       thread* thd = static_cast<thread*>(arg);
       if (thd)
@@ -218,7 +218,7 @@ namespace inspire {
             }
          }
       }
-      LogEvent("Thread endding");
+      LogDebug("Thread endding");
       return thd->error();
    }
 #else

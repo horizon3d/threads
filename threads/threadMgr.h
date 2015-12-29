@@ -74,15 +74,11 @@ namespace inspire {
       /*
       * set max count of idle thread to be stored(pooled)
       */
-      void reverseIdleCount(const uint maxCount = 10);
+      void idleCount(const uint maxCount = 20);
       /*
-      * create a thread
+      * create a user defined thread
       */
-      thread* create();
-      /*
-      * create a thread
-      */
-      thread* create(uint thdType);
+      thread* create(const uint thdType);
       /*
       * detach thread from thread map, so that the manager won't manager it
       * user should join, free the thread any more
@@ -103,6 +99,10 @@ namespace inspire {
       bool postEvent(thdTask* task);
 
    protected:
+      /*
+      * create a worker thread
+      */
+      thread* _create();
       /*
       * handle event
       */
@@ -130,7 +130,6 @@ namespace inspire {
       * dispatch a task to a thread which is ready
       */
       void _dispatch(thdTask* task);
-      
 
    private:
 
