@@ -310,13 +310,16 @@ namespace inspire {
          thread* thd = _fetchIdle();
          if (NULL == thd)
          {
-            thd = create();
+            thd = _create();
             if (NULL == thd)
             {
                LogError("cannot allocate a new thread object");
                // we failed to allocate a thread object,
-               // now we should push the task into task queue
-               postEvent(EVENT_DISPATCH_TASK, task);
+               // now we should insert the task into head of task queue 
+               // postEvent(EVENT_DISPATCH_TASK, task);
+               thdEvent ev(EVENT_DISPATCH_TASK, task);
+               _eventQueue.push_front(ev);
+               return;
             }
          }
 

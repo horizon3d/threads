@@ -20,6 +20,12 @@ namespace inspire {
          _deque.push_back(t);
       }
 
+      void push_front(T& t)
+      {
+         condition_t cond(&_mtx);
+         _deque.push_front(t);
+      }
+
       bool pop_front(T& t)
       {
          condition_t cond(&_mtx);
