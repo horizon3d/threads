@@ -38,7 +38,7 @@ namespace inspire {
     * add the product statement here, it must be like thd = new EXT_THREAD(...)
     * A pointer of base(thread) will be return if successfully worked.
    */
-   inline thread* create(threadMgr* mgr, uint thdType)
+   inline thread* create(threadMgr* mgr, const uint thdType)
    {
       INSPIRE_ASSERT(NULL != mgr, "thread manager cannot be NULL");
       thread* thd = NULL;

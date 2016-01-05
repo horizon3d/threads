@@ -3,10 +3,13 @@
 
 namespace inspire {
 
-   inline thdTask* createTask(const int64 taskId)
+   /*
+   * task type must be an enumerated variable
+   */
+   inline thdTask* createTask(const uint taskType)
    {
       thdTask* task = NULL;
-      switch (taskId)
+      switch (taskType)
       {
       case 0:
          //task = new XXXXTask();
