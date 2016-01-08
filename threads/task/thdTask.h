@@ -43,7 +43,7 @@ namespace inspire {
    class thdTask
    {
    public:
-      thdTask(const int64& id, const char* name)
+      thdTask(const int64& id, const char* name = NULL)
          : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
       {
          thdTaskMgr::instance()->registerTask(this);
@@ -53,10 +53,11 @@ namespace inspire {
       {}
       virtual ~thdTask() {}
 
+      virtual void initialize() {}
       virtual const int run() = 0;
 
    public:
-      const char* name() { return _name; };
+      const char* name() { return (NULL == _name ? "NULL" : _name); };
       const int64 id() const { return _taskId; }
       const uint status() const { return _status; }
       void status(const uint st) { _status = st; }
