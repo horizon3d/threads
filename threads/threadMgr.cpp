@@ -41,7 +41,7 @@ namespace inspire {
       return _thd->error();
    }
 
-   threadMgr::threadMgr() : _maxIdleCount(10)
+   threadMgr::threadMgr() : _maxIdleCount(20)
    {
       _taskMgr = thdTaskMgr::instance();
    }
