@@ -106,9 +106,9 @@ namespace inspire {
       _maxIdleCount = maxCount;
    }
 
-   thread* threadMgr::create(const uint thdType)
+   thread* threadMgr::create(const uint thdType, IThreadProductor* factory)
    {
-      return inspire::create(this, thdType);
+      return factory->create(this, thdType);
    }
 
    void threadMgr::detach(thread* thd)

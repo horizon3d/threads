@@ -104,7 +104,7 @@ namespace inspire {
       /*
       * create a user defined thread
       */
-      thread* create(const uint thdType);
+      thread* create(const uint thdType, IThreadProductor* factory = NULL);
       /*
       * detach thread from thread map, so that the manager won't manager it
       * user should join, free the thread any more

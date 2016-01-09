@@ -9,13 +9,14 @@ namespace inspire {
 
    class threadMgr;
    class thdTask;
+   class ITaskProductor;
    class thdTaskMgr
    {
    public:
       static thdTaskMgr* instance();
       void registerTask(thdTask* task);
       void over(thdTask* task);
-      thdTask* get(const int64& id);
+      thdTask* get(const int64& id, ITaskProductor* factory);
 
    protected:
       void clean();

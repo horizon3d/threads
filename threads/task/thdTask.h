@@ -97,5 +97,11 @@ namespace inspire {
       thread*       _thd;
       TASK_END_FUNC _cb;
    };
+
+   class ITaskProductor
+   {
+   public:
+      virtual thdTask* createTask(const uint taskType) = 0;
+   };
 }
 #endif

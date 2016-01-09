@@ -78,7 +78,7 @@ namespace inspire {
       }
    }
 
-   thdTask* thdTaskMgr::get(const int64& id)
+   thdTask* thdTaskMgr::get(const int64& id, ITaskProductor* factory)
    {
       thdTask* t = NULL;
       if (_taskMap.fetch(id, t) && TASK_UNHANDLED == t->status())
@@ -88,7 +88,7 @@ namespace inspire {
       }
       else
       {
-         t = inspire::createTask(id);
+         t = factory->createTask(id);
       }
       return t;
    }
