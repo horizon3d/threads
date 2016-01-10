@@ -106,11 +106,6 @@ namespace inspire {
       */
       thread* create(const uint thdType, IThreadProductor* factory = NULL);
       /*
-      * detach thread from thread map, so that the manager won't manager it
-      * user should join, free the thread any more
-      */
-      void detach(thread* thd);
-      /*
       * recycle a thread, it determines a thread is to be suspended or release
       */
       void recycle(thread* thd);
@@ -129,6 +124,11 @@ namespace inspire {
       * create a worker thread
       */
       thread* _create();
+      /*
+      * detach thread from thread map, so that the manager won't manager it
+      * user should join, free the thread any more
+      */
+      void _detach(thread* thd);
       /*
       * handle event
       */

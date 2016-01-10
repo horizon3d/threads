@@ -58,16 +58,14 @@ threadMgr* mgr = inspire::threadMgr::instance();
 INSPIRE_ASSERT(NULL != mgr, "Failed to get thread manager");
 mgr->initialize();
 mgr->active();
-thread* thd = mgr->create();   // create a thread object
-mgr->detach(thd);              // own the thread and manager it yourself, the thread will be state detached
+thread* thd = mgr->create(THREAD_TYPE_EXAMPLE);   // create a thread object user defined
 ...
+thdTask* task = inspire::thdTaskMgr::instance()->get(THREAD_TASK_EXAMPLE, taskProductor);
 thd->assigned(task);           // assign a task to the thread
 thd->active();                 // start the thread and handle the task assigned
 ...
 thd->join();                   // task handle over, you need to join the thread to return resource to os
                                // if you never detached the thread, never call join yourself
-delete thd;
-thd = NULL;                    // if you detached the thread, delete it when ending  
 ```
 
 

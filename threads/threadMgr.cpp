@@ -59,7 +59,7 @@ namespace inspire {
       thread* thd = _create();
       STRONG_ASSERT(NULL != thd, "cannot start event processing thread, exit");
 
-      detach(thd);
+      _detach(thd);
       _thdMain = thd;
       _thdMain->assigned(t);
    }
@@ -109,13 +109,6 @@ namespace inspire {
    thread* threadMgr::create(const uint thdType, IThreadProductor* factory)
    {
       return factory->create(this, thdType);
-   }
-
-   void threadMgr::detach(thread* thd)
-   {
-      LogEvent("detach thread: %lld from manager map", thd->tid());
-      _totalSet.erase(thd);
-      thd->detach();
    }
 
    void threadMgr::recycle(thread* thd)
@@ -191,6 +184,13 @@ namespace inspire {
       // if object is existed already, it cannot be inserted
       _totalSet.insert(thd);
       return thd;
+   }
+
+   void threadMgr::_detach(thread* thd)
+   {
+      LogEvent("detach thread: %lld from manager map", thd->tid());
+      _totalSet.erase(thd);
+      thd->detach();
    }
 
    void threadMgr::_process()
