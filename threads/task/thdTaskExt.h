@@ -31,19 +31,13 @@ namespace inspire {
 
    /*
    * task type must be an enumerated variable
+   * in order to pass the management of task to task manager
+   * user should to implement a task factory class base on interface ITaskProductor
    */
-   inline thdTask* createTask(const uint taskType)
+   class ITaskProductor
    {
-      thdTask* task = NULL;
-      switch (taskType)
-      {
-      case 0:
-         //task = new XXXXTask();
-         break;
-      default:
-         break;
-      }
-      return task;
-   }
+   public:
+      virtual thdTask* createTask(const uint taskType) = 0;
+   };
 }
 #endif

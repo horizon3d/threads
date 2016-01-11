@@ -36,6 +36,7 @@ namespace inspire {
 
    class thdTask;
    class thdTaskMgr;
+   class IThreadProductor;
    class threadMgr
    {
    private:

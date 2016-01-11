@@ -26,7 +26,7 @@ Date  : =========
 *******************************************************************************/
 #include "thdTaskMgr.h"
 #include "thdTask.h"
-#include "taskExt.h"
+#include "thdTaskExt.h"
 
 namespace inspire {
 
@@ -39,28 +39,27 @@ namespace inspire {
    void thdTaskMgr::registerTask(thdTask* task)
    {
       thdTask* t = NULL;
-      if (!_taskMap.fetch(task->id(), t))
+      if (!_taskMap.fetch(task->type(), t))
       {
-         int64 tId = task->id();
+         uint tId = task->type();
          const char* tName = task->name();
-         LogEvent("insert a new task into map, id: %lld, name: %s",
+         LogEvent("insert a new task into map, id: %d, name: %s",
                   tId, tName);
-         _taskMap.insert(tId, task);
+         //_taskMap.insert(tId, task);
       }
 #ifdef _DEBUG
       else
       {
          LogError("try to register a duplicated task!!!"
                   " task id: %d, name: %s, existed task: %s",
-                  task->id(), task->name(), t->name());
+                  task->type(), task->name(), t->name());
       }
 #endif
    }
 
    void thdTaskMgr::over(thdTask* task)
    {
-      thdTask* t = NULL;
-      if (_taskMap.fetch(task->id(), t))
+      if (_taskMap.find(task->type()))
       {
          // TODO: we do not need to fetch a task from the map
          // we have stored the task
@@ -73,30 +72,32 @@ namespace inspire {
       {
          // we never stored the task
          // let's mark it unhandled and store it for next use
-         task->status(TASK_UNHANDLED);
-         _taskMap.insert(task->id(), task);
+         task->reinitialize();
+         _taskMap.insert(task->type(), task);
       }
    }
 
-   thdTask* thdTaskMgr::get(const int64& id, ITaskProductor* factory)
+   thdTask* thdTaskMgr::get(const uint& id, ITaskProductor* factory)
    {
       thdTask* t = NULL;
       if (_taskMap.fetch(id, t) && TASK_UNHANDLED == t->status())
       {
          // the task is idle, we use it
-         return t;
+         // return t;
       }
       else
       {
          t = factory->createTask(id);
       }
+
+      ++_totalCount;
       return t;
    }
 
    void thdTaskMgr::clean()
    {
-      std::map<int64, thdTask*>& rmap = _taskMap.raw();
-      std::map<int64, thdTask*>::iterator it = rmap.begin();
+      std::map<uint, thdTask*>& rmap = _taskMap.raw();
+      std::map<uint, thdTask*>::iterator it = rmap.begin();
       for (; rmap.end() != it; ++it)
       {
          thdTask*& t = it->second;

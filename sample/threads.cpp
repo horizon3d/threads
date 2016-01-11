@@ -11,19 +11,16 @@ struct unit
 };
 
 unit ticket;
-unit taskId;
 
-int64 inc(unit& u)
+enum TASK_TYPE
 {
-   inspire::condition_t cond(&u._mtx);
-   ++u.id;
-   return u.id;
-}
+   THREAD_TASK_A = 1,
+};
 
 class taskA : public inspire::thdTask
 {
 public:
-   taskA(int64 id) : thdTask(id, "A task") {  }
+   taskA(uint id) : thdTask(id, "A task") {  }
    ~taskA() {}
 
    virtual const int run()
@@ -37,20 +34,42 @@ public:
    }
 };
 
+class taskFactory : public inspire::ITaskProductor
+{
+public:
+   virtual inspire::thdTask* createTask(const uint taskType)
+   {
+      inspire::thdTask* task = NULL;
+      switch (taskType)
+      {
+      case THREAD_TASK_A:
+         task = new taskA(taskType);
+         break;
+      default:
+         break;
+      }
+      return task;
+   }
+
+public:
+   taskFactory() {}
+   ~taskFactory() {}
+};
+
 int main(int argc, char** argv)
 {
    ticket.id = 0;
-   taskId.id = 0;
+
+   taskFactory factory;
 
    inspire::threadMgr* mgr = inspire::threadMgr::instance();
    mgr->initialize();
    mgr->active();
 
-   mgr->idleCount(20);
    for (int idx = 0; idx < 20; ++idx)
    {
-      int64 tt = inc(taskId);
-      inspire::thdTask* t = new taskA(tt);
+      inspire::thdTask* t = inspire::thdTaskMgr::instance()->get(THREAD_TASK_A, &factory);
+      INSPIRE_ASSERT(t, "create task failed, out of memory");
       mgr->postEvent(t);
    }
 

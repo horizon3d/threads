@@ -154,11 +154,5 @@ namespace inspire {
 #endif
       int64       _tid;
    };
-
-   class IThreadProductor
-   {
-   public:
-      virtual thread* create(threadMgr* mgr, const uint thdType);
-   };
 }
 #endif // _INSPIRE_THREAD_ENTITY_H_

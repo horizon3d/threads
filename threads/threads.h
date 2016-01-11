@@ -28,8 +28,10 @@ Date  : =========
 #define _INSPIRE_THREAD_BASE_H_
 
 #include "thread.h"
+#include "threadExt.h"
 #include "threadMgr.h"
 #include "task/thdTask.h"
+#include "task/thdTaskExt.h"
 #include "task/thdTaskMgr.h"
 
 #endif // _INSPIRE_THREAD_BASE_H_

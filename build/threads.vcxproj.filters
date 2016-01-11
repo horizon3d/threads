@@ -118,7 +118,7 @@
     <ClInclude Include="..\threads\threadExt.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\threads\task\taskExt.h">
+    <ClInclude Include="..\threads\task\thdTaskExt.h">
       <Filter>threads\task</Filter>
     </ClInclude>
   </ItemGroup>

@@ -43,13 +43,13 @@ namespace inspire {
    class thdTask
    {
    public:
-      thdTask(const int64& id, const char* name = NULL)
-         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
+      thdTask(const uint& ttype, const char* name = NULL)
+         : _status(TASK_UNHANDLED), _taskType(ttype), _name(name), _thd(NULL), _cb(NULL)
       {
          thdTaskMgr::instance()->registerTask(this);
       }
-      explicit thdTask(const int64& id, const char* name, thread* thd)
-         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(thd), _cb(NULL)
+      explicit thdTask(const uint& ttype, const char* name, thread* thd)
+         : _status(TASK_UNHANDLED), _taskType(ttype), _name(name), _thd(thd), _cb(NULL)
       {}
       virtual ~thdTask() {}
 
@@ -58,9 +58,9 @@ namespace inspire {
 
    public:
       const char* name() { return (NULL == _name ? "NULL" : _name); };
-      const int64 id() const { return _taskId; }
+      const uint type() const { return _taskType; }
       const uint status() const { return _status; }
-      void status(const uint st) { _status = st; }
+      void reinitialize() { status(TASK_UNHANDLED); OnTaskEnd(NULL); }
       void attach(thread* thd = NULL)
       {
          if(NULL != thd)
@@ -68,7 +68,7 @@ namespace inspire {
             _thd = thd;
          }
          status(TASK_RUNNING);
-         LogEvent("Task: %lld begin handling", _taskId, _thd->tid());
+         LogEvent("Task: %d begin handling, thread: %lld", _taskType, _thd->tid());
       }
 
       void detach()
@@ -79,7 +79,7 @@ namespace inspire {
             // _cb(NULL);
          }
          status(TASK_HANDLED);
-         LogEvent("Task: %lld over", _taskId);
+         LogEvent("Task: %d over", _taskType);
          _thd = NULL;
       }
 
@@ -91,17 +91,14 @@ namespace inspire {
       }
 
    protected:
+      void status(const uint st) { _status = st; }
+
+   protected:
       uint          _status;
-      int64         _taskId;
+      uint          _taskType;
       const char*   _name;
       thread*       _thd;
       TASK_END_FUNC _cb;
-   };
-
-   class ITaskProductor
-   {
-   public:
-      virtual thdTask* createTask(const uint taskType) = 0;
    };
 }
 #endif

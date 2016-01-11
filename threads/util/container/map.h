@@ -38,6 +38,7 @@ namespace inspire {
          if (_map.end() != it)
          {
             v = it->second;
+            _map.erase(it);
             return true;
          }
          return false;

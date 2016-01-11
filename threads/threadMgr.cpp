@@ -151,7 +151,7 @@ namespace inspire {
       {
          thdTask* task = (thdTask*)pObj;
          LogError("a exit signal received, do not accept task dispatch event "
-                  "any more, task id: %lld, name:[%s]", task->id(), task->name());
+                  "any more, task id: %d, name:[%s]", task->type(), task->name());
       }
       else
       {
@@ -333,12 +333,9 @@ namespace inspire {
             }
          }
 
-         LogEvent("dispatch task: %lld to thread: %lld", task->id(), thd->tid());
+         LogEvent("dispatch task: %d to thread: %lld", task->type(), thd->tid());
          thd->assigned(task);
          thd->active();
       }
    }
-
-   
-
 }
