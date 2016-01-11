@@ -32,7 +32,7 @@ namespace inspire {
    /*
    * task type must be an enumerated variable
    * in order to pass the management of task to task manager
-   * user should to implement a task factory class base on interface ITaskProductor
+   * user should to implement a task factory base on interface ITaskProductor
    */
    class ITaskProductor
    {
