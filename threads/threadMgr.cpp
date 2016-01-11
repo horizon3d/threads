@@ -108,7 +108,17 @@ namespace inspire {
 
    thread* threadMgr::create(const uint thdType, IThreadProductor* factory)
    {
-      return factory->create(this, thdType);
+      thread* thd = factory->create(this, thdType);
+      if (NULL != thd)
+      {
+         if (thd->create())
+         {
+            LogError("create thread failed in start thread");
+            delete thd;
+            thd = NULL;
+         }
+      }
+      return thd;
    }
 
    void threadMgr::recycle(thread* thd)

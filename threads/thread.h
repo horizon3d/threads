@@ -90,7 +90,6 @@ namespace inspire {
       bool running() const { return THREAD_RUNNING == _state; }
 
    public:
-      int  create();
       void active();
       void suspend();
       void resume();
@@ -130,6 +129,11 @@ namespace inspire {
       * you should free it when its work over
       */
       void detach() { _detach = true; }
+
+      /*
+      * start thread and initialize thread process handling function
+      */
+      int  create();
 
    private:
       thread(const thread& rhs);

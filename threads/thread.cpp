@@ -64,32 +64,6 @@ namespace inspire {
 #endif
    }
 
-   int thread::create()
-   {
-      int rc = 0;
-      _setstate(THREAD_IDLE);
-#ifdef _WINDOWS
-      unsigned threadId = 0;
-      _hThread = (HANDLE)_beginthreadex(NULL, 0, thread::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
-      if (INVALID_HANDLE_VALUE == _hThread)
-      {
-         rc = utilGetLastError();
-         LogError("Failed to start a thread, error: %d", rc);
-         return rc;
-      }
-      _tid = threadId;
-#else
-      rc = pthread_create(&_ntid, NULL, thread::ENTRY_POINT, this);
-      if (rc)
-      {
-         LogError("Failed to start a thread, error: %d", rc);
-         return rc;
-      }
-      _tid = (int64)_ntid;
-#endif
-      return rc;
-   }
-
    void thread::active()
    {
       _setstate(THREAD_RUNNING);
@@ -207,6 +181,32 @@ namespace inspire {
       _detach = false;
       _tid    = 0;
       _task   = NULL;
+   }
+
+   int thread::create()
+   {
+      int rc = 0;
+      _setstate(THREAD_IDLE);
+#ifdef _WINDOWS
+      unsigned threadId = 0;
+      _hThread = (HANDLE)_beginthreadex(NULL, 0, thread::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      if (INVALID_HANDLE_VALUE == _hThread)
+      {
+         rc = utilGetLastError();
+         LogError("Failed to start a thread, error: %d", rc);
+         return rc;
+      }
+      _tid = threadId;
+#else
+      rc = pthread_create(&_ntid, NULL, thread::ENTRY_POINT, this);
+      if (rc)
+      {
+         LogError("Failed to start a thread, error: %d", rc);
+         return rc;
+      }
+      _tid = (int64)_ntid;
+#endif
+      return rc;
    }
 
 #ifdef _WINDOWS
