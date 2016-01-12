@@ -255,7 +255,7 @@ namespace inspire {
       thread* thd = static_cast<thread*>(arg);
       if (thd)
       {
-         threadMgr* mgr = thd->threadMgr();
+         threadMgr* mgr = thd->thdMgr();
          STRONG_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
 
          while (THREAD_RUNNING & thd->state())
