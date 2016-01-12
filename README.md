@@ -90,7 +90,6 @@ thd->assigned(task);           // assign a task to the thread
 thd->active();                 // start the thread and handle the task assigned
 ...
 thd->join();                   // task handle over, you need to join the thread to return resource to os
-                               // if you never detached the thread, never call join yourself
 ...                            // user should never care the leak of thread object, thread mgr will do it
 ```
 
