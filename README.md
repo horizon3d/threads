@@ -52,22 +52,47 @@ It is warpped and based on the real thread supported by operating system, which 
 It give out a series of control interface such as **create**, **active**, **deactive**, **suspend**, **resume**, **join**, etc.   
 It also contains a simple manager. In order to control and manage thread object reasonable , all thread objects must be created by the thread manager in normal condition.   
 However, the thread manager may be not satisfied all your need, you also can use *detach* to own a thread. In that time, you need invoke *active* to start the thread, and *join* to return resource to os.  
-sample:
+sample of dispatching task:
 ```
 threadMgr* mgr = inspire::threadMgr::instance();
 INSPIRE_ASSERT(NULL != mgr, "Failed to get thread manager");
 mgr->initialize();
 mgr->active();
-thread* thd = mgr->create(THREAD_TYPE_EXAMPLE);   // create a thread object user defined
+
 ...
-thdTask* task = inspire::thdTaskMgr::instance()->get(THREAD_TASK_EXAMPLE, taskProductor);
+taskFactory factory;            // taskFactory must be base on ITaskProductor
+...
+
+thdTask* task = inspire::thdTaskMgr::instance()->get(THREAD_TASK_EXAMPLE, &factory);
+INSPIRE_ASSERT(NULL != task, "Failed to create task, type: %d", THREAD_TASK_EXAMPLE);
+
+mgr->postEvent(task);           // dispatch task to process task
+```
+
+sample of create user defined thread:
+```
+threadFactory thdFactory;       // threadFactory must be base on IThreadProductor
+...
+
+threadMgr* mgr = inspire::threadMgr::instance();
+INSPIRE_ASSERT(NULL != mgr, "Failed to get thread manager");
+mgr->initialize();              // init resource of thread mgr needed
+mgr->active();                  // start thread manager to process tasks
+mgr->registerFactory(&thdFactory); // register factory to thread mgr
+...
+taskFactory factory;            // taskFactory must be base on ITaskProductor
+...
+thread* thd = mgr->create(THREAD_TYPE_EXAMPLE);   // create a thread object user defined
+INSPIRE_ASSERT(NULL != thd, "Failed to create thd, type: %d", THREAD_TYPE_EXAMPLE);
+thdTask* task = inspire::thdTaskMgr::instance()->get(THREAD_TASK_EXAMPLE, &factory);
+INSPIRE_ASSERT(NULL != task, "Failed to create task, type: %d", THREAD_TASK_EXAMPLE);
 thd->assigned(task);           // assign a task to the thread
 thd->active();                 // start the thread and handle the task assigned
 ...
 thd->join();                   // task handle over, you need to join the thread to return resource to os
                                // if you never detached the thread, never call join yourself
+...                            // user should never care the leak of thread object, thread mgr will do it
 ```
-
 
 **[task]**
 
