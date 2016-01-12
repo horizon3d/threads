@@ -41,6 +41,8 @@ namespace inspire {
    {
    public:
       virtual thread* create(threadMgr* mgr, const uint thdType);
+
+      void destroy(thread* thd) { delete thd; }
    };
    /*
     * This function is used as a factory to product extensive thread object

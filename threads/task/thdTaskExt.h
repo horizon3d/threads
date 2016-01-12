@@ -38,6 +38,8 @@ namespace inspire {
    {
    public:
       virtual thdTask* createTask(const uint taskType) = 0;
+
+      void destroy(thdTask* task) { delete task; }
    };
 }
 #endif
