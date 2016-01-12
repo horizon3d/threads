@@ -53,15 +53,15 @@ namespace inspire {
 
    void threadMgr::initialize()
    {
-      thdTask* t = new thdInnerTask(this);
-      STRONG_ASSERT(NULL != t, "Failed to allocate event processing task");
+      thdTask* task = new thdInnerTask(this);
+      STRONG_ASSERT(NULL != task, "Failed to allocate event processing task");
 
       thread* thd = _create();
       STRONG_ASSERT(NULL != thd, "cannot start event processing thread, exit");
 
       _detach(thd);
       _thdMain = thd;
-      _thdMain->assigned(t);
+      _thdMain->assigned(task);
    }
 
    void threadMgr::active()
@@ -106,18 +106,25 @@ namespace inspire {
       _maxIdleCount = maxCount;
    }
 
-   thread* threadMgr::create(const uint thdType, IThreadProductor* factory)
+   thread* threadMgr::create(const uint thdType)
    {
-      thread* thd = factory->create(this, thdType);
-      if (NULL != thd)
+      thread* thd = NULL;
+      if (NULL != _factory)
       {
+         thd = _factory->create(this, thdType);
+         INSPIRE_ASSERT(NULL != thd, "Failed to create thread object");
          if (thd->create())
          {
             LogError("create thread failed in start thread");
-            delete thd;
+            _factory->destroy(thd);
             thd = NULL;
          }
       }
+      else
+      {
+         LogEvent("Cannot find thread factory instance");
+      }
+
       return thd;
    }
 
@@ -133,12 +140,19 @@ namespace inspire {
          _taskMgr->over(task);
       }
 
-      if (!thd->detached())
+      if (_thdMain != thd)
       {
-         // signal to manager to destroy the thread
-         postEvent(EVENT_THREAD_RELEASE, thd);
-         // suspend the thread
-         thd->suspend();
+         if (!thd->detached())
+         {
+            // signal to manager to destroy the thread
+            postEvent(EVENT_THREAD_RELEASE, thd);
+            // suspend the thread
+            thd->suspend();
+         }
+         else
+         {
+            _factory->destroy(thd);
+         }
       }
    }
 

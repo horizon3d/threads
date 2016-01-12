@@ -105,7 +105,7 @@ namespace inspire {
       /*
       * create a user defined thread
       */
-      thread* create(const uint thdType, IThreadProductor* factory = NULL);
+      thread* create(const uint thdType);
       /*
       * recycle a thread, it determines a thread is to be suspended or release
       */
@@ -119,6 +119,17 @@ namespace inspire {
       * post a task event to the thread mgr
       */
       bool postEvent(thdTask* task);
+
+      /*
+      * register user defined thread factory
+      */
+      IThreadProductor* registerFactory(IThreadProductor* factory)
+      {
+         INSPIRE_ASSERT(NULL != factory, "factory cannot be NULL");
+         IThreadProductor* old = _factory;
+         _factory = factory;
+         return old;
+      }
 
    protected:
       /*
@@ -167,13 +178,14 @@ namespace inspire {
       virtual ~threadMgr();
 
    private:
-      uint            _maxIdleCount;
-      thread*         _thdMain;    ///< special thread for handling event
-      thdTaskMgr*     _taskMgr;
-      deque<thread*>  _idleQueue;  ///< the queue contains thread entity
-      deque<thread*>  _thdQueue;   ///< the queue don't contains thread entity
-      set<thread*>    _totalSet;   ///< all thread objects, used for resource management
-      deque<thdEvent> _eventQueue;
+      uint              _maxIdleCount;
+      thread*           _thdMain;    ///< special thread for handling event
+      thdTaskMgr*       _taskMgr;
+      IThreadProductor* _factory;    ///< the factory to create user defined thread
+      deque<thread*>    _idleQueue;  ///< the queue contains thread entity
+      deque<thread*>    _thdQueue;   ///< the queue don't contains thread entity
+      set<thread*>      _totalSet;   ///< all thread objects, used for resource management
+      deque<thdEvent>   _eventQueue;
    };
 }
 #endif
