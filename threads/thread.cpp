@@ -41,6 +41,8 @@ namespace inspire {
    {
 #ifdef _WINDOWS
       _hThread = INVALID_HANDLE_VALUE;
+      _hEvent = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+      STRONG_ASSERT(INVALID_HANDLE_VALUE != _hEvent, "Failed to create mutex event");
 #else
       _ntid = -1;
       pthread_mutex_init(&_mtx, NULL);
@@ -70,7 +72,8 @@ namespace inspire {
 #ifdef _WINDOWS
       if (INVALID_HANDLE_VALUE != _hThread)
       {
-         ::ResumeThread(_hThread);
+         ::SetEvent(_hEvent);
+         //::ResumeThread(_hThread);
       }
 #else
       pthread_mutex_lock(&_mtx);
@@ -85,10 +88,10 @@ namespace inspire {
       LogEvent("suspend thread: %lld", _tid);
       _setstate(THREAD_IDLE);
 #ifdef _WINDOWS
-      if (INVALID_HANDLE_VALUE != _hThread)
-      {
-         ::SuspendThread(_hThread);
-      }
+      //if (INVALID_HANDLE_VALUE != _hThread)
+      //{
+      //   ::SuspendThread(_hThread);
+      //}
 #endif
    }
 
@@ -98,26 +101,20 @@ namespace inspire {
       LogEvent("resume thread: %lld", _tid);
    }
 
-#ifndef _WINDOWS
-   bool thread::wait(uint seconds)
+#ifdef _WINDOWS
+   bool thread::wait_util()
+   {
+      // lock thread, and thread will wait for resume
+      ::ResetEvent(_hEvent);
+      ::WaitForSingleObject(_hEvent, INFINITE);
+      return true;
+   }
+#else
+   bool thread::wait_util()
    {
       // lock thread, and thread will wait for resume
       pthread_mutex_lock(&_mtx);
-      if (seconds > 0)
-      {
-         struct timespec ts;
-         ts.tv_sec = time(NULL) + seconds;
-         ts.tv_nsec = 0;
-         int rc = pthread_cond_timedwait(&_cond, &_mtx, &ts);
-         if (ETIMEDOUT == rc)
-         {
-            return false;
-         }
-      }
-      else
-      {
-         pthread_cond_wait(&_cond, &_mtx);
-      }
+      pthread_cond_wait(&_cond, &_mtx);
       pthread_mutex_unlock(&_mtx);
       return true;
    }
@@ -141,7 +138,8 @@ namespace inspire {
          {
             _setstate(THREAD_STOPPED);
             LogEvent("awake thread: %lld to exit", _tid);
-            ::ResumeThread(_hThread);
+            //::ResumeThread(_hThread);
+            ::SetEvent(_hEvent);
          }
 
          DWORD dw = ::WaitForSingleObject(_hThread, INFINITE);
@@ -189,7 +187,7 @@ namespace inspire {
       _setstate(THREAD_IDLE);
 #ifdef _WINDOWS
       unsigned threadId = 0;
-      _hThread = (HANDLE)_beginthreadex(NULL, 0, thread::ENTRY_POINT, this, CREATE_SUSPENDED, &threadId);
+      _hThread = (HANDLE)_beginthreadex(NULL, 0, thread::ENTRY_POINT, this, 0/*CREATE_SUSPENDED*/, &threadId);
       if (INVALID_HANDLE_VALUE == _hThread)
       {
          rc = utilGetLastError();
@@ -223,6 +221,14 @@ namespace inspire {
          INSPIRE_ASSERT(NULL != mgr, "Thread manager is NULL, panic");
          while (THREAD_RUNNING == thd->state())
          {
+            if (THREAD_IDLE == thd->state())
+            {
+               while (!thd->wait_util())
+               {
+                  // DO NOTHING and continue WAITING
+               }
+            }
+
             thdTask* task = thd->fetch();
             if (NULL == task)
             {
@@ -264,7 +270,7 @@ namespace inspire {
             // so we should wait until receive a signal
             if (THREAD_IDLE == thd->state())
             {
-               while (!thd->wait())
+               while (!thd->wait_util())
                {
                   // DO NOTHING and continue WAITING
                }

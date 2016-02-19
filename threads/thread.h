@@ -93,9 +93,7 @@ namespace inspire {
       void active();
       void suspend();
       void resume();
-#ifndef _WINDOWS
-      bool wait(uint seconds = 0);
-#endif
+      bool wait_util();
       /*
       * join thread and let operation system recycle the kernel resource
       * every thread need to call join before free
@@ -146,6 +144,7 @@ namespace inspire {
       threadMgr*  _threadMgr;
       thdTask*    _task;
 #ifdef _WINDOWS
+      HANDLE      _hEvent;
       HANDLE      _hThread;
 #else
       pthread_t       _ntid;
