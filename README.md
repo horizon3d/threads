@@ -1,10 +1,10 @@
 # [threads](https://github.com/tynia/threads)
 THREADS is a tiny and platform-crossing thread library implement using C++.  
-It is aimed at developing multi-threading program faster and safe.  
+It is aimed to developing multi-threading program faster and safe.  
 It is also an exercise to improve myself.  
 
 # Author
-**name**  :**tynia Liu**  
+**name**  :**tynia**  
 **email** : [ekesi@live.com](ekesi@live.com)
 
 # LICENSE
@@ -12,22 +12,20 @@ The **threads** library is released under the [**MIT LICENSE**](http://opensourc
 you can use it without any copyright about it.  
 
 # Besides
-I'd like you will leave my name(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
+I'd like you will leave my nickname(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
   
-  
-
 ---
-The threads library contains several modules includeing:
+# Introduction
+The **threads** library contains several modules, including:
 - logger
 - util
 - thread
 - task
 
-# Introduction
 **[logger]** 
 
-It is a simple thread-safe logging module using mutex(Windows) or pthread_mutex_t(Linux) etc.  
-When using the logger, all you need do is ```#include logger/logger.h```. And then you can using it like:
+It is a simple thread-safe logging module using ```Mutex(Windows)``` or ```pthread_mutex_t(Linux)``` etc.  
+Using the logger, all you need do is ```#include logger/logger.h```. And then you can using it like:
 ```
 LogError("LogError is used at the place where a error may be occured during running");
 LogEvent("LogEvent is used at the place where a event comming");
@@ -95,8 +93,8 @@ thd->join();                   // task handle over, you need to join the thread 
 
 **[task]**
 
-It is a abstract of jobs. It designed to be used with the thread conveniently. A simple task manager is included.  
-If you have a task named thdTaskA, and you wanna to dispatch to thread manager to handle it. The thdTaskA must be inherited from thdTask.  
+It is a abstract of jobs. It is designed to be used with the thread conveniently. A simple task manager is included.  
+If you have a task named thdTaskA, and you wanna dispatch to thread manager to handle it. The thdTaskA must be inherited from thdTask.  
 Dispatch the task to the thread manager, the manager will choose a thread to handle it.  
 And you can also set a callback typed as TASK_END_FUNC to the task, the callback will be invoked if task is handle over.
 
