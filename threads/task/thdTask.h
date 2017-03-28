@@ -1,3 +1,29 @@
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2015 tynia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Author: tynia
+Date  : =========
+*******************************************************************************/
 #ifndef _INSPIRE_THREAD_TASK_H_
 #define _INSPIRE_THREAD_TASK_H_
 
@@ -17,23 +43,24 @@ namespace inspire {
    class thdTask
    {
    public:
-      thdTask(const int64& id, const char* name)
-         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(NULL), _cb(NULL)
+      thdTask(const uint& ttype, const char* name = NULL)
+         : _status(TASK_UNHANDLED), _taskType(ttype), _name(name), _thd(NULL), _cb(NULL)
       {
          thdTaskMgr::instance()->registerTask(this);
       }
-      explicit thdTask(const int64& id, const char* name, thread* thd)
-         : _status(TASK_UNHANDLED), _taskId(id), _name(name), _thd(thd), _cb(NULL)
+      explicit thdTask(const uint& ttype, const char* name, thread* thd)
+         : _status(TASK_UNHANDLED), _taskType(ttype), _name(name), _thd(thd), _cb(NULL)
       {}
       virtual ~thdTask() {}
 
+      virtual void initialize() {}
       virtual const int run() = 0;
 
    public:
-      const char* name() { return _name; };
-      const int64 id() const { return _taskId; }
+      const char* name() { return (NULL == _name ? "NULL" : _name); };
+      const uint type() const { return _taskType; }
       const uint status() const { return _status; }
-      void status(const uint st) { _status = st; }
+      void reinitialize() { status(TASK_UNHANDLED); OnTaskEnd(NULL); }
       void attach(thread* thd = NULL)
       {
          if(NULL != thd)
@@ -41,7 +68,7 @@ namespace inspire {
             _thd = thd;
          }
          status(TASK_RUNNING);
-         LogEvent("Task: %lld begin handling", _taskId, _thd->tid());
+         LogEvent("Task: %d begin handling, thread: %lld", _taskType, _thd->tid());
       }
 
       void detach()
@@ -52,7 +79,7 @@ namespace inspire {
             // _cb(NULL);
          }
          status(TASK_HANDLED);
-         LogEvent("Task: %lld over", _taskId);
+         LogEvent("Task: %d over", _taskType);
          _thd = NULL;
       }
 
@@ -64,8 +91,11 @@ namespace inspire {
       }
 
    protected:
+      void status(const uint st) { _status = st; }
+
+   protected:
       uint          _status;
-      int64         _taskId;
+      uint          _taskType;
       const char*   _name;
       thread*       _thd;
       TASK_END_FUNC _cb;

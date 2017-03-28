@@ -4,56 +4,72 @@
 #include "util/system/condition.h"
 #include <iostream>
 
-struct mtxnumber
+struct unit
 {
-   inspire::mutex_t _spin;
-   int index;
+   inspire::mutex_t _mtx;
+   int id;
 };
 
-mtxnumber no;
-mtxnumber taskId;
+unit ticket;
 
-int64 inc()
+enum TASK_TYPE
 {
-   inspire::condition_t cond(&taskId._spin);
-   ++taskId.index;
-   return taskId.index;
-}
+   THREAD_TASK_A = 1,
+};
 
 class taskA : public inspire::thdTask
 {
 public:
-   taskA(int64 id) : thdTask(id, "A task") {  }
+   taskA(uint id) : thdTask(id, "A task") {  }
    ~taskA() {}
 
    virtual const int run()
    {
-      inspire::condition_t cond(&no._spin);
-      int tmp = no.index;
-      ++no.index;
-      LogEvent("from %d ---> %d", tmp, no.index);
-      std::cout << " ---> " << no.index << std::endl;
+      inspire::condition_t cond(&ticket._mtx);
+      int tmp = ticket.id;
+      ++ticket.id;
+      LogEvent("from %d ---> %d", tmp, ticket.id);
+      std::cout << " ---> " << ticket.id << std::endl;
       return 0;
    }
+};
 
-private:
-   const char* _name;
+class taskFactory : public inspire::ITaskProductor
+{
+public:
+   virtual inspire::thdTask* createTask(const uint taskType)
+   {
+      inspire::thdTask* task = NULL;
+      switch (taskType)
+      {
+      case THREAD_TASK_A:
+         task = new taskA(taskType);
+         break;
+      default:
+         break;
+      }
+      return task;
+   }
+
+public:
+   taskFactory() {}
+   ~taskFactory() {}
 };
 
 int main(int argc, char** argv)
 {
-   no.index = 0;
-   taskId.index = 0;
+   ticket.id = 0;
 
-   inspire::thdMgr* mgr = inspire::thdMgr::instance();
+   taskFactory factory;
+
+   inspire::threadMgr* mgr = inspire::threadMgr::instance();
    mgr->initialize();
    mgr->active();
 
-   mgr->reverseIdleCount(3);
    for (int idx = 0; idx < 20; ++idx)
    {
-      int64 tt = inc();
-      inspire::thdTask* t = new taskA(tt);
+      inspire::thdTask* t = inspire::thdTaskMgr::instance()->get(THREAD_TASK_A, &factory);
+      INSPIRE_ASSERT(t, "create task failed, out of memory");
       mgr->postEvent(t);
    }
 

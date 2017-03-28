@@ -1,3 +1,29 @@
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2015 tynia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Author: tynia
+Date  : =========
+*******************************************************************************/
 #ifndef _INSPIRE_THREAD_MANAGER_H_
 #define _INSPIRE_THREAD_MANAGER_H_
 
@@ -10,7 +36,8 @@ namespace inspire {
 
    class thdTask;
    class thdTaskMgr;
-   class thdMgr
+   class IThreadProductor;
+   class threadMgr
    {
    private:
       // the event definition
@@ -51,9 +78,9 @@ namespace inspire {
       class thdInnerTask : public thdTask
       {
       public:
-         thdInnerTask(thdMgr* mgr)
-            : thdTask(0, "Event Process Task"), _thdMgr(mgr) {}
-         ~thdInnerTask() { _thdMgr = NULL; }
+         thdInnerTask(threadMgr* mgr)
+            : thdTask(0, "Event Process Task"), _threadMgr(mgr) {}
+         ~thdInnerTask() { _threadMgr = NULL; }
 
          virtual const int run();
 
@@ -62,7 +89,7 @@ namespace inspire {
          thdInnerTask& operator= (const thdInnerTask& rhs);
 
       private:
-         thdMgr* _thdMgr;
+         threadMgr* _threadMgr;
       };
 
    public:
@@ -70,20 +97,15 @@ namespace inspire {
       void active();
       void destroy();
 
-      static thdMgr* instance();
+      static threadMgr* instance();
       /*
       * set max count of idle thread to be stored(pooled)
       */
-      void reverseIdleCount(const uint maxCount = 10);
+      void idleCount(const uint maxCount = 20);
       /*
-      * create a thread
+      * create a user defined thread
       */
-      thread* create();
-      /*
-      * detach thread from thread map, so that the manager won't manager it
-      * user should join, free the thread any more
-      */
-      void detach(thread* thd);
+      thread* create(const uint thdType);
       /*
       * recycle a thread, it determines a thread is to be suspended or release
       */
@@ -98,7 +120,27 @@ namespace inspire {
       */
       bool postEvent(thdTask* task);
 
+      /*
+      * register user defined thread factory
+      */
+      IThreadProductor* registerFactory(IThreadProductor* factory)
+      {
+         INSPIRE_ASSERT(NULL != factory, "factory cannot be NULL");
+         IThreadProductor* old = _factory;
+         _factory = factory;
+         return old;
+      }
+
    protected:
+      /*
+      * create a worker thread
+      */
+      thread* _create();
+      /*
+      * detach thread from thread map, so that the manager won't manager it
+      * user should join, free the thread any more
+      */
+      void _detach(thread* thd);
       /*
       * handle event
       */
@@ -126,24 +168,24 @@ namespace inspire {
       * dispatch a task to a thread which is ready
       */
       void _dispatch(thdTask* task);
-      
 
    private:
 
    private:
-      thdMgr();
-      thdMgr(const thdMgr& rhs);
-      thdMgr& operator=(const thdMgr& rhs);
-      virtual ~thdMgr();
+      threadMgr();
+      threadMgr(const threadMgr& rhs);
+      threadMgr& operator=(const threadMgr& rhs);
+      virtual ~threadMgr();
 
    private:
-      uint            _maxIdleCount;
-      thread*         _thdMain;    ///< special thread for handling event
-      thdTaskMgr*     _taskMgr;
-      deque<thread*>  _idleQueue;  ///< the queue contains thread entity
-      deque<thread*>  _thdQueue;   ///< the queue don't contains thread entity
-      set<thread*>    _totalSet;   ///< all thread objects, used for resource management
-      deque<thdEvent> _eventQueue;
+      uint              _maxIdleCount;
+      thread*           _thdMain;    ///< special thread for handling event
+      thdTaskMgr*       _taskMgr;
+      IThreadProductor* _factory;    ///< the factory to create user defined thread
+      deque<thread*>    _idleQueue;  ///< the queue contains thread entity
+      deque<thread*>    _thdQueue;   ///< the queue don't contains thread entity
+      set<thread*>      _totalSet;   ///< all thread objects, used for resource management
+      deque<thdEvent>   _eventQueue;
    };
 }
 #endif

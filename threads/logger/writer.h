@@ -15,7 +15,7 @@ namespace inspire {
 #ifdef _DEBUG
          writerImpl(const int priority = LOG_DEBUG);
 #else
-         writerImpl(const int priority = LOG_ERROR);
+         writerImpl(const int priority = LOG_EVENT);
 #endif
          virtual ~writerImpl();
 

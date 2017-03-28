@@ -32,9 +32,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\threads\thdMgr.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\threads\logger\base.cpp">
       <Filter>threads\logger</Filter>
     </ClCompile>
@@ -53,11 +50,11 @@
     <ClCompile Include="..\threads\util\file\IO.cpp">
       <Filter>threads\util\file</Filter>
     </ClCompile>
+    <ClCompile Include="..\threads\threadMgr.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\threads\thdMgr.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\threads\threads.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -114,6 +111,15 @@
     </ClInclude>
     <ClInclude Include="..\threads\util\file\IO.h">
       <Filter>threads\util\file</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\threadMgr.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\threadExt.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threads\task\thdTaskExt.h">
+      <Filter>threads\task</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

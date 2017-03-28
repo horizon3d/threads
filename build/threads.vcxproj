@@ -152,7 +152,7 @@
     <ClCompile Include="..\threads\logger\base.cpp" />
     <ClCompile Include="..\threads\logger\writer.cpp" />
     <ClCompile Include="..\threads\task\thdTaskMgr.cpp" />
-    <ClCompile Include="..\threads\thdMgr.cpp" />
+    <ClCompile Include="..\threads\threadMgr.cpp" />
     <ClCompile Include="..\threads\thread.cpp" />
     <ClCompile Include="..\threads\util\file\IO.cpp" />
   </ItemGroup>
@@ -160,9 +160,11 @@
     <ClInclude Include="..\threads\logger\writer.h" />
     <ClInclude Include="..\threads\logger\logger.h" />
     <ClInclude Include="..\threads\logger\base.h" />
+    <ClInclude Include="..\threads\task\thdTaskExt.h" />
     <ClInclude Include="..\threads\task\thdTask.h" />
     <ClInclude Include="..\threads\task\thdTaskMgr.h" />
-    <ClInclude Include="..\threads\thdMgr.h" />
+    <ClInclude Include="..\threads\threadExt.h" />
+    <ClInclude Include="..\threads\threadMgr.h" />
     <ClInclude Include="..\threads\thread.h" />
     <ClInclude Include="..\threads\threads.h" />
     <ClInclude Include="..\threads\util\assert.h" />

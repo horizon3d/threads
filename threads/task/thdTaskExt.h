@@ -24,14 +24,22 @@ SOFTWARE.
 Author: tynia
 Date  : =========
 *******************************************************************************/
-#ifndef _INSPIRE_THREAD_BASE_H_
-#define _INSPIRE_THREAD_BASE_H_
+#ifndef _INSPIRE_THREAD_TASK_EXTENSION_H_
+#define _INSPIRE_THREAD_TASK_EXTENSION_H_
 
-#include "thread.h"
-#include "threadExt.h"
-#include "threadMgr.h"
-#include "task/thdTask.h"
-#include "task/thdTaskExt.h"
-#include "task/thdTaskMgr.h"
+namespace inspire {
 
-#endif // _INSPIRE_THREAD_BASE_H_
+   /*
+   * task type must be an enumerated variable
+   * in order to pass the management of task to task manager
+   * user should to implement a task factory base on interface ITaskProductor
+   */
+   class ITaskProductor
+   {
+   public:
+      virtual thdTask* createTask(const uint taskType) = 0;
+
+      void destroy(thdTask* task) { delete task; }
+   };
+}
+#endif

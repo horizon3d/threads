@@ -1,3 +1,29 @@
+/*******************************************************************************
+The MIT License (MIT)
+
+Copyright (c) 2015 tynia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Author: tynia
+Date  : =========
+*******************************************************************************/
 #ifndef _INSPIRE_THREAD_ENTITY_H_
 #define _INSPIRE_THREAD_ENTITY_H_
 
@@ -15,22 +41,25 @@ namespace inspire {
       THREAD_IDLE    = 1 | THREAD_RUNNING, // it means thread is suspended
    };
 
-   class thdMgr;
+   class threadMgr;
    class thdTask;
    class thread
    {
+      friend class threadMgr;
 #ifdef _WINDOWS
       static unsigned __stdcall ENTRY_POINT(void* arg);
 #else
       static void* ENTRY_POINT(void* arg);
 #endif
+   protected:
+      thread(threadMgr* mgr, bool detach = true);
+
    public:
-      thread(thdMgr* mgr);
       virtual ~thread();
 
       int64 tid() { return _tid; }
       
-      thdMgr* threadMgr() const { return _thdMgr; }
+      threadMgr* thdMgr() const { return _threadMgr; }
       /*
       * get the state of thread
       */
@@ -52,12 +81,6 @@ namespace inspire {
       */
       const int error() const { return _errno; }
       /*
-      * break the relation of thread manager
-      * it means the thread manager don't manager it any more
-      * you should free it when its work over
-      */
-      void detach() { _detach = true; }
-      /*
       * check the thread is detached or not
       */
       bool detached() const { return _detach; }
@@ -67,13 +90,10 @@ namespace inspire {
       bool running() const { return THREAD_RUNNING == _state; }
 
    public:
-      int  create();
       void active();
       void suspend();
       void resume();
-#ifndef _WINDOWS
-      bool wait(uint seconds = 0);
-#endif
+      bool wait_util();
       /*
       * join thread and let operation system recycle the kernel resource
       * every thread need to call join before free
@@ -97,28 +117,41 @@ namespace inspire {
       }
 
       void _setstate(char st) { _state = st; }
-      
 
       void _reset();
+
+      /*
+      * break the relation of thread manager
+      * it may make the thread to be a user defined thread
+      * it means the thread manager don't manager it any more
+      * you should free it when its work over
+      */
+      void detach() { _detach = true; }
+
+      /*
+      * start thread and initialize thread process handling function
+      */
+      int  create();
 
    private:
       thread(const thread& rhs);
       thread& operator= (const thread& rhs);
 
    protected:
-      char     _state;
-      bool     _detach;
-      int      _errno;
-      int64    _tid;
-      thdMgr*  _thdMgr;
-      thdTask* _task;
+      char        _state;
+      bool        _detach;
+      int         _errno;
+      threadMgr*  _threadMgr;
+      thdTask*    _task;
 #ifdef _WINDOWS
-      HANDLE _hThread;
+      HANDLE      _hEvent;
+      HANDLE      _hThread;
 #else
-      pthread_t _ntid;
+      pthread_t       _ntid;
       pthread_mutex_t _mtx;
       pthread_cond_t  _cond;
 #endif
+      int64       _tid;
    };
 }
 #endif // _INSPIRE_THREAD_ENTITY_H_

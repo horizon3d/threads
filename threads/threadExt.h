@@ -24,14 +24,46 @@ SOFTWARE.
 Author: tynia
 Date  : =========
 *******************************************************************************/
-#ifndef _INSPIRE_THREAD_BASE_H_
-#define _INSPIRE_THREAD_BASE_H_
+#ifndef _INSPIRE_THREAD_EXTENSION_H_
+#define _INSPIRE_THREAD_EXTENSION_H_
 
 #include "thread.h"
-#include "threadExt.h"
-#include "threadMgr.h"
-#include "task/thdTask.h"
-#include "task/thdTaskExt.h"
-#include "task/thdTaskMgr.h"
+#include "util/system/util.h"
 
-#endif // _INSPIRE_THREAD_BASE_H_
+namespace inspire {
+
+   /*
+   * thread type must be an enumerated variable
+   * in order to create thread in an unique entry
+   * user should to implement a thread factory base on interface IThreadProductor
+   */
+   class IThreadProductor
+   {
+   public:
+      virtual thread* create(threadMgr* mgr, const uint thdType);
+
+      void destroy(thread* thd) { delete thd; }
+   };
+   /*
+    * This function is used as a factory to product extensive thread object
+    * When a class inherited on thread, and in order to get object of it,
+    * add the product statement here, it must be like thd = new EXT_THREAD(...)
+    * A pointer of base(thread) will be return if successfully worked.
+   */
+   inline thread* create(threadMgr* mgr, const uint thdType)
+   {
+      INSPIRE_ASSERT(NULL != mgr, "thread manager cannot be NULL");
+      thread* thd = NULL;
+      switch (thdType)
+      {
+      //case 0:
+         //thd = new extThread(mgr);
+      default:
+         break;
+      }
+
+      INSPIRE_ASSERT(NULL != thd, "Failed to create a thread object, type: %d", thdType);
+      return thd;
+   }
+}
+#endif
