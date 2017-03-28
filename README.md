@@ -12,7 +12,7 @@ The **threads** library is released under the [**MIT LICENSE**](http://opensourc
 you can use it without ANY concern on copyright.  
 
 # Besides
-I'd like you will leave my nickname(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
+I hope you can retain my nickname(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
   
 ---
 # Introduction
