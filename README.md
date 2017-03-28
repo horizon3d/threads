@@ -9,7 +9,7 @@ It is also an exercise to improve myself.
 
 # LICENSE
 The **threads** library is released under the [**MIT LICENSE**](http://opensource.org/licenses/mit-license.php).  
-you can use it without any copyright about it.  
+you can use it without ANY concern on copyright.  
 
 # Besides
 I'd like you will leave my nickname(tynia) and [repository](https://github.com/tynia/threads) in your project, which you use the [**threads**](https://github.com/tynia/threads) in it.  
