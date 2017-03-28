@@ -4,7 +4,7 @@ It is aimed to developing multi-threading program faster and safe.
 It is also an exercise to improve myself.  
 
 # Author
-**name**  :**tynia**  
+**name**  : **tynia**  
 **email** : [ekesi@live.com](ekesi@live.com)
 
 # LICENSE
