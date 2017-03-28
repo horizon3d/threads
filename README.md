@@ -25,7 +25,7 @@ The **threads** library contains several modules, including:
 **[logger]** 
 
 It is a simple thread-safe logging module using ```Mutex(Windows)``` or ```pthread_mutex_t(Linux)``` etc.  
-Using the logger, all you need do is ```#include logger/logger.h```. And then you can using it like:
+When using the logger, you need do ```#include logger/logger.h```, and then you can code as follows:
 ```
 LogError("LogError is used at the place where a error may be occured during running");
 LogEvent("LogEvent is used at the place where a event comming");
