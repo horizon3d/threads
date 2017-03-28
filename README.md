@@ -1,6 +1,6 @@
 # [threads](https://github.com/tynia/threads)
 THREADS is a tiny and platform-crossing thread library implement using C++.  
-It is aim at developing multi-threading program faster and safe.  
+It is aimed at developing multi-threading program faster and safe.  
 It is also an exercise to improve myself.  
 
 # Author
